@@ -14,16 +14,184 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          id: string
+          meta: Json | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          id?: string
+          meta?: Json | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          id?: string
+          meta?: Json | null
+        }
+        Relationships: []
+      }
+      challenges: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description_md: string
+          files: Json | null
+          id: string
+          is_published: boolean
+          links: Json | null
+          points: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description_md: string
+          files?: Json | null
+          id?: string
+          is_published?: boolean
+          links?: Json | null
+          points: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description_md?: string
+          files?: Json | null
+          id?: string
+          is_published?: boolean
+          links?: Json | null
+          points?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      flags: {
+        Row: {
+          challenge_id: string
+          created_at: string
+          hash: string
+          id: string
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string
+          hash: string
+          id?: string
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string
+          hash?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flags_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: true
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_admin: boolean
+          is_banned: boolean
+          username: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          is_admin?: boolean
+          is_banned?: boolean
+          username: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_admin?: boolean
+          is_banned?: boolean
+          username?: string
+        }
+        Relationships: []
+      }
+      submissions: {
+        Row: {
+          challenge_id: string
+          created_at: string
+          id: string
+          ip: string | null
+          result: string
+          submitted_flag: string | null
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string
+          id?: string
+          ip?: string | null
+          result: string
+          submitted_flag?: string | null
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string
+          id?: string
+          ip?: string | null
+          result?: string
+          submitted_flag?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_scoreboard: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          last_submission: string
+          solved_count: number
+          total_points: number
+          user_id: string
+          username: string
+        }[]
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +318,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const

@@ -1,1 +1,7 @@
 project_id = "rtvauvrqbfqbkibtbgnq"
+
+[functions.submit-flag]
+verify_jwt = true
+
+[functions.admin-set-flag]
+verify_jwt = true

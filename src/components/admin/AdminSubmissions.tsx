@@ -52,18 +52,48 @@ export function AdminSubmissions() {
 
   const loadSubmissions = async () => {
     try {
-      const { data, error } = await supabase
+      // First get submissions
+      const { data: submissionsData, error: submissionsError } = await supabase
         .from('submissions')
-        .select(`
-          *,
-          profiles (username, email),
-          challenges (title, points)
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(100);
 
-      if (error) throw error;
-      setSubmissions(data || []);
+      if (submissionsError) throw submissionsError;
+
+      if (!submissionsData || submissionsData.length === 0) {
+        setSubmissions([]);
+        return;
+      }
+
+      // Get unique user IDs and challenge IDs
+      const userIds = [...new Set(submissionsData.map((s: any) => s.user_id))];
+      const challengeIds = [...new Set(submissionsData.map((s: any) => s.challenge_id))];
+
+      // Fetch profiles
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('id, username, email')
+        .in('id', userIds);
+
+      // Fetch challenges
+      const { data: challengesData } = await supabase
+        .from('challenges')
+        .select('id, title, points')
+        .in('id', challengeIds);
+
+      // Create lookup maps
+      const profilesMap = new Map(profilesData?.map((p: any) => [p.id, p]) || []);
+      const challengesMap = new Map(challengesData?.map((c: any) => [c.id, c]) || []);
+
+      // Combine data
+      const enrichedSubmissions = submissionsData.map((submission: any) => ({
+        ...submission,
+        profiles: profilesMap.get(submission.user_id) || { username: 'Unknown', email: '' },
+        challenges: challengesMap.get(submission.challenge_id) || { title: 'Unknown', points: 0 }
+      }));
+
+      setSubmissions(enrichedSubmissions);
     } catch (error: any) {
       toast.error("Error loading submissions");
       console.error(error);
