@@ -50,6 +50,25 @@ export default function Challenges() {
 
   const loadChallenges = async () => {
     try {
+      // First check if CTF is active
+      const { data: ctfSettings } = await supabase
+        .from('ctf_settings')
+        .select('*')
+        .eq('is_active', true)
+        .maybeSingle();
+
+      const now = new Date();
+      const isCtfActive = ctfSettings && 
+        new Date(ctfSettings.start_time) <= now && 
+        new Date(ctfSettings.end_time) >= now;
+
+      if (!isCtfActive) {
+        toast.error("CTF is not currently active. Please check back during the competition window.");
+        setChallenges([]);
+        setLoading(false);
+        return;
+      }
+
       const { data: challengesData, error: challengesError } = await supabase
         .from('challenges')
         .select('*')

@@ -81,8 +81,12 @@ export function AdminChallenges() {
     }
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error("Not authenticated");
+
+      // Get session token for authenticated requests
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) throw new Error("No active session");
 
       if (editingChallenge) {
         // Update existing challenge
@@ -100,12 +104,26 @@ export function AdminChallenges() {
 
         // Update flag if provided
         if (flagValue) {
-          await supabase.functions.invoke('admin-set-flag', {
-            body: { challenge_id: editingChallenge.id, flag: flagValue }
+          const { data, error: flagError } = await supabase.functions.invoke('admin-set-flag', {
+            body: { challenge_id: editingChallenge.id, flag: flagValue },
+            headers: {
+              Authorization: `Bearer ${session.access_token}`
+            }
           });
-        }
 
-        toast.success("Challenge updated");
+          if (flagError) {
+            console.error("Flag update error:", flagError);
+            throw new Error("Failed to update flag: " + (flagError.message || "Unknown error"));
+          }
+
+          if (data?.error) {
+            throw new Error(data.error);
+          }
+
+          toast.success("Challenge and flag updated successfully");
+        } else {
+          toast.success("Challenge updated");
+        }
       } else {
         // Create new challenge
         const { data: newChallenge, error: challengeError } = await supabase
@@ -125,17 +143,32 @@ export function AdminChallenges() {
 
         // Set flag
         if (flagValue) {
-          await supabase.functions.invoke('admin-set-flag', {
-            body: { challenge_id: newChallenge.id, flag: flagValue }
+          const { data, error: flagError } = await supabase.functions.invoke('admin-set-flag', {
+            body: { challenge_id: newChallenge.id, flag: flagValue },
+            headers: {
+              Authorization: `Bearer ${session.access_token}`
+            }
           });
-        }
 
-        toast.success("Challenge created");
+          if (flagError) {
+            console.error("Flag creation error:", flagError);
+            throw new Error("Failed to set flag: " + (flagError.message || "Unknown error"));
+          }
+
+          if (data?.error) {
+            throw new Error(data.error);
+          }
+
+          toast.success("Challenge created and flag set successfully");
+        } else {
+          toast.warning("Challenge created but no flag set");
+        }
       }
 
       setDialogOpen(false);
       loadChallenges();
     } catch (error: any) {
+      console.error("Save challenge error:", error);
       toast.error(error.message || "Error saving challenge");
     }
   };

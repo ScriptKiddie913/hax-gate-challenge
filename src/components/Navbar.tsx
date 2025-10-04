@@ -88,6 +88,12 @@ export const Navbar = () => {
                   Rules
                 </Button>
               </Link>
+              <Link to="/profile">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <UserIcon className="h-4 w-4" />
+                  Profile
+                </Button>
+              </Link>
               {isAdmin && (
                 <Link to="/admin">
                   <Button variant="ghost" size="sm" className="gap-2 text-accent">

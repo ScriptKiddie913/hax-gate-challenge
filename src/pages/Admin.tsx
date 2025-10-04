@@ -7,6 +7,8 @@ import { Shield, Users, Flag, FileText } from "lucide-react";
 import { AdminUsers } from "@/components/admin/AdminUsers";
 import { AdminChallenges } from "@/components/admin/AdminChallenges";
 import { AdminSubmissions } from "@/components/admin/AdminSubmissions";
+import { CTFTimer } from "@/components/admin/CTFTimer";
+import { BlockchainIdentities } from "@/components/admin/BlockchainIdentities";
 
 export default function Admin() {
   const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="challenges" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8 bg-card border border-border">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 mb-8 bg-card border border-border">
             <TabsTrigger value="challenges" className="gap-2">
               <Flag className="h-4 w-4" />
               <span className="hidden sm:inline">Challenges</span>
@@ -86,6 +88,14 @@ export default function Admin() {
             <TabsTrigger value="submissions" className="gap-2">
               <FileText className="h-4 w-4" />
               <span className="hidden sm:inline">Submissions</span>
+            </TabsTrigger>
+            <TabsTrigger value="timer" className="gap-2">
+              <Shield className="h-4 w-4" />
+              <span className="hidden sm:inline">CTF Timer</span>
+            </TabsTrigger>
+            <TabsTrigger value="blockchain" className="gap-2">
+              <Shield className="h-4 w-4" />
+              <span className="hidden sm:inline">Blockchain</span>
             </TabsTrigger>
           </TabsList>
 
@@ -99,6 +109,14 @@ export default function Admin() {
 
           <TabsContent value="submissions">
             <AdminSubmissions />
+          </TabsContent>
+
+          <TabsContent value="timer">
+            <CTFTimer />
+          </TabsContent>
+
+          <TabsContent value="blockchain">
+            <BlockchainIdentities />
           </TabsContent>
         </Tabs>
       </main>

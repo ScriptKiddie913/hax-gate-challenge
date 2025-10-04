@@ -80,6 +80,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ctf_settings: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          end_time: string
+          id: string
+          is_active: boolean | null
+          start_time: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          end_time: string
+          id?: string
+          is_active?: boolean | null
+          start_time: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          end_time?: string
+          id?: string
+          is_active?: boolean | null
+          start_time?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       flags: {
         Row: {
           challenge_id: string
@@ -111,6 +141,9 @@ export type Database = {
       }
       profiles: {
         Row: {
+          blockchain_address: string | null
+          blockchain_signature: string | null
+          blockchain_verified: boolean | null
           created_at: string
           email: string | null
           id: string
@@ -119,6 +152,9 @@ export type Database = {
           username: string
         }
         Insert: {
+          blockchain_address?: string | null
+          blockchain_signature?: string | null
+          blockchain_verified?: boolean | null
           created_at?: string
           email?: string | null
           id: string
@@ -127,6 +163,9 @@ export type Database = {
           username: string
         }
         Update: {
+          blockchain_address?: string | null
+          blockchain_signature?: string | null
+          blockchain_verified?: boolean | null
           created_at?: string
           email?: string | null
           id?: string
@@ -197,7 +236,33 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          blockchain_address: string | null
+          blockchain_verified: boolean | null
+          created_at: string | null
+          id: string | null
+          is_banned: boolean | null
+          username: string | null
+        }
+        Insert: {
+          blockchain_address?: string | null
+          blockchain_verified?: boolean | null
+          created_at?: string | null
+          id?: string | null
+          is_banned?: boolean | null
+          username?: string | null
+        }
+        Update: {
+          blockchain_address?: string | null
+          blockchain_verified?: boolean | null
+          created_at?: string | null
+          id?: string | null
+          is_banned?: boolean | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_scoreboard: {
@@ -215,6 +280,10 @@ export type Database = {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
+        Returns: boolean
+      }
+      is_ctf_active: {
+        Args: Record<PropertyKey, never>
         Returns: boolean
       }
     }
