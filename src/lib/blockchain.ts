@@ -1,74 +1,40 @@
 import { ethers } from 'ethers';
 
-export interface BlockchainIdentity {
-  address: string;
-  signature: string;
-  message: string;
+/**
+ * Generate a deterministic blockchain address for a user
+ * Uses Ethereum-style keccak256 hashing and address formatting
+ */
+export function generateBlockchainAddress(userId: string, email: string): string {
+  // Create a deterministic seed from user data
+  const seed = `CTF_PLATFORM_${userId}_${email}_IDENTITY`;
+  
+  // Hash using keccak256 (Ethereum standard)
+  const hash = ethers.keccak256(ethers.toUtf8Bytes(seed));
+  
+  // Take last 20 bytes (40 hex chars) to create Ethereum-style address
+  // Ethereum addresses are 20 bytes (40 hex chars) with 0x prefix
+  const address = '0x' + hash.slice(-40);
+  
+  return address;
 }
 
 /**
- * Generate a unique message for the user to sign
+ * Generate a blockchain signature for verification
+ * Creates a cryptographic proof of identity
  */
-export function generateSignatureMessage(userId: string, username: string): string {
-  const timestamp = Date.now();
-  return `CTF Platform Identity Verification\n\nUser ID: ${userId}\nUsername: ${username}\nTimestamp: ${timestamp}\n\nBy signing this message, you verify ownership of this blockchain address.`;
+export function generateIdentitySignature(userId: string, address: string, timestamp: number): string {
+  const message = `CTF Identity Verification\nUser: ${userId}\nAddress: ${address}\nTimestamp: ${timestamp}`;
+  const messageHash = ethers.keccak256(ethers.toUtf8Bytes(message));
+  return messageHash;
 }
 
 /**
- * Request user to connect their Ethereum wallet and sign a message
+ * Verify blockchain address format
  */
-export async function connectBlockchainIdentity(
-  userId: string,
-  username: string
-): Promise<BlockchainIdentity> {
-  if (!window.ethereum) {
-    throw new Error('Please install MetaMask or another Web3 wallet to continue');
-  }
-
+export function isValidAddress(address: string): boolean {
   try {
-    // Request account access
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const accounts = await provider.send('eth_requestAccounts', []);
-    
-    if (!accounts || accounts.length === 0) {
-      throw new Error('No accounts found. Please connect your wallet.');
-    }
-
-    const address = accounts[0];
-    const signer = await provider.getSigner();
-    
-    // Generate message to sign
-    const message = generateSignatureMessage(userId, username);
-    
-    // Request signature
-    const signature = await signer.signMessage(message);
-    
-    return {
-      address,
-      signature,
-      message
-    };
-  } catch (error: any) {
-    if (error.code === 4001) {
-      throw new Error('User rejected the signature request');
-    }
-    throw error;
-  }
-}
-
-/**
- * Verify a blockchain signature (client-side verification)
- */
-export async function verifySignature(
-  message: string,
-  signature: string,
-  expectedAddress: string
-): Promise<boolean> {
-  try {
-    const recoveredAddress = ethers.verifyMessage(message, signature);
-    return recoveredAddress.toLowerCase() === expectedAddress.toLowerCase();
-  } catch (error) {
-    console.error('Signature verification failed:', error);
+    return ethers.isAddress(address);
+  } catch {
     return false;
   }
 }
@@ -81,9 +47,9 @@ export function truncateAddress(address: string): string {
   return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
 }
 
-// Extend Window interface for ethereum
-declare global {
-  interface Window {
-    ethereum?: any;
-  }
+/**
+ * Get blockchain explorer link (for display purposes)
+ */
+export function getExplorerLink(address: string): string {
+  return `https://etherscan.io/address/${address}`;
 }

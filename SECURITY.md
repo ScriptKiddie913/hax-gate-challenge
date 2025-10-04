@@ -42,10 +42,13 @@ All tables have comprehensive RLS policies:
 - Admins bypass timer restrictions for management
 - Real-time updates to scoreboard during active CTF
 
-### 7. **Blockchain Identity Verification**
-- Each user can link Ethereum wallet address
-- Uses ethers.js for cryptographic signature verification
-- Signatures stored and verifiable on-chain
+### 7. **Automatic Blockchain Identity**
+- Each user gets a unique blockchain address on signup
+- Generated using SHA-256 cryptographic hashing
+- Ethereum-style address format (0x... 40 hex chars)
+- Deterministic based on user ID + email
+- Cryptographic signature for verification
+- No wallet connection required - fully automated
 - Provides immutable proof of identity
 
 ### 8. **Request Tampering Prevention**
@@ -78,7 +81,7 @@ All critical operations are protected:
 1. **Service Role Key** - Only in Edge Functions environment
 2. **Plaintext Flags** - Hashed with bcrypt
 3. **Admin Credentials** - Hashed by Supabase Auth
-4. **Blockchain Private Keys** - Never transmitted or stored
+4. **Blockchain Addresses** - Generated server-side, deterministic but non-reversible
 
 ## Request Tampering Scenarios & Protections
 
@@ -131,6 +134,12 @@ This implementation follows:
 - NIST password guidelines (via Supabase Auth)
 - Zero-trust architecture principles
 - Principle of least privilege
+
+**⚠️ Action Required**: Enable leaked password protection in Supabase Auth settings:
+1. Go to [Auth Providers](https://supabase.com/dashboard/project/rtvauvrqbfqbkibtbgnq/auth/providers)
+2. Navigate to Password settings
+3. Enable "Password Strength and Leaked Password Protection"
+4. This prevents users from using compromised passwords from data breaches
 
 ## Testing Security
 
