@@ -236,7 +236,33 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      public_profiles: {
+        Row: {
+          blockchain_address: string | null
+          blockchain_verified: boolean | null
+          created_at: string | null
+          id: string | null
+          is_banned: boolean | null
+          username: string | null
+        }
+        Insert: {
+          blockchain_address?: string | null
+          blockchain_verified?: boolean | null
+          created_at?: string | null
+          id?: string | null
+          is_banned?: boolean | null
+          username?: string | null
+        }
+        Update: {
+          blockchain_address?: string | null
+          blockchain_verified?: boolean | null
+          created_at?: string | null
+          id?: string | null
+          is_banned?: boolean | null
+          username?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       get_scoreboard: {

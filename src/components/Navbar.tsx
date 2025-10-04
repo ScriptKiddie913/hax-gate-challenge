@@ -32,18 +32,14 @@ export const Navbar = () => {
   const checkAdminStatus = async () => {
     if (!user) return;
     
-    // Check if user has admin role in user_roles table
     const { data, error } = await supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .eq('role', 'admin')
-      .maybeSingle();
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single();
     
     if (!error && data) {
-      setIsAdmin(true);
-    } else {
-      setIsAdmin(false);
+      setIsAdmin(data.is_admin);
     }
   };
 

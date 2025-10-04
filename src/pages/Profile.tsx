@@ -3,11 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { User, Shield, Trophy, Calendar, Wallet, CheckCircle2, Copy } from "lucide-react";
-import { toast } from "sonner";
-import { truncateAddress } from "@/lib/blockchain";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { User, Shield, Trophy, Calendar, Wallet, CheckCircle2, XCircle } from "lucide-react";
+import { toast } from "sonner";
+import { connectBlockchainIdentity, truncateAddress } from "@/lib/blockchain";
 
 interface Profile {
   id: string;
@@ -17,7 +17,6 @@ interface Profile {
   is_banned: boolean;
   blockchain_address: string | null;
   blockchain_verified: boolean;
-  blockchain_signature: string | null;
 }
 
 interface UserStats {
@@ -30,6 +29,7 @@ export default function Profile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState<UserStats>({ total_points: 0, solved_count: 0, total_submissions: 0 });
   const [loading, setLoading] = useState(true);
+  const [connectingWallet, setConnectingWallet] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -84,9 +84,33 @@ export default function Profile() {
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success("Address copied to clipboard");
+  const handleConnectBlockchain = async () => {
+    if (!profile) return;
+
+    setConnectingWallet(true);
+    try {
+      const identity = await connectBlockchainIdentity(profile.id, profile.username);
+      
+      // Save blockchain identity to profile
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          blockchain_address: identity.address,
+          blockchain_signature: identity.signature,
+          blockchain_verified: true
+        })
+        .eq('id', profile.id);
+
+      if (error) throw error;
+
+      toast.success("Blockchain identity connected successfully!");
+      await loadProfile();
+    } catch (error: any) {
+      toast.error(error.message || "Failed to connect blockchain identity");
+      console.error(error);
+    } finally {
+      setConnectingWallet(false);
+    }
   };
 
   if (loading) {
@@ -199,59 +223,55 @@ export default function Profile() {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg border border-border">
                     <div className="flex-1">
-                      <p className="text-sm text-muted-foreground mb-1">Blockchain Address</p>
-                      <p className="font-mono font-semibold text-lg mb-1">{truncateAddress(profile.blockchain_address)}</p>
-                      <p className="text-xs text-muted-foreground break-all">{profile.blockchain_address}</p>
+                      <p className="text-sm text-muted-foreground mb-1">Wallet Address</p>
+                      <p className="font-mono font-semibold">{truncateAddress(profile.blockchain_address)}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{profile.blockchain_address}</p>
                     </div>
-                    <div className="flex items-center gap-3 ml-4">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => copyToClipboard(profile.blockchain_address!)}
-                        className="gap-2"
-                      >
-                        <Copy className="h-4 w-4" />
-                        Copy
-                      </Button>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                        <Badge variant="default" className="bg-green-500/20 text-green-400 border-green-500/30">
-                          Verified
-                        </Badge>
-                      </div>
+                    <div className="flex items-center gap-2">
+                      {profile.blockchain_verified ? (
+                        <>
+                          <CheckCircle2 className="h-5 w-5 text-green-500" />
+                          <Badge variant="default" className="bg-green-500/20 text-green-400 border-green-500/30">
+                            Verified
+                          </Badge>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="h-5 w-5 text-yellow-500" />
+                          <Badge variant="outline">Pending</Badge>
+                        </>
+                      )}
                     </div>
                   </div>
-
-                  {profile.blockchain_signature && (
-                    <div className="p-4 bg-secondary/30 rounded-lg border border-border">
-                      <p className="text-sm text-muted-foreground mb-2">Cryptographic Signature</p>
-                      <p className="text-xs font-mono break-all text-muted-foreground">
-                        {profile.blockchain_signature}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="flex items-start gap-3 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                    <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div className="space-y-2 text-sm">
-                      <p className="font-semibold">About Your Blockchain Identity</p>
-                      <ul className="space-y-1 text-muted-foreground list-disc list-inside">
-                        <li>Automatically generated using cryptographic hashing (SHA-256)</li>
-                        <li>Unique Ethereum-style address format (0x...)</li>
-                        <li>Immutable proof of your participation</li>
-                        <li>Can be verified independently on blockchain explorers</li>
-                        <li>No wallet connection required - fully managed by the platform</li>
-                      </ul>
-                    </div>
-                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    <Shield className="h-4 w-4 inline mr-1" />
+                    Your blockchain identity is securely linked to your account and recorded on the blockchain.
+                  </p>
                 </div>
               ) : (
                 <div className="text-center py-8">
                   <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Blockchain Identity Pending</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Your blockchain identity is being generated. Please refresh the page.
+                  <h3 className="text-lg font-semibold mb-2">No Blockchain Identity Connected</h3>
+                  <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                    Connect your Ethereum wallet to create a verifiable blockchain-based identity for enhanced security and proof of participation.
                   </p>
+                  <Button 
+                    onClick={handleConnectBlockchain}
+                    disabled={connectingWallet}
+                    className="bg-primary hover:bg-primary/90"
+                  >
+                    {connectingWallet ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                        Connecting...
+                      </>
+                    ) : (
+                      <>
+                        <Wallet className="h-4 w-4 mr-2" />
+                        Connect Wallet
+                      </>
+                    )}
+                  </Button>
                 </div>
               )}
             </CardContent>

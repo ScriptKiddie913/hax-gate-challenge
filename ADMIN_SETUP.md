@@ -6,12 +6,10 @@ This CTF platform is built with production-grade security:
 
 - **Service role key never exposed to clients** - Only used server-side in Edge Functions
 - **Hashed flags** - Flags are hashed with bcrypt (12 rounds) before storage
-- **Row Level Security (RLS)** - All tables have proper RLS policies with `user_roles` separation
-- **Automatic Blockchain Identity** - Each user gets a unique blockchain address via SHA-256 hashing
+- **Row Level Security (RLS)** - All tables have proper RLS policies
 - **Real-time scoreboard** - Updates automatically via Supabase Realtime
 - **Email verification required** - Users must verify email before accessing challenges
 - **Locked submissions** - Once a challenge is solved, no more submissions accepted
-- **CTF Timer Control** - Challenges only visible during configured time window
 
 ## 🎯 Creating the Admin Account
 
@@ -30,15 +28,12 @@ This CTF platform is built with production-grade security:
 After signing up and verifying your email, run this SQL command in Supabase SQL Editor:
 
 ```sql
--- Insert admin role for the admin user
-INSERT INTO public.user_roles (user_id, role)
-SELECT id, 'admin'::app_role
-FROM public.profiles
-WHERE email = 'sagnik.saha.araptor@gmail.com'
-ON CONFLICT DO NOTHING;
+UPDATE public.profiles 
+SET is_admin = true 
+WHERE email = 'sagnik.saha.araptor@gmail.com';
 ```
 
-**Important**: This grants admin privileges via the secure `user_roles` table, not via the profile directly. This prevents privilege escalation attacks.
+**Important**: Run this SQL immediately after the admin account is created and verified.
 
 ### Step 3: Verify Admin Access
 
@@ -49,25 +44,10 @@ ON CONFLICT DO NOTHING;
 ## 📋 Admin Capabilities
 
 ### User Management
-- View all registered users with blockchain identities
+- View all registered users
 - Ban/unban users
 - Delete users
 - View user registration dates and verification status
-- See auto-generated blockchain addresses for all users
-
-### Blockchain Identity Management
-- View all user blockchain addresses (Ethereum-style 0x... format)
-- See verification status (all auto-verified)
-- Copy addresses for sharing or verification
-- Statistics on connected identities
-
-### CTF Timer Configuration
-- Set CTF start time and date
-- Set CTF end time and date
-- Activate/deactivate CTF manually
-- View live CTF status
-- Challenges automatically hidden outside time window
-- Admins can always access challenges regardless of timer
 
 ### Challenge Management
 - Create new challenges with:
@@ -83,7 +63,7 @@ ON CONFLICT DO NOTHING;
 ### Submissions Monitoring
 - View all user submissions in real-time
 - See correct vs incorrect attempts
-- Track timestamps and IP addresses
+- Track timestamps
 - Monitor user activity
 
 ## 🚀 Creating Your First Challenge
@@ -105,34 +85,22 @@ ON CONFLICT DO NOTHING;
 
 ## 🔒 Security Best Practices
 
-### Automatic Blockchain Identity
-Every user automatically receives:
-- **Unique Ethereum-style address** (0x... format, 42 characters)
-- **Generated via SHA-256 hashing** using user ID + email
-- **Cryptographic signature** for verification
-- **Auto-verified** since it's system-generated
-- **No wallet required** - fully automated process
-
 ### What's Secure
 ✅ Service role key only in server environment (Edge Functions)
 ✅ Flags hashed with bcrypt (salt rounds: 12)
-✅ Client only uses SUPABASE_ANON_KEY (public by design)
+✅ Client only uses SUPABASE_ANON_KEY
 ✅ RLS policies prevent unauthorized data access
 ✅ Edge Functions validate all privileged operations
 ✅ Email verification enforced before challenge access
-✅ Admin status verified server-side via `user_roles` table
-✅ CTF timer enforced via RLS policies
-✅ Blockchain addresses generated deterministically server-side
+✅ Admin status checked server-side
 
 ### What Users Can't Do
 ❌ Access service role key (not in client code or responses)
 ❌ Read raw flags from database (RLS denies all access)
 ❌ Bypass email verification
 ❌ Submit flags after solving a challenge
-❌ Manipulate admin status (separate `user_roles` table)
+❌ Manipulate admin status client-side
 ❌ View other users' submissions (unless admin)
-❌ Access challenges outside CTF time window
-❌ Forge blockchain identities (server-generated only)
 
 ### What You Should Do
 - Keep admin credentials secure
@@ -169,8 +137,8 @@ The platform uses Supabase Realtime for:
 ## 🆘 Troubleshooting
 
 ### Admin Can't Access Dashboard
-- Verify the SQL command was run: `SELECT role FROM user_roles WHERE user_id = (SELECT id FROM profiles WHERE email = 'sagnik.saha.araptor@gmail.com');`
-- Should return `admin`
+- Verify the SQL command was run: `SELECT is_admin FROM profiles WHERE email = 'sagnik.saha.araptor@gmail.com';`
+- Should return `true`
 - Try logging out and back in
 
 ### Users Can't Submit Flags
@@ -194,16 +162,13 @@ For issues or questions:
 
 Before going live:
 - [ ] Admin account created and verified
-- [ ] Admin role set in `user_roles` table
+- [ ] is_admin flag set correctly
 - [ ] Test user registration and email verification
 - [ ] Test challenge creation and flag submission
-- [ ] Configure CTF timer with proper start/end dates
 - [ ] Verify service role key not exposed (check browser DevTools → Network)
 - [ ] Test RLS policies (try accessing data as non-admin)
 - [ ] Review and understand all security warnings
-- [ ] Enable leaked password protection in Supabase Auth settings
-- [ ] Verify blockchain addresses auto-generated for new users
-- [ ] Test challenges are hidden outside CTF window
+- [ ] Enable rate limiting if not already active
 - [ ] Set up monitoring for suspicious activity
 
 ## 🎉 You're All Set!
