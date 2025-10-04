@@ -236,33 +236,7 @@ export type Database = {
       }
     }
     Views: {
-      public_profiles: {
-        Row: {
-          blockchain_address: string | null
-          blockchain_verified: boolean | null
-          created_at: string | null
-          id: string | null
-          is_banned: boolean | null
-          username: string | null
-        }
-        Insert: {
-          blockchain_address?: string | null
-          blockchain_verified?: boolean | null
-          created_at?: string | null
-          id?: string | null
-          is_banned?: boolean | null
-          username?: string | null
-        }
-        Update: {
-          blockchain_address?: string | null
-          blockchain_verified?: boolean | null
-          created_at?: string | null
-          id?: string | null
-          is_banned?: boolean | null
-          username?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       get_scoreboard: {
