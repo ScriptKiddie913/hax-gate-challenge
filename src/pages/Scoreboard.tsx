@@ -20,13 +20,13 @@ export default function Scoreboard() {
   useEffect(() => {
     loadScoreboard();
     
-    // Set up real-time subscription
+    // Set up real-time subscription for live scoreboard updates
     const channel = supabase
       .channel('scoreboard-changes')
       .on(
         'postgres_changes',
         {
-          event: 'INSERT',
+          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
           schema: 'public',
           table: 'submissions'
         },
@@ -81,22 +81,31 @@ export default function Scoreboard() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       <Navbar />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            <span className="text-gradient-cyan">Scoreboard</span>
+        <div className="mb-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/20 mb-4 animate-pulse">
+            <Trophy className="h-8 w-8 text-primary" />
+          </div>
+          <h1 className="text-5xl font-bold mb-3">
+            <span className="text-gradient-cyan">Live Scoreboard</span>
           </h1>
-          <p className="text-muted-foreground">Top performers in the CTF challenge</p>
+          <p className="text-muted-foreground text-lg">Real-time rankings • Updates automatically</p>
         </div>
 
-        <Card className="border-border bg-card/50 backdrop-blur">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-primary" />
-              Rankings
+        <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
+          <CardHeader className="border-b border-border/50">
+            <CardTitle className="flex items-center gap-3 text-xl">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Trophy className="h-6 w-6 text-primary" />
+              </div>
+              Top Performers
+              <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground font-normal">
+                <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+                Live
+              </div>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -110,28 +119,40 @@ export default function Scoreboard() {
                 {scores.map((entry, index) => (
                   <div
                     key={entry.user_id}
-                    className={`flex items-center justify-between p-4 rounded-lg border ${
-                      index < 3
-                        ? 'bg-primary/5 border-primary/20'
-                        : 'bg-secondary/30 border-border'
+                    className={`flex items-center justify-between p-5 rounded-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${
+                      index === 0
+                        ? 'bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border-yellow-500/30 shadow-yellow-500/20'
+                        : index === 1
+                        ? 'bg-gradient-to-r from-gray-400/10 to-gray-500/10 border-gray-400/30 shadow-gray-400/20'
+                        : index === 2
+                        ? 'bg-gradient-to-r from-amber-600/10 to-amber-700/10 border-amber-600/30 shadow-amber-600/20'
+                        : 'bg-secondary/40 border-border hover:border-primary/30'
                     }`}
                   >
                     <div className="flex items-center gap-4 flex-1">
-                      <div className="w-12 flex items-center justify-center">
+                      <div className="w-14 flex items-center justify-center">
                         {getRankIcon(index + 1)}
                       </div>
                       <div className="flex-1">
-                        <p className="font-mono font-semibold">{entry.username}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {entry.solved_count} challenge{entry.solved_count !== 1 ? 's' : ''} solved
-                        </p>
+                        <p className="font-mono font-bold text-lg">{entry.username}</p>
+                        <div className="flex items-center gap-2 mt-1">
+                          <Flag className="h-3 w-3 text-muted-foreground" />
+                          <p className="text-sm text-muted-foreground">
+                            {entry.solved_count} challenge{entry.solved_count !== 1 ? 's' : ''} solved
+                          </p>
+                        </div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-mono font-bold text-xl text-primary">
-                        {entry.total_points} pts
+                      <p className={`font-mono font-bold text-2xl ${
+                        index < 3 ? 'text-primary glow-text' : 'text-primary'
+                      }`}>
+                        {entry.total_points}
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground font-medium">
+                        POINTS
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
                         {entry.last_submission 
                           ? new Date(entry.last_submission).toLocaleString()
                           : 'No submissions'}
