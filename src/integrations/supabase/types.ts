@@ -45,6 +45,7 @@ export type Database = {
           created_by: string | null
           description_md: string
           files: Json | null
+          flag: string | null
           id: string
           is_published: boolean
           links: Json | null
@@ -58,6 +59,7 @@ export type Database = {
           created_by?: string | null
           description_md: string
           files?: Json | null
+          flag?: string | null
           id?: string
           is_published?: boolean
           links?: Json | null
@@ -71,6 +73,7 @@ export type Database = {
           created_by?: string | null
           description_md?: string
           files?: Json | null
+          flag?: string | null
           id?: string
           is_published?: boolean
           links?: Json | null
@@ -260,6 +263,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      secure_set_flag: {
+        Args: { challenge_id: string; flag: string }
+        Returns: undefined
+      }
       set_flag: {
         Args: { challenge_id: string; flag: string }
         Returns: undefined
@@ -271,6 +278,10 @@ export type Database = {
           points: number
           result: string
         }[]
+      }
+      verify_flag: {
+        Args: { challenge_id: string; submitted: string }
+        Returns: boolean
       }
     }
     Enums: {

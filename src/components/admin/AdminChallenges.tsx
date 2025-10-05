@@ -98,22 +98,16 @@ export function AdminChallenges() {
 
         if (error) throw error;
 
-        // Update flag securely if provided
+        // Update flag directly if provided
         if (flagValue) {
-          const { error: flagError } = await supabase.rpc("secure_set_flag", {
-            challenge_id: editingChallenge.id,
-            flag: flagValue,
-          });
-
-          if (flagError) {
-            console.error("Flag update error:", flagError);
-            throw new Error("Failed to update flag securely");
-          }
-
-          toast.success("Challenge and flag updated successfully");
-        } else {
-          toast.success("Challenge updated successfully");
+          const { error: flagUpdateError } = await supabase
+            .from("challenges")
+            .update({ flag: flagValue } as any)
+            .eq("id", editingChallenge.id);
+          if (flagUpdateError) throw flagUpdateError;
         }
+
+        toast.success("Challenge updated successfully");
       } else {
         // Create new challenge
         const { data: newChallenge, error: challengeError } = await supabase
@@ -125,28 +119,14 @@ export function AdminChallenges() {
             description_md: description,
             created_by: user.id,
             is_published: false,
+            flag: flagValue || null,
           })
           .select()
           .single();
 
         if (challengeError) throw challengeError;
 
-        // Secure flag insert (hashed in DB)
-        if (flagValue) {
-          const { error: flagError } = await supabase.rpc("secure_set_flag", {
-            challenge_id: newChallenge.id,
-            flag: flagValue,
-          });
-
-          if (flagError) {
-            console.error("Flag creation error:", flagError);
-            throw new Error("Failed to set flag securely");
-          }
-
-          toast.success("Challenge created and flag stored securely");
-        } else {
-          toast.warning("Challenge created but no flag set");
-        }
+        toast.success(flagValue ? "Challenge created with flag" : "Challenge created");
       }
 
       setDialogOpen(false);
@@ -287,8 +267,8 @@ export function AdminChallenges() {
                   />
                   <p className="text-xs text-muted-foreground">
                     {editingChallenge
-                      ? "Leave empty to keep existing flag, or enter a new one to update it securely."
-                      : "Flag will be securely hashed in database; never stored in plain text."}
+                      ? "Leave empty to keep existing flag, or enter a new one to overwrite it."
+                      : "Flag will be stored in the challenge record."}
                   </p>
                 </div>
               </div>
