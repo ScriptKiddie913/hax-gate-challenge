@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
+import { SCPHeader } from "@/components/SCPHeader";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, Shield, Trophy, Calendar, Wallet, CheckCircle2, Copy } from "lucide-react";
+import { User, Trophy, Calendar, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
-import { truncateAddress } from "@/lib/blockchain";
-import { Button } from "@/components/ui/button";
 
 interface Profile {
   id: string;
@@ -15,9 +14,6 @@ interface Profile {
   email: string;
   created_at: string;
   is_banned: boolean;
-  blockchain_address: string | null;
-  blockchain_verified: boolean;
-  blockchain_signature: string | null;
 }
 
 interface UserStats {
@@ -84,17 +80,15 @@ export default function Profile() {
     }
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast.success("Address copied to clipboard");
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col matrix-bg">
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <div className="scp-paper border-2 border-border p-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4"></div>
+            <p className="font-mono">LOADING PERSONNEL FILE...</p>
+          </div>
         </div>
       </div>
     );
@@ -103,157 +97,144 @@ export default function Profile() {
   if (!profile) return null;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col matrix-bg">
       <Navbar />
       
       <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">
-            <span className="text-gradient-cyan">Profile</span>
-          </h1>
-          <p className="text-muted-foreground">Your account information and statistics</p>
-        </div>
+        <SCPHeader 
+          classification="SAFE"
+          itemNumber="SCP-PROFILE"
+          title="PERSONNEL RECORD"
+        />
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Profile Info Card */}
-          <Card className="border-border bg-card/50 backdrop-blur">
+          <Card className="scp-paper border-2 border-border scan-line animate-fade-in">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <div className="classification-bar mb-3"></div>
+              <CardTitle className="flex items-center gap-2 font-mono">
                 <User className="h-5 w-5 text-primary" />
-                Account Information
+                PERSONNEL DATA
               </CardTitle>
+              <div className="classification-bar mt-3"></div>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Username</p>
-                <p className="font-mono font-semibold text-lg">{profile.username}</p>
+                <p className="text-xs text-muted-foreground mb-1 font-mono uppercase">Designation:</p>
+                <p className="font-mono font-bold text-lg">{profile.username}</p>
               </div>
               
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Email</p>
-                <p className="font-mono">{profile.email}</p>
+                <p className="text-xs text-muted-foreground mb-1 font-mono uppercase">Contact:</p>
+                <p className="font-mono text-sm">{profile.email}</p>
               </div>
 
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Member Since</p>
-                <p className="flex items-center gap-2">
+                <p className="text-xs text-muted-foreground mb-1 font-mono uppercase">Enrollment Date:</p>
+                <p className="flex items-center gap-2 font-mono text-sm">
                   <Calendar className="h-4 w-4" />
-                  {new Date(profile.created_at).toLocaleDateString()}
+                  {new Date(profile.created_at).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
                 </p>
               </div>
 
               <div>
-                <p className="text-sm text-muted-foreground mb-1">Account Status</p>
-                <Badge variant={profile.is_banned ? "destructive" : "default"}>
-                  {profile.is_banned ? "Banned" : "Active"}
+                <p className="text-xs text-muted-foreground mb-1 font-mono uppercase">Security Status:</p>
+                <Badge 
+                  variant="outline" 
+                  className={profile.is_banned ? "bg-destructive/20 text-destructive border-destructive" : "bg-success/20 text-success border-success"}
+                >
+                  {profile.is_banned ? "ACCESS REVOKED" : "ACTIVE CLEARANCE"}
                 </Badge>
+              </div>
+
+              <div>
+                <p className="text-xs text-muted-foreground mb-1 font-mono uppercase">User ID:</p>
+                <p className="font-mono text-xs text-muted-foreground break-all">
+                  {profile.id}
+                </p>
               </div>
             </CardContent>
           </Card>
 
           {/* Stats Card */}
-          <Card className="border-border bg-card/50 backdrop-blur">
+          <Card className="scp-paper border-2 border-border scan-line animate-fade-in-delay">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <div className="classification-bar mb-3"></div>
+              <CardTitle className="flex items-center gap-2 font-mono">
                 <Trophy className="h-5 w-5 text-primary" />
-                Statistics
+                CONTAINMENT STATISTICS
               </CardTitle>
+              <div className="classification-bar mt-3"></div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Total Points</span>
-                <span className="font-mono font-bold text-2xl text-primary">{stats.total_points}</span>
+              <div className="flex justify-between items-center p-3 bg-background/50 border border-border">
+                <span className="text-muted-foreground font-mono text-sm">CLEARANCE POINTS</span>
+                <span className="font-mono font-bold text-2xl text-primary pulse-glow">{stats.total_points}</span>
               </div>
 
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Challenges Solved</span>
-                <span className="font-mono font-bold text-xl">{stats.solved_count}</span>
+              <div className="flex justify-between items-center p-3 bg-background/50 border border-border">
+                <span className="text-muted-foreground font-mono text-sm">CONTAINMENTS SECURED</span>
+                <span className="font-mono font-bold text-xl text-success">{stats.solved_count}</span>
               </div>
 
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Total Submissions</span>
-                <span className="font-mono">{stats.total_submissions}</span>
+              <div className="flex justify-between items-center p-3 bg-background/50 border border-border">
+                <span className="text-muted-foreground font-mono text-sm">TOTAL ATTEMPTS</span>
+                <span className="font-mono font-bold">{stats.total_submissions}</span>
               </div>
 
-              <div className="flex justify-between items-center">
-                <span className="text-muted-foreground">Success Rate</span>
-                <span className="font-mono">
+              <div className="flex justify-between items-center p-3 bg-background/50 border border-border">
+                <span className="text-muted-foreground font-mono text-sm">SUCCESS RATE</span>
+                <span className="font-mono font-bold">
                   {stats.total_submissions > 0 
                     ? `${((stats.solved_count / stats.total_submissions) * 100).toFixed(1)}%`
                     : '0%'}
                 </span>
               </div>
+
+              <div className="classification-bar mt-4"></div>
             </CardContent>
           </Card>
 
-          {/* Blockchain Identity Card */}
-          <Card className="border-border bg-card/50 backdrop-blur md:col-span-2">
+          {/* Security Notice */}
+          <Card className="scp-paper border-2 border-primary md:col-span-2 glow-red animate-fade-in-delay">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Wallet className="h-5 w-5 text-primary" />
-                Blockchain Identity
+              <div className="classification-bar mb-3"></div>
+              <CardTitle className="flex items-center gap-2 font-mono text-primary">
+                <AlertTriangle className="h-5 w-5 animate-pulse" />
+                SECURITY NOTICE
               </CardTitle>
+              <div className="classification-bar mt-3"></div>
             </CardHeader>
             <CardContent>
-              {profile.blockchain_address ? (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-secondary/50 rounded-lg border border-border">
-                    <div className="flex-1">
-                      <p className="text-sm text-muted-foreground mb-1">Blockchain Address</p>
-                      <p className="font-mono font-semibold text-lg mb-1">{truncateAddress(profile.blockchain_address)}</p>
-                      <p className="text-xs text-muted-foreground break-all">{profile.blockchain_address}</p>
-                    </div>
-                    <div className="flex items-center gap-3 ml-4">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => copyToClipboard(profile.blockchain_address!)}
-                        className="gap-2"
-                      >
-                        <Copy className="h-4 w-4" />
-                        Copy
-                      </Button>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                        <Badge variant="default" className="bg-green-500/20 text-green-400 border-green-500/30">
-                          Verified
-                        </Badge>
-                      </div>
-                    </div>
+              <div className="space-y-3 text-sm">
+                <p className="font-mono">
+                  <strong className="text-primary">CLASSIFIED:</strong> All personnel records are monitored 
+                  and subject to O5 Council review. Unauthorized access or data manipulation will result 
+                  in immediate <span className="redacted">REDACTED</span> procedures.
+                </p>
+                <p className="font-mono text-muted-foreground">
+                  Your activities within the CTF Division are logged for security purposes. 
+                  All containment attempts, successful or otherwise, contribute to your security clearance rating.
+                </p>
+                <div className="flex gap-4 mt-4 text-xs">
+                  <div className="flex-1 bg-background/50 border border-border p-2">
+                    <p className="text-muted-foreground">THREAT LEVEL</p>
+                    <p className="font-bold text-success">MINIMAL</p>
                   </div>
-
-                  {profile.blockchain_signature && (
-                    <div className="p-4 bg-secondary/30 rounded-lg border border-border">
-                      <p className="text-sm text-muted-foreground mb-2">Cryptographic Signature</p>
-                      <p className="text-xs font-mono break-all text-muted-foreground">
-                        {profile.blockchain_signature}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="flex items-start gap-3 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                    <Shield className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                    <div className="space-y-2 text-sm">
-                      <p className="font-semibold">About Your Blockchain Identity</p>
-                      <ul className="space-y-1 text-muted-foreground list-disc list-inside">
-                        <li>Automatically generated using cryptographic hashing (SHA-256)</li>
-                        <li>Unique Ethereum-style address format (0x...)</li>
-                        <li>Immutable proof of your participation</li>
-                        <li>Can be verified independently on blockchain explorers</li>
-                        <li>No wallet connection required - fully managed by the platform</li>
-                      </ul>
-                    </div>
+                  <div className="flex-1 bg-background/50 border border-border p-2">
+                    <p className="text-muted-foreground">CLEARANCE</p>
+                    <p className="font-bold text-primary">LEVEL-{stats.solved_count > 10 ? '3' : stats.solved_count > 5 ? '2' : '1'}</p>
+                  </div>
+                  <div className="flex-1 bg-background/50 border border-border p-2">
+                    <p className="text-muted-foreground">STATUS</p>
+                    <p className="font-bold">{profile.is_banned ? 'REVOKED' : 'ACTIVE'}</p>
                   </div>
                 </div>
-              ) : (
-                <div className="text-center py-8">
-                  <Wallet className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">Blockchain Identity Pending</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Your blockchain identity is being generated. Please refresh the page.
-                  </p>
-                </div>
-              )}
+              </div>
             </CardContent>
           </Card>
         </div>
