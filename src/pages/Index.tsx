@@ -31,7 +31,7 @@ const Index = () => {
           
           <div className="container mx-auto relative z-10">
             <SCPHeader 
-              classification="THAUMIEL"
+              classification="KETER"
               itemNumber="SCP-████"
               title="CAPTURE THE FLAG DIVISION"
             />
