@@ -5,7 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { SCPHeader } from "@/components/SCPHeader";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Lock, Unlock, Trophy, AlertTriangle } from "lucide-react";
+import { Lock, Unlock, Trophy, AlertTriangle, Clock } from "lucide-react";
 import { toast } from "sonner";
 
 interface Challenge {
@@ -22,15 +22,31 @@ interface Submission {
   result: string;
 }
 
+interface CTFSettings {
+  start_time: string;
+  end_time: string;
+  is_active: boolean;
+}
+
 export default function Challenges() {
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [solvedChallenges, setSolvedChallenges] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
+  const [ctfSettings, setCtfSettings] = useState<CTFSettings | null>(null);
+  const [timeUntilStart, setTimeUntilStart] = useState<string | null>(null);
+  const [isCtfActive, setIsCtfActive] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    if (ctfSettings && !isCtfActive) {
+      const interval = setInterval(() => updateCountdown(), 1000);
+      return () => clearInterval(interval);
+    }
+  }, [ctfSettings, isCtfActive]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -45,44 +61,82 @@ export default function Challenges() {
       return;
     }
 
-    loadChallenges();
+    loadCTFSettings();
+  };
+
+  const loadCTFSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("ctf_settings")
+        .select("*")
+        .eq("is_active", true)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      setCtfSettings(data);
+
+      const now = new Date();
+      const start = new Date(data.start_time);
+      const end = new Date(data.end_time);
+
+      if (now >= start && now <= end) {
+        setIsCtfActive(true);
+        loadChallenges();
+      } else {
+        setIsCtfActive(false);
+        updateCountdown(data.start_time);
+        setLoading(false);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error loading CTF settings");
+      setLoading(false);
+    }
+  };
+
+  const updateCountdown = (startTime?: string) => {
+    if (!ctfSettings && !startTime) return;
+
+    const start = new Date(startTime || ctfSettings!.start_time).getTime();
+    const now = new Date().getTime();
+    const diff = start - now;
+
+    if (diff <= 0) {
+      setIsCtfActive(true);
+      loadChallenges();
+      setTimeUntilStart(null);
+      return;
+    }
+
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+    setTimeUntilStart(
+      `${hours.toString().padStart(2, "0")}h : ${minutes.toString().padStart(2, "0")}m : ${seconds
+        .toString()
+        .padStart(2, "0")}s`
+    );
   };
 
   const loadChallenges = async () => {
     try {
-      const { data: ctfSettings } = await supabase
-        .from('ctf_settings')
-        .select('*')
-        .eq('is_active', true)
-        .maybeSingle();
-
-      const now = new Date();
-      const isCtfActive = ctfSettings && 
-        new Date(ctfSettings.start_time) <= now && 
-        new Date(ctfSettings.end_time) >= now;
-
-      if (!isCtfActive) {
-        toast.error("CTF is not currently active. Please check back during the competition window.");
-        setChallenges([]);
-        setLoading(false);
-        return;
-      }
-
       const { data: challengesData, error: challengesError } = await supabase
-        .from('challenges')
-        .select('*')
-        .eq('is_published', true)
-        .order('points', { ascending: true });
+        .from("challenges")
+        .select("*")
+        .eq("is_published", true)
+        .order("points", { ascending: true });
 
       if (challengesError) throw challengesError;
 
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data: submissionsData, error: submissionsError } = await supabase
-          .from('submissions')
-          .select('challenge_id, result')
-          .eq('user_id', user.id)
-          .eq('result', 'CORRECT');
+          .from("submissions")
+          .select("challenge_id, result")
+          .eq("user_id", user.id)
+          .eq("result", "CORRECT");
 
         if (submissionsError) throw submissionsError;
 
@@ -101,14 +155,14 @@ export default function Challenges() {
 
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
-      'web': 'bg-primary/20 text-primary border-primary',
-      'pwn': 'bg-destructive/20 text-destructive border-destructive',
-      'crypto': 'bg-accent/20 text-accent border-accent',
-      'rev': 'bg-success/20 text-success border-success',
-      'forensics': 'bg-yellow-600/20 text-yellow-700 border-yellow-700',
-      'misc': 'bg-purple-600/20 text-purple-700 border-purple-700',
+      web: "bg-primary/20 text-primary border-primary",
+      pwn: "bg-destructive/20 text-destructive border-destructive",
+      crypto: "bg-accent/20 text-accent border-accent",
+      rev: "bg-success/20 text-success border-success",
+      forensics: "bg-yellow-600/20 text-yellow-700 border-yellow-700",
+      misc: "bg-purple-600/20 text-purple-700 border-purple-700",
     };
-    return colors[category.toLowerCase()] || 'bg-muted text-muted-foreground border-border';
+    return colors[category.toLowerCase()] || "bg-muted text-muted-foreground border-border";
   };
 
   if (loading) {
@@ -125,12 +179,42 @@ export default function Challenges() {
     );
   }
 
+  // Countdown display before CTF start
+  if (!isCtfActive && timeUntilStart) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-4 py-16 flex flex-col items-center justify-center">
+          <SCPHeader
+            classification="SAFE"
+            itemNumber="SCP-CTF-LOCKDOWN"
+            title="ACCESS RESTRICTED - CTF COUNTDOWN"
+          />
+          <Card className="scp-paper border-2 border-border p-8 mt-8 text-center max-w-lg">
+            <Clock className="h-12 w-12 text-primary mx-auto mb-4 animate-pulse" />
+            <p className="font-mono text-lg mb-2">CTF will begin in:</p>
+            <h1 className="font-mono text-4xl font-bold text-primary mb-4">{timeUntilStart}</h1>
+            <p className="text-sm text-muted-foreground">
+              Prepare your containment protocols. Access to challenges will unlock automatically.
+            </p>
+          </Card>
+        </main>
+        <footer className="border-t-2 border-border py-4 px-4 scp-paper">
+          <div className="container mx-auto text-center text-xs font-mono text-muted-foreground">
+            SCP Foundation CTF Division | Awaiting Activation
+          </div>
+        </footer>
+      </div>
+    );
+  }
+
+  // Display challenges once CTF starts
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <main className="flex-1 container mx-auto px-4 py-8">
-        <SCPHeader 
+        <SCPHeader
           classification="EUCLID"
           itemNumber="SCP-CTF-ACCESS"
           title="ANOMALOUS ENTITY CONTAINMENT CHALLENGES"
@@ -140,14 +224,17 @@ export default function Challenges() {
           <div className="scp-paper border-2 border-border p-12 text-center">
             <AlertTriangle className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
             <p className="text-xl font-mono mb-2">NO ACTIVE CONTAINMENT BREACHES</p>
-            <p className="text-muted-foreground">All anomalies currently contained. Check back later for new challenges.</p>
+            <p className="text-muted-foreground">
+              All anomalies currently contained. Check back later for new challenges.
+            </p>
           </div>
         ) : (
           <>
             <div className="mb-6 scp-paper border border-border p-4">
               <p className="text-sm font-mono">
-                <strong className="text-destructive">NOTICE:</strong> The following documents detail active containment scenarios. 
-                Each entry represents a classified security challenge requiring immediate attention. 
+                <strong className="text-destructive">NOTICE:</strong> The following documents detail
+                active containment scenarios. Each entry represents a classified security challenge
+                requiring immediate attention.
                 <span className="redacted ml-2">LEVEL 4 CLEARANCE</span> personnel only.
               </p>
             </div>
@@ -163,7 +250,10 @@ export default function Challenges() {
                   >
                     <CardHeader>
                       <div className="flex items-start justify-between mb-3">
-                        <Badge variant="outline" className={`${getCategoryColor(challenge.category)} font-mono text-xs`}>
+                        <Badge
+                          variant="outline"
+                          className={`${getCategoryColor(challenge.category)} font-mono text-xs`}
+                        >
                           {challenge.category.toUpperCase()}
                         </Badge>
                         {isSolved ? (
@@ -187,10 +277,15 @@ export default function Challenges() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <AlertTriangle className="h-4 w-4 text-primary" />
-                          <span className="font-mono font-bold text-lg">{challenge.points} pts</span>
+                          <span className="font-mono font-bold text-lg">
+                            {challenge.points} pts
+                          </span>
                         </div>
                         {isSolved && (
-                          <Badge variant="outline" className="bg-success/20 text-success border-success font-mono text-xs">
+                          <Badge
+                            variant="outline"
+                            className="bg-success/20 text-success border-success font-mono text-xs"
+                          >
                             CONTAINED
                           </Badge>
                         )}
@@ -212,3 +307,4 @@ export default function Challenges() {
     </div>
   );
 }
+
