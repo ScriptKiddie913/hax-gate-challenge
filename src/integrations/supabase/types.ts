@@ -260,6 +260,18 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      set_flag: {
+        Args: { challenge_id: string; flag: string }
+        Returns: undefined
+      }
+      submit_flag: {
+        Args: { challenge_id: string; submitted_flag: string }
+        Returns: {
+          message: string
+          points: number
+          result: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "user"

@@ -104,20 +104,14 @@ export function AdminChallenges() {
 
         // Update flag if provided
         if (flagValue) {
-          const { data, error: flagError } = await supabase.functions.invoke('admin-set-flag', {
-            body: { challenge_id: editingChallenge.id, flag: flagValue },
-            headers: {
-              Authorization: `Bearer ${session.access_token}`
-            }
+          const { error: flagError } = await supabase.rpc('set_flag', {
+            challenge_id: editingChallenge.id,
+            flag: flagValue,
           });
 
           if (flagError) {
             console.error("Flag update error:", flagError);
             throw new Error("Failed to update flag: " + (flagError.message || "Unknown error"));
-          }
-
-          if (data?.error) {
-            throw new Error(data.error);
           }
 
           toast.success("Challenge and flag updated successfully");
@@ -143,20 +137,14 @@ export function AdminChallenges() {
 
         // Set flag
         if (flagValue) {
-          const { data, error: flagError } = await supabase.functions.invoke('admin-set-flag', {
-            body: { challenge_id: newChallenge.id, flag: flagValue },
-            headers: {
-              Authorization: `Bearer ${session.access_token}`
-            }
+          const { error: flagError } = await supabase.rpc('set_flag', {
+            challenge_id: newChallenge.id,
+            flag: flagValue,
           });
 
           if (flagError) {
             console.error("Flag creation error:", flagError);
             throw new Error("Failed to set flag: " + (flagError.message || "Unknown error"));
-          }
-
-          if (data?.error) {
-            throw new Error(data.error);
           }
 
           toast.success("Challenge created and flag set successfully");

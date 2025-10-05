@@ -87,16 +87,20 @@ export default function ChallengeDetail() {
     setSubmitting(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('submit-flag', {
-        body: { challenge_id: id, submitted_flag: flag }
+      const { data, error } = await supabase.rpc('submit_flag', {
+        challenge_id: id,
+        submitted_flag: flag,
       });
 
       if (error) throw error;
 
-      if (data.result === 'CORRECT') {
+      const res = Array.isArray(data) ? data?.[0] : data;
+      if (res?.result === 'CORRECT') {
         toast.success(`Correct! You earned ${challenge?.points} points! 🎉`);
         setIsSolved(true);
         setFlag("");
+      } else if (res?.result === 'LOCKED') {
+        toast.warning('You have already solved this challenge');
       } else {
         toast.error("Incorrect flag. Try again!");
       }
