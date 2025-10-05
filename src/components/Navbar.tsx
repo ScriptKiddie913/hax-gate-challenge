@@ -3,8 +3,9 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
-import { Flag, LogOut, Trophy, User as UserIcon, Shield, Info, ScrollText } from "lucide-react";
+import { Shield, LogOut, Trophy, User as UserIcon, Info, ScrollText, FileText } from "lucide-react";
 import { toast } from "sonner";
+import { Badge } from "./ui/badge";
 
 export const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -32,7 +33,6 @@ export const Navbar = () => {
   const checkAdminStatus = async () => {
     if (!user) return;
     
-    // Check if user has admin role in user_roles table
     const { data, error } = await supabase
       .from('user_roles')
       .select('role')
@@ -58,51 +58,56 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="border-b border-border bg-card/50 backdrop-blur-lg sticky top-0 z-50">
+    <nav className="border-b-3 border-border bg-card scp-paper sticky top-0 z-50">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2 group">
-          <Flag className="h-6 w-6 text-primary group-hover:text-primary-glow transition-colors" />
-          <span className="font-bold text-xl font-mono">HaxGate<span className="text-primary">CTF</span></span>
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 border-3 border-primary bg-background flex items-center justify-center">
+            <Shield className="h-6 w-6 text-primary" />
+          </div>
+          <div className="flex flex-col leading-tight">
+            <span className="font-bold text-sm scp-header">SCP FOUNDATION</span>
+            <span className="text-xs text-muted-foreground font-mono">CTF DIVISION</span>
+          </div>
         </Link>
 
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
           {user && (
             <>
               <Link to="/challenges">
-                <Button variant="ghost" size="sm" className="gap-2">
-                  <Flag className="h-4 w-4" />
-                  Challenges
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
+                  <FileText className="h-4 w-4" />
+                  CHALLENGES
                 </Button>
               </Link>
               <Link to="/scoreboard">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
                   <Trophy className="h-4 w-4" />
-                  Scoreboard
+                  SCOREBOARD
                 </Button>
               </Link>
               <Link to="/about">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
                   <Info className="h-4 w-4" />
-                  About
+                  ABOUT
                 </Button>
               </Link>
               <Link to="/rules">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
                   <ScrollText className="h-4 w-4" />
-                  Rules
+                  RULES
                 </Button>
               </Link>
               <Link to="/profile">
-                <Button variant="ghost" size="sm" className="gap-2">
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
                   <UserIcon className="h-4 w-4" />
-                  Profile
+                  PROFILE
                 </Button>
               </Link>
               {isAdmin && (
                 <Link to="/admin">
-                  <Button variant="ghost" size="sm" className="gap-2 text-accent">
+                  <Button variant="ghost" size="sm" className="gap-2 text-destructive font-mono">
                     <Shield className="h-4 w-4" />
-                    Admin
+                    ADMIN
                   </Button>
                 </Link>
               )}
@@ -112,34 +117,36 @@ export const Navbar = () => {
           {!user && (
             <>
               <Link to="/about">
-                <Button variant="ghost" size="sm">About</Button>
+                <Button variant="ghost" size="sm" className="font-mono">ABOUT</Button>
               </Link>
               <Link to="/rules">
-                <Button variant="ghost" size="sm">Rules</Button>
+                <Button variant="ghost" size="sm" className="font-mono">RULES</Button>
               </Link>
             </>
           )}
 
           {user ? (
             <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-secondary/50 rounded-lg border border-border">
-                <UserIcon className="h-4 w-4 text-primary" />
-                <span className="text-sm font-mono">{user.email}</span>
+              <div className="flex items-center gap-2 px-3 py-1.5 border-2 border-border bg-background">
+                <Badge variant="outline" className="text-xs font-mono bg-success/20 text-success border-success">
+                  AUTHORIZED
+                </Badge>
+                <span className="text-xs font-mono">{user.email?.split('@')[0]}</span>
               </div>
               <Button 
                 onClick={handleLogout} 
-                variant="ghost" 
+                variant="outline" 
                 size="sm"
-                className="gap-2"
+                className="gap-2 font-mono border-2"
               >
                 <LogOut className="h-4 w-4" />
-                Logout
+                LOGOUT
               </Button>
             </div>
           ) : (
             <Link to="/auth">
-              <Button size="sm" className="glow-cyan">
-                Login / Sign Up
+              <Button size="sm" className="font-mono bg-primary hover:bg-primary/90">
+                REQUEST ACCESS
               </Button>
             </Link>
           )}

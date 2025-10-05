@@ -19,6 +19,7 @@ interface Challenge {
   description_md: string;
   files: any;
   links: any;
+  flag?: string;
 }
 
 export default function ChallengeDetail() {
@@ -46,12 +47,14 @@ export default function ChallengeDetail() {
 
       const { data: challengeData, error: challengeError } = await supabase
         .from('challenges')
-        .select('*')
+        .select('*, flag')
         .eq('id', id)
         .eq('is_published', true)
-        .single();
+        .maybeSingle();
 
       if (challengeError) throw challengeError;
+      if (!challengeData) throw new Error("Challenge not found");
+      
       setChallenge(challengeData);
 
       // Check if already solved
@@ -61,7 +64,7 @@ export default function ChallengeDetail() {
         .eq('user_id', user.id)
         .eq('challenge_id', id)
         .eq('result', 'CORRECT')
-        .single();
+        .maybeSingle();
 
       setIsSolved(!!submission);
     } catch (error: any) {
@@ -87,20 +90,33 @@ export default function ChallengeDetail() {
     setSubmitting(true);
 
     try {
-      const { data, error } = await supabase.rpc('submit_flag', {
-        challenge_id: id,
-        submitted_flag: flag,
-      });
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
 
-      if (error) throw error;
+      // Direct flag comparison
+      if (!challenge?.flag) {
+        toast.error("Challenge flag not configured");
+        return;
+      }
 
-      const res = Array.isArray(data) ? data?.[0] : data;
-      if (res?.result === 'CORRECT') {
+      const isCorrect = flag.trim() === challenge.flag.trim();
+
+      // Record submission
+      const { error: submissionError } = await supabase
+        .from('submissions')
+        .insert({
+          user_id: user.id,
+          challenge_id: id,
+          result: isCorrect ? 'CORRECT' : 'INCORRECT',
+          submitted_flag: flag.substring(0, 50),
+        });
+
+      if (submissionError) throw submissionError;
+
+      if (isCorrect) {
         toast.success(`Correct! You earned ${challenge?.points} points! 🎉`);
         setIsSolved(true);
         setFlag("");
-      } else if (res?.result === 'LOCKED') {
-        toast.warning('You have already solved this challenge');
       } else {
         toast.error("Incorrect flag. Try again!");
       }
@@ -116,7 +132,10 @@ export default function ChallengeDetail() {
       <div className="min-h-screen flex flex-col">
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <div className="scp-paper border-2 border-border p-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4"></div>
+            <p className="font-mono">ACCESSING CLASSIFIED FILE...</p>
+          </div>
         </div>
       </div>
     );
@@ -127,7 +146,10 @@ export default function ChallengeDetail() {
       <div className="min-h-screen flex flex-col">
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
-          <p>Challenge not found</p>
+          <div className="scp-paper border-2 border-border p-8 text-center">
+            <p className="font-mono text-xl mb-2">DOCUMENT NOT FOUND</p>
+            <p className="text-muted-foreground">Classification error or insufficient clearance</p>
+          </div>
         </div>
       </div>
     );
@@ -139,52 +161,53 @@ export default function ChallengeDetail() {
       
       <main className="flex-1 container mx-auto px-4 py-8">
         <Button
-          variant="ghost"
+          variant="outline"
           onClick={() => navigate("/challenges")}
-          className="mb-6 gap-2"
+          className="mb-6 gap-2 font-mono border-2"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Challenges
+          RETURN TO INDEX
         </Button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <Card className="border-border bg-card/50 backdrop-blur">
+            <Card className="scp-paper border-2 border-border">
               <CardHeader>
+                <div className="classification-bar mb-4"></div>
                 <div className="flex items-start justify-between mb-4">
-                  <div className="space-y-2">
-                    <Badge variant="outline" className="mb-2">
-                      {challenge.category}
-                    </Badge>
-                    <CardTitle className="text-3xl">{challenge.title}</CardTitle>
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <Flag className="h-5 w-5 text-primary" />
-                        <span className="font-mono font-bold text-xl">{challenge.points} points</span>
-                      </div>
+                  <div className="space-y-3 flex-1">
+                    <div className="flex items-center gap-3">
+                      <Badge variant="outline" className="font-mono text-xs border-2">
+                        {challenge.category.toUpperCase()}
+                      </Badge>
+                      <Badge variant="outline" className="bg-primary/20 text-primary border-primary font-mono text-xs">
+                        {challenge.points} POINTS
+                      </Badge>
                       {isSolved && (
-                        <Badge variant="outline" className="bg-success/20 text-success border-success/30 gap-1">
+                        <Badge variant="outline" className="bg-success/20 text-success border-success gap-1 font-mono text-xs">
                           <Trophy className="h-3 w-3" />
-                          Solved
+                          CONTAINED
                         </Badge>
                       )}
                     </div>
+                    <CardTitle className="text-2xl font-mono">{challenge.title}</CardTitle>
                   </div>
                 </div>
+                <div className="classification-bar"></div>
               </CardHeader>
               <CardContent>
-                <div className="prose prose-invert max-w-none">
+                <div className="prose prose-sm max-w-none [&>*]:text-foreground [&_strong]:text-foreground [&_em]:text-muted-foreground">
                   <ReactMarkdown>{challenge.description_md}</ReactMarkdown>
                 </div>
 
                 {challenge.files && challenge.files.length > 0 && (
-                  <div className="mt-6 space-y-2">
-                    <h3 className="font-semibold text-lg mb-3">Files</h3>
+                  <div className="mt-8 space-y-3">
+                    <h3 className="font-bold text-sm mb-3 font-mono border-b-2 border-border pb-2">ATTACHED FILES:</h3>
                     {challenge.files.map((file: any, index: number) => (
                       <Button
                         key={index}
                         variant="outline"
-                        className="w-full justify-start gap-2"
+                        className="w-full justify-start gap-2 font-mono border-2"
                         asChild
                       >
                         <a href={file.url} target="_blank" rel="noopener noreferrer">
@@ -197,13 +220,13 @@ export default function ChallengeDetail() {
                 )}
 
                 {challenge.links && challenge.links.length > 0 && (
-                  <div className="mt-6 space-y-2">
-                    <h3 className="font-semibold text-lg mb-3">Links</h3>
+                  <div className="mt-8 space-y-3">
+                    <h3 className="font-bold text-sm mb-3 font-mono border-b-2 border-border pb-2">EXTERNAL REFERENCES:</h3>
                     {challenge.links.map((link: any, index: number) => (
                       <Button
                         key={index}
                         variant="outline"
-                        className="w-full justify-start gap-2"
+                        className="w-full justify-start gap-2 font-mono border-2"
                         asChild
                       >
                         <a href={link.url} target="_blank" rel="noopener noreferrer">
@@ -219,57 +242,61 @@ export default function ChallengeDetail() {
           </div>
 
           <div className="lg:col-span-1">
-            <Card className="border-border bg-card/50 backdrop-blur sticky top-24">
+            <Card className="scp-paper border-2 border-border sticky top-24">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <div className="classification-bar mb-3"></div>
+                <CardTitle className="flex items-center gap-2 font-mono text-lg">
                   {isSolved ? (
                     <>
                       <Trophy className="h-5 w-5 text-success" />
-                      Challenge Solved!
+                      ANOMALY CONTAINED
                     </>
                   ) : (
                     <>
                       <Flag className="h-5 w-5 text-primary" />
-                      Submit Flag
+                      FLAG SUBMISSION
                     </>
                   )}
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="font-mono text-xs">
                   {isSolved 
-                    ? "You've already solved this challenge. Great job!"
-                    : "Enter the flag you discovered"
+                    ? "Containment procedures complete."
+                    : "Enter containment protocol key"
                   }
                 </CardDescription>
+                <div className="classification-bar mt-3"></div>
               </CardHeader>
               <CardContent>
                 {isSolved ? (
                   <div className="text-center py-8">
-                    <Lock className="h-16 w-16 text-success mx-auto mb-4" />
-                    <p className="text-success font-semibold">Challenge Locked</p>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      You can't submit more flags for this challenge
+                    <div className="w-16 h-16 border-4 border-success bg-background flex items-center justify-center mx-auto mb-4">
+                      <Lock className="h-10 w-10 text-success" />
+                    </div>
+                    <p className="text-success font-bold font-mono mb-2">SECURED</p>
+                    <p className="text-xs text-muted-foreground font-mono">
+                      This anomaly has been successfully contained.
                     </p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="flag">Flag</Label>
+                      <Label htmlFor="flag" className="font-mono text-xs">CONTAINMENT KEY:</Label>
                       <Input
                         id="flag"
                         type="text"
-                        placeholder="flag{example_flag_here}"
+                        placeholder="flag{...}"
                         value={flag}
                         onChange={(e) => setFlag(e.target.value)}
-                        className="font-mono"
+                        className="font-mono border-2"
                         disabled={submitting}
                       />
                     </div>
                     <Button 
                       type="submit" 
-                      className="w-full glow-cyan gap-2"
+                      className="w-full gap-2 font-mono bg-primary hover:bg-primary/90"
                       disabled={submitting}
                     >
-                      {submitting ? "Submitting..." : "Submit Flag"}
+                      {submitting ? "VERIFYING..." : "SUBMIT FOR VERIFICATION"}
                       <Send className="h-4 w-4" />
                     </Button>
                   </form>
