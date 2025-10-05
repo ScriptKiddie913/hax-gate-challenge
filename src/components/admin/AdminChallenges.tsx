@@ -26,7 +26,7 @@ export function AdminChallenges() {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingChallenge, setEditingChallenge] = useState<Challenge | null>(null);
-  
+
   // Form state
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("web");
@@ -41,9 +41,9 @@ export function AdminChallenges() {
   const loadChallenges = async () => {
     try {
       const { data, error } = await supabase
-        .from('challenges')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("challenges")
+        .select("*")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
       setChallenges(data || []);
@@ -62,7 +62,7 @@ export function AdminChallenges() {
       setCategory(challenge.category);
       setPoints(challenge.points);
       setDescription(challenge.description_md);
-      setFlagValue(""); // Don't show existing flag
+      setFlagValue(""); // Do not show existing flag for security
     } else {
       setEditingChallenge(null);
       setTitle("");
@@ -84,44 +84,40 @@ export function AdminChallenges() {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) throw new Error("Not authenticated");
 
-      // Get session token for authenticated requests
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) throw new Error("No active session");
-
       if (editingChallenge) {
         // Update existing challenge
         const { error } = await supabase
-          .from('challenges')
+          .from("challenges")
           .update({
             title,
             category,
             points,
             description_md: description,
           })
-          .eq('id', editingChallenge.id);
+          .eq("id", editingChallenge.id);
 
         if (error) throw error;
 
-        // Update flag if provided
+        // Update flag securely if provided
         if (flagValue) {
-          const { error: flagError } = await supabase.rpc('set_flag', {
+          const { error: flagError } = await supabase.rpc("secure_set_flag", {
             challenge_id: editingChallenge.id,
             flag: flagValue,
           });
 
           if (flagError) {
             console.error("Flag update error:", flagError);
-            throw new Error("Failed to update flag: " + (flagError.message || "Unknown error"));
+            throw new Error("Failed to update flag securely");
           }
 
           toast.success("Challenge and flag updated successfully");
         } else {
-          toast.success("Challenge updated");
+          toast.success("Challenge updated successfully");
         }
       } else {
         // Create new challenge
         const { data: newChallenge, error: challengeError } = await supabase
-          .from('challenges')
+          .from("challenges")
           .insert({
             title,
             category,
@@ -135,19 +131,19 @@ export function AdminChallenges() {
 
         if (challengeError) throw challengeError;
 
-        // Set flag
+        // Secure flag insert (hashed in DB)
         if (flagValue) {
-          const { error: flagError } = await supabase.rpc('set_flag', {
+          const { error: flagError } = await supabase.rpc("secure_set_flag", {
             challenge_id: newChallenge.id,
             flag: flagValue,
           });
 
           if (flagError) {
             console.error("Flag creation error:", flagError);
-            throw new Error("Failed to set flag: " + (flagError.message || "Unknown error"));
+            throw new Error("Failed to set flag securely");
           }
 
-          toast.success("Challenge created and flag set successfully");
+          toast.success("Challenge created and flag stored securely");
         } else {
           toast.warning("Challenge created but no flag set");
         }
@@ -164,9 +160,9 @@ export function AdminChallenges() {
   const togglePublish = async (challengeId: string, currentStatus: boolean) => {
     try {
       const { error } = await supabase
-        .from('challenges')
+        .from("challenges")
         .update({ is_published: !currentStatus })
-        .eq('id', challengeId);
+        .eq("id", challengeId);
 
       if (error) throw error;
 
@@ -184,9 +180,9 @@ export function AdminChallenges() {
 
     try {
       const { error } = await supabase
-        .from('challenges')
+        .from("challenges")
         .delete()
-        .eq('id', challengeId);
+        .eq("id", challengeId);
 
       if (error) throw error;
 
@@ -290,10 +286,9 @@ export function AdminChallenges() {
                     className="font-mono"
                   />
                   <p className="text-xs text-muted-foreground">
-                    {editingChallenge 
-                      ? "Leave empty to keep existing flag, or enter new flag to update"
-                      : "The flag will be securely hashed before storage"
-                    }
+                    {editingChallenge
+                      ? "Leave empty to keep existing flag, or enter a new one to update it securely."
+                      : "Flag will be securely hashed in database; never stored in plain text."}
                   </p>
                 </div>
               </div>
