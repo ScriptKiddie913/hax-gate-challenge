@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
+import { hash } from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -52,9 +52,8 @@ serve(async (req) => {
 
     console.log(`Admin ${user.email} setting flag for challenge ${challenge_id}`);
 
-    // Hash the flag using bcrypt
-    const salt = await bcrypt.genSalt(12);
-    const hash = await bcrypt.hash(flag, salt);
+    // Hash the flag using bcrypt with auto salt generation
+    const flagHash = await hash(flag);
 
     // Check if flag already exists for this challenge
     const { data: existingFlag } = await supabaseClient
@@ -67,7 +66,7 @@ serve(async (req) => {
       // Update existing flag
       const { error: updateError } = await supabaseClient
         .from('flags')
-        .update({ hash })
+        .update({ hash: flagHash })
         .eq('challenge_id', challenge_id);
 
       if (updateError) throw updateError;
@@ -75,7 +74,7 @@ serve(async (req) => {
       // Insert new flag
       const { error: insertError } = await supabaseClient
         .from('flags')
-        .insert({ challenge_id, hash });
+        .insert({ challenge_id, hash: flagHash });
 
       if (insertError) throw insertError;
     }

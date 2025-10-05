@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import * as bcrypt from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
+import { compare } from "https://deno.land/x/bcrypt@v0.4.1/mod.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -98,7 +98,7 @@ serve(async (req) => {
     }
 
     // Compare submitted flag with hashed flag
-    const isCorrect = await bcrypt.compare(submitted_flag, flagData.hash);
+    const isCorrect = await compare(submitted_flag, flagData.hash);
 
     // Record the submission
     const { error: submissionError } = await supabaseClient
