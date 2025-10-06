@@ -1,5 +1,10 @@
 import { Navbar } from "@/components/Navbar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { AlertCircle, Trophy, Flag, Ban, Mail } from "lucide-react";
 
 export default function Rules() {
@@ -44,7 +49,9 @@ export default function Rules() {
               <ul className="space-y-3 list-none">
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
-                  <span>Each challenge is worth a specific number of points based on difficulty.</span>
+                  <span>
+                    Each challenge is worth a specific number of points based on difficulty.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
@@ -61,7 +68,8 @@ export default function Rules() {
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
                   <span>
-                    Scoreboard ranks are determined by total points, with ties broken by the timestamp of the last successful submission (earlier is better).
+                    Scoreboard ranks are determined by total points, with ties broken by the timestamp of the last
+                    successful submission (earlier is better).
                   </span>
                 </li>
                 <li className="flex gap-3">
@@ -85,7 +93,7 @@ export default function Rules() {
                   <span className="text-primary">•</span>
                   <span>
                     Flags must be submitted in the exact format specified in the challenge description (usually{" "}
-                    <code className="font-mono bg-secondary px-1 py-0.5 rounded">scpctf{"{...}"}</code>).
+                    <code className="font-mono bg-secondary px-1 py-0.5 rounded">scpctf{...}</code>).
                   </span>
                 </li>
                 <li className="flex gap-3">
@@ -94,11 +102,13 @@ export default function Rules() {
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
-                  <span>Rate limiting is in place to prevent brute-force attacks. Please solve challenges legitimately.</span>
+                  <span>Rate limiting is in place to prevent brute‑force attacks. Please solve challenges legitimately.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
-                  <span>Do not share flags or solutions publicly. Helping others learn is encouraged, but don't give away answers.</span>
+                  <span>
+                    Do not share flags or solutions publicly. Helping others learn is encouraged, but don&apos;t give away answers.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
@@ -132,7 +142,7 @@ export default function Rules() {
                 <li className="flex gap-3">
                   <span className="text-destructive">✕</span>
                   <span>
-                    <strong>No automated brute-forcing</strong> - Excessive failed submission attempts will be flagged.
+                    <strong>No automated brute‑forcing</strong> - Excessive failed submission attempts will be flagged.
                   </span>
                 </li>
                 <li className="flex gap-3">
@@ -144,13 +154,13 @@ export default function Rules() {
                 <li className="flex gap-3">
                   <span className="text-destructive">✕</span>
                   <span>
-                    <strong>No multi-accounting</strong> - One account per person. Creating multiple accounts is cheating.
+                    <strong>No multi‑accounting</strong> - One account per person. Creating multiple accounts is cheating.
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-destructive">✕</span>
                   <span>
-                    <strong>No flag format manipulation</strong> - Don't try to circumvent the submission system.
+                    <strong>No flag format manipulation</strong> - Don&apos;t try to circumvent the submission system.
                   </span>
                 </li>
               </ul>
@@ -196,7 +206,7 @@ export default function Rules() {
                 activity, please contact us at:{" "}
                 <a
                   href="mailto:sagnik.saha.araptor@gmail.com"
-                  className="text-primary hover:text-primary-glow transition-colors font-semibold"
+                  className="text-primary hover:text-primary/90 transition-colors font-semibold"
                 >
                   sagnik.saha.araptor@gmail.com
                 </a>
