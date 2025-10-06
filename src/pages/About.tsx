@@ -125,11 +125,7 @@ export default function About() {
               </p>
               <p>
                 For questions, suggestions, or support, please contact us at:{" "}
-                <a 
-                  href="mailto:sagnik.saha.araptor@gmail.com" 
-                  className="text-primary hover:text-primary-glow transition-colors"
-                >
-                  sagnik.saha.araptor@gmail.com
+                https://discord.gg/g8FnU4vGJv
                 </a>
               </p>
             </CardContent>
