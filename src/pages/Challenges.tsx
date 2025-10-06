@@ -228,39 +228,47 @@ export default function Challenges() {
   /* ------------------------------------------------------------------- */
   /*  If contest isn’t active and the user isn’t an admin              */
   /* ------------------------------------------------------------------- */
-  if (!isAdmin && !isCtfActive) {
-    return (
-      <div className="min-h-screen flex flex-col matrix-bg">
-        <Navbar />
-        <main className="flex-1 container mx-auto px-4 py-8">
-          <SCPHeader
-            classification="SAFE"
-            itemNumber="SCP-CTF"
-            title="CTF EVENT STATUS"
-          />
-          <div className="max-w-3xl mx-auto mt-8">
-            <Card className="scp-paper border-2 border-border">
-              <CardHeader>
-                <div className="classification-bar mb-3"></div>
-                <CardTitle className="flex items-center gap-2 font-mono">
-                  <Lock className="h-5 w-5 text-muted-foreground" />
-                  NO ACTIVE CONTAINMENT BREACH
-                </CardTitle>
-                <div className="classification-bar mt-3"></div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground font-mono text-sm">
-                  There are currently no active CTF events scheduled. Please
-                  check back later or contact Foundation administrators for
-                  more information.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </main>
-      </div>
-    );
-  }
+/* ------------------------------------------------------------------- */
+/*  If contest isn’t active and the user isn’t an admin              */
+/* ------------------------------------------------------------------- */
+if (!isAdmin && !isCtfActive) {
+  return (
+    <div className="min-h-screen flex flex-col matrix-bg">
+      <Navbar />
+
+      {/* Countdown card – shown even when the CTF is inactive */}
+      <ContainmentCountdown until={COUNTDOWN_TARGET} />
+
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <SCPHeader
+          classification="SAFE"
+          itemNumber="SCP-CTF"
+          title="CTF EVENT STATUS"
+        />
+        <div className="max-w-3xl mx-auto mt-8">
+          <Card className="scp-paper border-2 border-border">
+            <CardHeader>
+              <div className="classification-bar mb-3" />
+              <CardTitle className="flex items-center gap-2 font-mono">
+                <Lock className="h-5 w-5 text-muted-foreground" />
+                NO ACTIVE CONTAINMENT BREACH
+              </CardTitle>
+              <div className="classification-bar mt-3" />
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground font-mono text-sm">
+                There are currently no active CTF events scheduled. Please
+                check back later or contact Foundation administrators for
+                more information.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
+  );
+}
+
 
   /* ------------------------------------------------------------------- */
   /*  Main layout – always rendered once data is ready                 */
