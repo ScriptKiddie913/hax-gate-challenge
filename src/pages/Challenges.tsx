@@ -1,3 +1,7 @@
+/* --------------------------------------------------------------------- */
+/*  Challenges Page – Full Re‑write with pre‑December‑6 countdown        */
+/* --------------------------------------------------------------------- */
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,9 +16,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { SCPHeader } from "@/components/SCPHeader";
 import { CTFCountdown } from "@/components/CTFCountdown";
-import { Shield, Lock, Trophy } from "lucide-react";
+import { Shield, Lock, Trophy, Clock } from "lucide-react";
 import { toast } from "sonner";
 
+/* --------------------------------------------------------------------- */
+/*  Types                                                             */
+/* --------------------------------------------------------------------- */
 interface Challenge {
   id: string;
   title: string;
@@ -29,6 +36,9 @@ interface CTFSettings {
   is_active: boolean;
 }
 
+/* --------------------------------------------------------------------- */
+/*  Helper – Category styling                                          */
+/* --------------------------------------------------------------------- */
 const getCategoryDetails = (category: string) => {
   switch (category) {
     case "Safe":
@@ -64,19 +74,94 @@ const getCategoryDetails = (category: string) => {
   }
 };
 
+/* --------------------------------------------------------------------- */
+/*  Countdown component                                                */
+/*  --------------------------------------------------------------------*/
+const ContainmentCountdown = ({
+  until,
+  onDismiss,
+}: {
+  until: Date;
+  onDismiss: () => void;
+}) => {
+  const [now, setNow] = useState(new Date());
+
+  /* update every second */
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const diffMs = until.getTime() - now.getTime();
+  const isOver = diffMs <= 0;
+
+  const totalSec = Math.max(0, Math.floor(diffMs / 1000));
+  const days = Math.floor(totalSec / (24 * 3600));
+  const hours = Math.floor((totalSec % (24 * 3600)) / 3600);
+  const minutes = Math.floor((totalSec % 3600) / 60);
+  const seconds = totalSec % 60;
+
+  useEffect(() => {
+    if (isOver) {
+      // once the countdown hits zero we simply hide it
+      onDismiss();
+    }
+  }, [isOver, onDismiss]);
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex flex-col justify-center items-center bg-black/80"
+      aria-live="polite"
+    >
+      <div className="scp-paper border-2 border-border p-8 relative">
+        <Clock className="h-12 w-12 mx-auto text-primary mb-4" />
+        <h2 className="text-xl font-mono text-center mb-2">
+          T- {days}d {hours}h {minutes}m {seconds}s
+        </h2>
+        <p className="text-base font-mono text-center text-muted-foreground">
+          to containment Breach
+        </p>
+
+        <button
+          onClick={onDismiss}
+          className="mt-6 w-full py-2 bg-primary text-primary-foreground rounded font-mono hover:bg-primary/80 transition-colors"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  );
+};
+
+/* --------------------------------------------------------------------- */
+/*  Main component – Challenges                                        */
+/* --------------------------------------------------------------------- */
 export default function Challenges() {
   const navigate = useNavigate();
+
+  /* ------------------------------------------------------------------- */
+  /*  State – data and UI                                              */
+  /* ------------------------------------------------------------------- */
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [ctfSettings, setCtfSettings] = useState<CTFSettings | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  /* ---------------- Countdown UI ------------------------------------- */
+  const [countdownVisible, setCountdownVisible] = useState(false);
+  // the date that the countdown will target
+  const COUNTDOWN_TARGET = new Date("2025-12-06T00:00:00Z");
+
+  /* ------------------------------------------------------------------- */
+  /*  Data loading – once on mount                                     */
+  /* ------------------------------------------------------------------- */
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = async () => {
     try {
+      /* ---------------- Auth ---------------------------------------- */
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -86,7 +171,7 @@ export default function Challenges() {
         return;
       }
 
-      // Check if user is admin
+      /* ---------------- Admin check --------------------------------- */
       const { data: roles } = await supabase
         .from("user_roles")
         .select("role")
@@ -96,7 +181,7 @@ export default function Challenges() {
 
       setIsAdmin(!!roles);
 
-      // Load CTF settings
+      /* ---------------- Load CTF configuration --------------------- */
       const { data: settings } = await supabase
         .from("ctf_settings")
         .select("*")
@@ -107,7 +192,7 @@ export default function Challenges() {
 
       setCtfSettings(settings);
 
-      // Load challenges (only if CTF is active or user is admin)
+      /* ---------------- Load challenges if allowed ----------------- */
       const now = new Date().toISOString();
       const isCtfActive =
         settings &&
@@ -133,6 +218,9 @@ export default function Challenges() {
     }
   };
 
+  /* ------------------------------------------------------------------- */
+  /*  UI – Loading skeleton                                            */
+  /* ------------------------------------------------------------------- */
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col matrix-bg">
@@ -147,7 +235,9 @@ export default function Challenges() {
     );
   }
 
-  // Check if CTF is active
+  /* ------------------------------------------------------------------- */
+  /*  Helpers – check if CTF active / time before start                */
+  /* ------------------------------------------------------------------- */
   const now = new Date().toISOString();
   const isCtfActive =
     ctfSettings &&
@@ -157,26 +247,28 @@ export default function Challenges() {
 
   const isBeforeStart = ctfSettings && now < ctfSettings.start_time;
 
-  // Show countdown for non-admin users before CTF starts
-  if (!isAdmin && isBeforeStart && ctfSettings) {
-    return (
-      <div className="min-h-screen flex flex-col matrix-bg">
-        <Navbar />
-        <main className="flex-1 container mx-auto px-4 py-8">
-          <SCPHeader
-            classification="KETER"
-            itemNumber="SCP-CTF"
-            title="CONTAINMENT BREACH EVENT"
-          />
-          <div className="max-w-3xl mx-auto mt-8">
-            <CTFCountdown startTime={ctfSettings.start_time} />
-          </div>
-        </main>
-      </div>
-    );
-  }
+  /* ------------------------------------------------------------------- */
+  /*  Pre‑December‑6: If user is not an admin and the countdown is
+   *  still running we prevent navigation to challenge pages.
+   *  The Countdown component will be shown below, but still
+   *  rendered inside this component.
+   */
+  /* ------------------------------------------------------------------- */
+  const handleCardClick = (id: string) => {
+    /* If the user tries to open a challenge before 6 Dec 2025, show
+     * the countdown overlay instead of navigating. */
+    if (new Date() < COUNTDOWN_TARGET) {
+      setCountdownVisible(true);
+      return;
+    }
 
-  // Show message if CTF is not active and user is not admin
+    /* Normal navigation – allowed after 6 Dec or to admins */
+    navigate(`/challenges/${id}`);
+  };
+
+  /* ------------------------------------------------------------------- */
+  /*  UI – If the CTF isn’t active (and we’re not an admin)             */
+  /* ------------------------------------------------------------------- */
   if (!isAdmin && !isCtfActive) {
     return (
       <div className="min-h-screen flex flex-col matrix-bg">
@@ -200,8 +292,8 @@ export default function Challenges() {
               <CardContent>
                 <p className="text-muted-foreground font-mono text-sm">
                   There are currently no active CTF events scheduled. Please
-                  check back later or contact Foundation administrators for more
-                  information.
+                  check back later or contact Foundation administrators for
+                  more information.
                 </p>
               </CardContent>
             </Card>
@@ -211,6 +303,53 @@ export default function Challenges() {
     );
   }
 
+  /* ------------------------------------------------------------------- */
+  /*  UI – Countdown for users who click a challenge before 6 Dec      */
+  /* ------------------------------------------------------------------- */
+  if (countdownVisible) {
+    return (
+      <div className="min-h-screen flex flex-col matrix-bg">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-4 py-8 relative">
+          <SCPHeader
+            classification="KETER"
+            itemNumber="SCP-CTF"
+            title="CONTAINMENT BREACH EVENT"
+          />
+
+          {/* Main content – still visible beneath the overlay */}
+          <div className="max-w-3xl mx-auto mt-8">
+            <Card className="scp-paper border-2 border-border">
+              <CardHeader>
+                <div className="classification-bar mb-3"></div>
+                <CardTitle className="flex items-center gap-2 font-mono">
+                  <Clock className="h-5 w-5 text-yellow-500" />
+                  COUNTDOWN TO 6 DEC 2025
+                </CardTitle>
+                <div className="classification-bar mt-3"></div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground font-mono text-sm">
+                  You cannot open challenge pages before the containment breach
+                  begins.  Please wait until the event starts.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Full‑screen overlay countdown */}
+          <ContainmentCountdown
+            until={COUNTDOWN_TARGET}
+            onDismiss={() => setCountdownVisible(false)}
+          />
+        </main>
+      </div>
+    );
+  }
+
+  /* ------------------------------------------------------------------- */
+  /*  UI – Normal: CTF active or you are admin                         */
+  /* ------------------------------------------------------------------- */
   return (
     <div className="min-h-screen flex flex-col matrix-bg">
       <Navbar />
@@ -220,6 +359,7 @@ export default function Challenges() {
           itemNumber="SCP-CTF"
           title="ACTIVE CONTAINMENT BREACHES"
         />
+
         {challenges.length === 0 ? (
           <div className="max-w-3xl mx-auto mt-8">
             <Card className="scp-paper border-2 border-border">
@@ -247,7 +387,7 @@ export default function Challenges() {
                 <Card
                   key={challenge.id}
                   className="scp-paper border-2 border-border hover:border-primary transition-all cursor-pointer scan-line group"
-                  onClick={() => navigate(`/challenges/${challenge.id}`)}
+                  onClick={() => handleCardClick(challenge.id)}
                 >
                   <CardHeader>
                     <div className="classification-bar mb-3"></div>
