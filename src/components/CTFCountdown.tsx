@@ -8,12 +8,37 @@ interface CTFCountdownProps {
 
 export function CTFCountdown({ startTime }: CTFCountdownProps) {
   const [timeLeft, setTimeLeft] = useState<string>("");
+  const [isValid, setIsValid] = useState<boolean>(true);
 
   useEffect(() => {
     const calculateTimeLeft = () => {
-      const start = new Date(startTime).getTime();
+      if (!startTime) {
+        setIsValid(false);
+        setTimeLeft("INVALID TIME");
+        return;
+      }
+
+      // Ensure start time is parsed as UTC. Add "Z" if missing.
+      let parsedStartTime: number;
+      try {
+        const normalized = startTime.endsWith("Z") ? startTime : startTime + "Z";
+        parsedStartTime = Date.parse(normalized);
+      } catch (err) {
+        setIsValid(false);
+        setTimeLeft("INVALID TIME");
+        return;
+      }
+
+      if (isNaN(parsedStartTime)) {
+        setIsValid(false);
+        setTimeLeft("INVALID TIME");
+        return;
+      }
+
+      setIsValid(true);
+
       const now = new Date().getTime();
-      const difference = start - now;
+      const difference = parsedStartTime - now;
 
       if (difference <= 0) {
         setTimeLeft("BREACH IMMINENT");
@@ -25,7 +50,7 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
 
-      const parts = [];
+      const parts: string[] = [];
       if (days > 0) parts.push(`${days}D`);
       if (hours > 0) parts.push(`${hours}H`);
       if (minutes > 0) parts.push(`${minutes}M`);
@@ -34,9 +59,13 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
       setTimeLeft(parts.join(" : "));
     };
 
+    // Run once immediately
     calculateTimeLeft();
+
+    // Then update every 1 second
     const interval = setInterval(calculateTimeLeft, 1000);
 
+    // Cleanup interval when component unmounts
     return () => clearInterval(interval);
   }, [startTime]);
 
@@ -67,21 +96,27 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
           </div>
         </div>
 
+        {!isValid && (
+          <div className="p-3 text-center border border-destructive bg-destructive/20 font-mono text-sm text-destructive">
+            INVALID START TIME FORMAT DETECTED. CHECK SUPABASE DATA.
+          </div>
+        )}
+
         <div className="space-y-3 text-sm font-mono">
           <div className="flex items-start gap-2 p-3 bg-background/30 border border-border">
             <div className="w-2 h-2 bg-primary mt-1.5 flex-shrink-0 animate-pulse"></div>
             <p>
-              <strong className="text-primary">ALERT:</strong> Containment protocols 
-              will be lifted at scheduled time. All personnel must maintain 
+              <strong className="text-primary">ALERT:</strong> Containment protocols
+              will be lifted at scheduled time. All personnel must maintain
               security clearance level-2 or higher.
             </p>
           </div>
-          
+
           <div className="flex items-start gap-2 p-3 bg-background/30 border border-border">
             <div className="w-2 h-2 bg-primary mt-1.5 flex-shrink-0 animate-pulse"></div>
             <p>
-              <strong className="text-primary">NOTICE:</strong> Unauthorized access 
-              attempts before breach event initialization will be logged and reported 
+              <strong className="text-primary">NOTICE:</strong> Unauthorized access
+              attempts before breach event initialization will be logged and reported
               to <span className="redacted text-[10px]">O5 COMMAND</span>.
             </p>
           </div>
@@ -89,9 +124,9 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
           <div className="flex items-start gap-2 p-3 bg-background/30 border border-border">
             <div className="w-2 h-2 bg-primary mt-1.5 flex-shrink-0 animate-pulse"></div>
             <p>
-              <strong className="text-primary">DIRECTIVE:</strong> All Foundation 
-              personnel are advised to prepare containment tools and security 
-              protocols in advance. SCP anomalies classified from SAFE to EUCLID 
+              <strong className="text-primary">DIRECTIVE:</strong> All Foundation
+              personnel are advised to prepare containment tools and security
+              protocols in advance. SCP anomalies classified from SAFE to EUCLID
               will be accessible.
             </p>
           </div>
@@ -102,7 +137,9 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
         <div className="grid grid-cols-2 gap-3 text-xs font-mono">
           <div className="bg-background/50 p-2 border border-border">
             <p className="text-muted-foreground mb-1">STATUS:</p>
-            <p className="text-destructive font-bold">BREACH PENDING</p>
+            <p className="text-destructive font-bold">
+              {timeLeft === "BREACH IMMINENT" ? "ACTIVE" : "BREACH PENDING"}
+            </p>
           </div>
           <div className="bg-background/50 p-2 border border-border">
             <p className="text-muted-foreground mb-1">THREAT LEVEL:</p>
@@ -114,7 +151,9 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
           </div>
           <div className="bg-background/50 p-2 border border-border">
             <p className="text-muted-foreground mb-1">PROTOCOL:</p>
-            <p className="text-success font-bold">STANDBY</p>
+            <p className="text-success font-bold">
+              {timeLeft === "BREACH IMMINENT" ? "ACTIVE" : "STANDBY"}
+            </p>
           </div>
         </div>
 
