@@ -1,262 +1,251 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { SCPHeader } from "@/components/SCPHeader";
-import { Shield, AlertTriangle, Lock, FileText, ArrowRight, TerminalSquare, Database, KeyRound } from "lucide-react";
+import { CTFCountdown } from "@/components/CTFCountdown";
+import { Shield, Lock, Trophy } from "lucide-react";
+import { toast } from "sonner";
 
-const Index = () => {
+interface Challenge {
+  id: string;
+  title: string;
+  category: string;
+  points: number;
+  description_md: string;
+}
+
+interface CTFSettings {
+  start_time: string;
+  end_time: string;
+  is_active: boolean;
+}
+
+const getCategoryDetails = (category: string) => {
+  switch (category) {
+    case "Safe":
+      return { label: "SAFE", difficulty: "Very Easy", color: "bg-green-500/20 text-green-500 border-green-500/30" };
+    case "Archon":
+      return { label: "ARCHON", difficulty: "Easy", color: "bg-blue-500/20 text-blue-500 border-blue-500/30" };
+    case "Keter":
+      return { label: "KETER", difficulty: "Medium", color: "bg-orange-500/20 text-orange-500 border-orange-500/30" };
+    case "Euclid":
+      return { label: "EUCLID", difficulty: "Hard", color: "bg-red-500/20 text-red-500 border-red-500/30" };
+    default:
+      return { label: category.toUpperCase(), difficulty: "Unknown", color: "bg-gray-500/20 text-gray-500 border-gray-500/30" };
+  }
+};
+
+export default function Challenges() {
   const navigate = useNavigate();
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [ctfSettings, setCtfSettings] = useState<CTFSettings | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkUser();
+    loadData();
   }, []);
 
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session && session.user.email_confirmed_at) {
-      navigate("/challenges");
+  const loadData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        navigate("/auth");
+        return;
+      }
+
+      // Check if user is admin
+      const { data: roles } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user.id)
+        .eq('role', 'admin')
+        .maybeSingle();
+      
+      setIsAdmin(!!roles);
+
+      // Load CTF settings
+      const { data: settings } = await supabase
+        .from('ctf_settings')
+        .select('*')
+        .eq('is_active', true)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      
+      setCtfSettings(settings);
+
+      // Load challenges (only if CTF is active or user is admin)
+      const now = new Date().toISOString();
+      const isCtfActive = settings && 
+        settings.is_active && 
+        now >= settings.start_time && 
+        now <= settings.end_time;
+
+      if (isAdmin || isCtfActive) {
+        const { data: challengesData, error } = await supabase
+          .from('challenges')
+          .select('id, title, category, points, description_md')
+          .eq('is_published', true)
+          .order('points', { ascending: true });
+
+        if (error) throw error;
+        setChallenges(challengesData || []);
+      }
+    } catch (error: any) {
+      toast.error("Error loading challenges");
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col matrix-bg">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="scp-paper border-2 border-border p-8">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4"></div>
+            <p className="font-mono">ACCESSING DATABASE...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Check if CTF is active
+  const now = new Date().toISOString();
+  const isCtfActive = ctfSettings && 
+    ctfSettings.is_active && 
+    now >= ctfSettings.start_time && 
+    now <= ctfSettings.end_time;
+  const isBeforeStart = ctfSettings && now < ctfSettings.start_time;
+
+  // Show countdown for non-admin users before CTF starts
+  if (!isAdmin && isBeforeStart && ctfSettings) {
+    return (
+      <div className="min-h-screen flex flex-col matrix-bg">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <SCPHeader 
+            classification="KETER"
+            itemNumber="SCP-CTF"
+            title="CONTAINMENT BREACH EVENT"
+          />
+          <div className="max-w-3xl mx-auto mt-8">
+            <CTFCountdown startTime={ctfSettings.start_time} />
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  // Show message if CTF is not active and user is not admin
+  if (!isAdmin && !isCtfActive) {
+    return (
+      <div className="min-h-screen flex flex-col matrix-bg">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <SCPHeader 
+            classification="SAFE"
+            itemNumber="SCP-CTF"
+            title="CTF EVENT STATUS"
+          />
+          <div className="max-w-3xl mx-auto mt-8">
+            <Card className="scp-paper border-2 border-border">
+              <CardHeader>
+                <div className="classification-bar mb-3"></div>
+                <CardTitle className="flex items-center gap-2 font-mono">
+                  <Lock className="h-5 w-5 text-muted-foreground" />
+                  NO ACTIVE CONTAINMENT BREACH
+                </CardTitle>
+                <div className="classification-bar mt-3"></div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground font-mono text-sm">
+                  There are currently no active CTF events scheduled. 
+                  Please check back later or contact Foundation administrators for more information.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col matrix-bg">
       <Navbar />
       
-      <main className="flex-1">
-        {/* Hero Section */}
-        <section className="py-16 px-4 relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none"></div>
-          
-          <div className="container mx-auto relative z-10">
-            <SCPHeader 
-              classification="THAUMIEL"
-              itemNumber="SCP-████"
-              title="CAPTURE THE FLAG DIVISION"
-            />
+      <main className="flex-1 container mx-auto px-4 py-8">
+        <SCPHeader 
+          classification="EUCLID"
+          itemNumber="SCP-CTF"
+          title="ACTIVE CONTAINMENT BREACHES"
+        />
 
-            <div className="max-w-5xl mx-auto">
-              <div className="scp-paper border-2 border-border p-8 mb-8 scan-line pulse-glow">
-                <div className="text-center mb-8 animate-fade-in">
-                  <div className="inline-flex items-center justify-center w-24 h-24 border-4 border-primary bg-background mb-6 pulse-glow relative">
-                    <Shield className="h-16 w-16 text-primary animate-pulse" />
-                    <div className="absolute inset-0 border-4 border-primary animate-ping opacity-20"></div>
-                  </div>
-                  <h2 className="text-5xl font-bold mb-4 scp-header glitch" data-text="SECURE. CONTAIN. PROTECT.">
-                    <span className="text-scp-red">SECURE. CONTAIN. PROTECT.</span>
-                  </h2>
-                  <p className="text-xl mb-2 animate-fade-in-delay">SCP Foundation - CTF Training Division</p>
-                  <p className="text-muted-foreground font-mono text-sm">
-                    Security Clearance Required | Authorized Personnel Only | Foundation Intranet Node: <span className="text-primary">NODE-09/CTF-HQ</span>
-                  </p>
-                  <p className="text-muted-foreground font-mono text-xs mt-2">
-                    Build: v2.3.1 | Protocol Revision: SCP-CTF/INF-SEC-███ | Timestamp: {new Date().toUTCString()}
-                  </p>
-                </div>
-
-                <div className="classification-bar my-6"></div>
-
-                <div className="space-y-4 mb-8 animate-fade-in-delay">
-                  <p className="text-lg">
-                    <strong className="text-primary flicker">NOTICE:</strong> You are accessing a restricted SCP Foundation training environment. 
-                    This Capture The Flag (CTF) platform is designed to test and enhance the cybersecurity 
-                    capabilities of Foundation personnel under simulated anomalous conditions.
-                  </p>
-                  <p>
-                    Unauthorized access to this portal constitutes a direct violation of <span className="text-primary">Containment Directive 88-GAMMA</span>. 
-                    All activities within this environment are logged, monitored, and transmitted to the 
-                    Foundation Cybersecurity Command (FCC) for archival analysis.
-                  </p>
-                  <p>
-                    Participants will engage with anomalous digital containment scenarios across multiple 
-                    security classifications. Each challenge represents a <span className="redacted">REDACTED</span>
-                    {" "}containment breach simulation requiring specialized skills in:
-                  </p>
-                  <ul className="list-none space-y-2 ml-6">
-                    <li className="hover:text-primary transition-colors">• Web Exploitation and System Analysis</li>
-                    <li className="hover:text-primary transition-colors">• Cryptographic Protocol Investigation</li>
-                    <li className="hover:text-primary transition-colors">• Digital Forensics and <span className="redacted">DATA EXPUNGED</span></li>
-                    <li className="hover:text-primary transition-colors">• Reverse Engineering of Anomalous Code</li>
-                    <li className="hover:text-primary transition-colors">• Binary Exploitation and Memory Corruption</li>
-                    <li className="hover:text-primary transition-colors">• Threat Hunting within SCP-classified Digital Entities</li>
-                  </ul>
-                </div>
-
-                <div className="flex gap-4 justify-center animate-fade-in-delay">
-                  <Button 
-                    size="lg" 
-                    className="gap-2 bg-primary hover:bg-primary/90 glow-red font-mono" 
-                    onClick={() => navigate("/auth")}
-                  >
-                    REQUEST CLEARANCE
-                    <ArrowRight className="h-5 w-5" />
-                  </Button>
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="gap-2 border-2 font-mono hover:border-primary hover:text-primary transition-all" 
-                    onClick={() => navigate("/about")}
-                  >
-                    VIEW DOCUMENTATION
-                  </Button>
-                </div>
-              </div>
-
-              {/* Features Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group scan-line animate-fade-in">
-                  <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-primary group-hover:glow-red transition-all relative">
-                    <FileText className="h-10 w-10 group-hover:text-primary transition-colors" />
-                    <div className="absolute inset-0 border-3 border-primary opacity-0 group-hover:opacity-100 animate-ping transition-opacity"></div>
-                  </div>
-                  <h3 className="text-xl font-bold mb-3 scp-header group-hover:text-primary transition-colors">CLASSIFIED CHALLENGES</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Access real-world anomalous scenarios across multiple security classifications: 
-                    SAFE, EUCLID, KETER, and beyond. Declassified logs are rotated every 24 hours under protocol 42-DELTA.
-                  </p>
-                </div>
-
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group scan-line animate-fade-in-delay">
-                  <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-destructive group-hover:glow-red transition-all relative">
-                    <AlertTriangle className="h-10 w-10 text-destructive group-hover:animate-pulse" />
-                    <div className="absolute inset-0 border-3 border-destructive opacity-0 group-hover:opacity-100 animate-ping transition-opacity"></div>
-                  </div>
-                  <h3 className="text-xl font-bold mb-3 scp-header group-hover:text-primary transition-colors">CONTAINMENT PROTOCOLS</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Earn security clearance points by successfully containing breaches. 
-                    Real-time tracking of all containment operations. Incident logs transmitted to Command Node-7.
-                  </p>
-                </div>
-
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group scan-line animate-fade-in">
-                  <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-success group-hover:glow-red transition-all relative">
-                    <Lock className="h-10 w-10 group-hover:text-success transition-colors" />
-                    <div className="absolute inset-0 border-3 border-success opacity-0 group-hover:opacity-100 animate-ping transition-opacity"></div>
-                  </div>
-                  <h3 className="text-xl font-bold mb-3 scp-header group-hover:text-primary transition-colors">VERIFIED IDENTITIES</h3>
-                  <p className="text-sm text-muted-foreground">
-                    All participants undergo blockchain-verified identity confirmation. 
-                    Foundation-level encryption standards (AES-512 / SCP-ENC-9) enforced under Cyber Ethics Directive 09-BETA.
-                  </p>
-                </div>
-              </div>
-
-              {/* Additional System Section */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in-delay">
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group">
-                  <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-primary transition-all relative">
-                    <TerminalSquare className="h-10 w-10 group-hover:text-primary transition-colors" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3 scp-header group-hover:text-primary transition-colors">MONITORED SYSTEMS</h3>
-                  <p className="text-sm text-muted-foreground">
-                    All operations within this training division are continuously monitored by the Foundation’s AI Sentinel System (Codename: “WATCHTOWER-03”). 
-                    Unauthorized activities trigger automated lockdown procedures.
-                  </p>
-                </div>
-
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group">
-                  <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-primary transition-all relative">
-                    <Database className="h-10 w-10 group-hover:text-primary transition-colors" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3 scp-header group-hover:text-primary transition-colors">DATA VAULT</h3>
-                  <p className="text-sm text-muted-foreground">
-                    All captured anomalies, reports, and containment logs are securely archived in Foundation Vault 09. 
-                    Data integrity verified via quantum-resistant checksum validation.
-                  </p>
-                </div>
-
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group">
-                  <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-primary transition-all relative">
-                    <KeyRound className="h-10 w-10 group-hover:text-primary transition-colors" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3 scp-header group-hover:text-primary transition-colors">ACCESS CONTROL</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Multi-factor clearance validation required. Personnel attempting to bypass CTF security systems without clearance 
-                    will be flagged under Incident Report: #███-09X.
-                  </p>
-                </div>
-              </div>
-
-              {/* Security Notice */}
-              <div className="border-classified p-8 bg-primary/5 glow-red animate-fade-in-delay">
-                <div className="flex items-start gap-4">
-                  <AlertTriangle className="h-12 w-12 text-primary flex-shrink-0 mt-1 animate-pulse" />
-                  <div>
-                    <h3 className="text-2xl font-bold mb-3 text-primary scp-header flicker">
-                      SECURITY CLEARANCE REQUIRED
-                    </h3>
-                    <p className="mb-3">
-                      Access to this system requires <span className="text-primary font-bold">Level-2</span> security clearance or higher. 
-                      Unauthorized access attempts will be logged and reported to <span className="redacted">O5 COMMAND</span>.
-                    </p>
-                    <p className="text-sm text-muted-foreground mb-6">
-                      All activities are monitored. By proceeding, you acknowledge adherence to 
-                      Foundation Ethics Committee guidelines and containment protocols.
-                      This digital environment is classified under <span className="text-primary font-mono">CYBERSECURITY DIVISION / CTF-BETA / CLASSIFIED</span>.
-                    </p>
-                    
-                    <div className="classification-bar mb-4"></div>
-                    
-                    <div className="grid grid-cols-2 gap-4 text-xs font-mono mb-6">
-                      <div className="bg-background/50 p-3 border border-border">
-                        <p className="text-muted-foreground mb-1">THREAT LEVEL:</p>
-                        <p className="text-primary font-bold">ELEVATED</p>
-                      </div>
-                      <div className="bg-background/50 p-3 border border-border">
-                        <p className="text-muted-foreground mb-1">STATUS:</p>
-                        <p className="text-success font-bold">OPERATIONAL</p>
-                      </div>
-                      <div className="bg-background/50 p-3 border border-border">
-                        <p className="text-muted-foreground mb-1">PARTICIPANTS:</p>
-                        <p className="text-foreground font-bold">[CLASSIFIED]</p>
-                      </div>
-                      <div className="bg-background/50 p-3 border border-border">
-                        <p className="text-muted-foreground mb-1">CLEARANCE:</p>
-                        <p className="text-destructive font-bold">REQUIRED</p>
-                      </div>
-                    </div>
-
-                    <p className="text-xs font-mono text-muted-foreground">
-                      System Audit Log ID: {Math.floor(Math.random() * 1000000)} | Audit Timestamp: {new Date().toLocaleString()}
-                    </p>
-                    <p className="text-xs text-muted-foreground font-mono mt-2">
-                      Verified via SecureChannel-SCP/CTF/INFRA-02 — Foundation CyberNet Node Integrity: 99.997%
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {challenges.length === 0 ? (
+          <div className="max-w-3xl mx-auto mt-8">
+            <Card className="scp-paper border-2 border-border">
+              <CardHeader>
+                <div className="classification-bar mb-3"></div>
+                <CardTitle className="flex items-center gap-2 font-mono">
+                  <Shield className="h-5 w-5 text-success" />
+                  ALL ANOMALIES CONTAINED
+                </CardTitle>
+                <div className="classification-bar mt-3"></div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground font-mono text-sm">
+                  No active containment breaches detected. All SCP objects remain secure.
+                </p>
+              </CardContent>
+            </Card>
           </div>
-        </section>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-8">
+            {challenges.map((challenge) => {
+              const categoryInfo = getCategoryDetails(challenge.category);
+              return (
+                <Card 
+                  key={challenge.id} 
+                  className="scp-paper border-2 border-border hover:border-primary transition-all cursor-pointer scan-line group"
+                  onClick={() => navigate(`/challenges/${challenge.id}`)}
+                >
+                  <CardHeader>
+                    <div className="classification-bar mb-3"></div>
+                    <div className="flex items-start justify-between mb-2">
+                      <Badge variant="outline" className={`font-mono text-xs ${categoryInfo.color}`}>
+                        {categoryInfo.label}
+                      </Badge>
+                      <Badge variant="outline" className="bg-primary/20 text-primary border-primary font-mono text-xs">
+                        {challenge.points} PTS
+                      </Badge>
+                    </div>
+                    <CardTitle className="font-mono text-lg group-hover:text-primary transition-colors">
+                      {challenge.title}
+                    </CardTitle>
+                    <CardDescription className="font-mono text-xs">
+                      Difficulty: {categoryInfo.difficulty}
+                    </CardDescription>
+                    <div className="classification-bar mt-3"></div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground line-clamp-2 font-mono">
+                      {challenge.description_md.substring(0, 100)}...
+                    </p>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
       </main>
-
-      {/* Footer */}
-      <footer className="border-t-2 border-border py-6 px-4 scp-paper">
-        <div className="container mx-auto text-center text-sm">
-          <div className="classification-bar mb-4 max-w-md mx-auto"></div>
-          <p className="font-mono">© 2025 SCP Foundation CTF Division. All Rights Reserved.</p>
-          <p className="mt-2 text-muted-foreground">
-            Secure Communications:{" "}
-            <a
-              href="https://discord.gg/g8FnU4vGJv"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline hover:text-primary-glow transition-colors"
-            >
-              [ENCRYPTED CHANNEL]
-            </a>
-          </p>
-          <p className="mt-2 text-xs text-muted-foreground uppercase tracking-wider font-mono">
-            CLEARANCE LEVEL <span className="redacted text-[8px]">████</span> REQUIRED | UNAUTHORIZED ACCESS PROHIBITED
-          </p>
-          <p className="mt-2 text-muted-foreground font-mono text-[10px]">
-            Foundation Internal Network Node: SCPNET-12B | Encrypted Link Verified | Hash Integrity: VALID
-          </p>
-        </div>
-      </footer>
     </div>
   );
-};
-
-export default Index;
+}

@@ -29,7 +29,7 @@ export function AdminChallenges() {
 
   // Form state
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("web");
+  const [category, setCategory] = useState("Safe");
   const [points, setPoints] = useState(100);
   const [description, setDescription] = useState("");
   const [flagValue, setFlagValue] = useState("");
@@ -66,7 +66,7 @@ export function AdminChallenges() {
     } else {
       setEditingChallenge(null);
       setTitle("");
-      setCategory("web");
+      setCategory("Safe");
       setPoints(100);
       setDescription("");
       setFlagValue("");
@@ -225,12 +225,10 @@ export function AdminChallenges() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="web">Web</SelectItem>
-                        <SelectItem value="pwn">Pwn</SelectItem>
-                        <SelectItem value="crypto">Crypto</SelectItem>
-                        <SelectItem value="rev">Reverse Engineering</SelectItem>
-                        <SelectItem value="forensics">Forensics</SelectItem>
-                        <SelectItem value="misc">Misc</SelectItem>
+                        <SelectItem value="Safe">Safe (Very Easy)</SelectItem>
+                        <SelectItem value="Archon">Archon (Easy)</SelectItem>
+                        <SelectItem value="Keter">Keter (Medium)</SelectItem>
+                        <SelectItem value="Euclid">Euclid (Hard)</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>

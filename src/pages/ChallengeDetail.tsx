@@ -176,8 +176,17 @@ export default function ChallengeDetail() {
                 <div className="classification-bar mb-4"></div>
                 <div className="flex items-start justify-between mb-4">
                   <div className="space-y-3 flex-1">
-                    <div className="flex items-center gap-3">
-                      <Badge variant="outline" className="font-mono text-xs border-2">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <Badge 
+                        variant="outline" 
+                        className={`font-mono text-xs border-2 ${
+                          challenge.category === 'Safe' ? 'bg-green-500/20 text-green-500 border-green-500/30' :
+                          challenge.category === 'Archon' ? 'bg-blue-500/20 text-blue-500 border-blue-500/30' :
+                          challenge.category === 'Keter' ? 'bg-orange-500/20 text-orange-500 border-orange-500/30' :
+                          challenge.category === 'Euclid' ? 'bg-red-500/20 text-red-500 border-red-500/30' :
+                          ''
+                        }`}
+                      >
                         {challenge.category.toUpperCase()}
                       </Badge>
                       <Badge variant="outline" className="bg-primary/20 text-primary border-primary font-mono text-xs">
