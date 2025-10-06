@@ -270,9 +270,7 @@ export default function Challenges() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground font-mono text-sm">
-                  There are currently no active CTF events scheduled. Please
-                  check back later or contact Foundation administrators for
-                  more information.
+                 Still got time to suit up fellas. Get your best tools...
                 </p>
               </CardContent>
             </Card>
