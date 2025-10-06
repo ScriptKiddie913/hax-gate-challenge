@@ -77,7 +77,7 @@ export default function Rules() {
               <ul className="space-y-3 list-none">
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
-                  <span>Flags must be submitted in the exact format specified in the challenge description (usually <code className="font-mono bg-secondary px-1 py-0.5 rounded">flag{"{...}"}</code>).</span>
+                  <span>Flags must be submitted in the exact format specified in the challenge description (usually <code className="font-mono bg-secondary px-1 py-0.5 rounded">scpctf{"{...}"}</code>).</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
