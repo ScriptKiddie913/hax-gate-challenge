@@ -11,7 +11,7 @@ export default function About() {
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4">
-              About <span className="text-gradient-cyan">HaxGate CTF</span>
+              About <span className="text-gradient-cyan">SecureContainProtect CTF</span>
             </h1>
             <p className="text-lg text-muted-foreground">
               A platform for cybersecurity enthusiasts to test and improve their hacking skills
@@ -27,13 +27,13 @@ export default function About() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p>
-                HaxGate CTF is a cybersecurity challenge platform designed to provide hands-on experience 
+                SecureContainProtect CTF is a cybersecurity challenge platform designed to provide hands-on experience 
                 with real-world hacking scenarios in a safe, legal environment. Our goal is to foster 
                 learning and skill development in the cybersecurity community.
               </p>
               <p>
                 Whether you're a beginner looking to learn the basics or an experienced hacker seeking 
-                to sharpen your skills, HaxGate CTF offers challenges across multiple categories including 
+                to sharpen your skills, SecureContainProtect CTF offers challenges across multiple categories including 
                 web exploitation, cryptography, reverse engineering, forensics, and more.
               </p>
             </CardContent>
