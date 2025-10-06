@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------- */
-/*  Challenges page – always open to a countdown overlay until 6‑Dec‑2025 */
+/*  Challenges page – countdown displayed in a page box                 */
 /* --------------------------------------------------------------------- */
 
 import { useEffect, useState } from "react";
@@ -75,20 +75,18 @@ const getCategoryDetails = (category: string) => {
 };
 
 /* --------------------------------------------------------------------- */
-/*  Countdown overlay component                                       */
+/*  On‑page countdown component                                       */
 /* --------------------------------------------------------------------- */
 const ContainmentCountdown = ({ until }: { until: Date }) => {
   const [now, setNow] = useState(new Date());
 
-  /* update once per second */
+  /* update every second */
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
   const diffMs = until.getTime() - now.getTime();
-  const isOver = diffMs <= 0;
-
   const totalSec = Math.max(0, Math.floor(diffMs / 1000));
   const days = Math.floor(totalSec / (24 * 60 * 60));
   const hours = Math.floor((totalSec % (24 * 60 * 60)) / 3600);
@@ -96,25 +94,21 @@ const ContainmentCountdown = ({ until }: { until: Date }) => {
   const seconds = totalSec % 60;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
-      aria-live="polite"
-    >
-      <div className="scp-paper border-2 border-border p-8 text-center relative">
-        <Clock className="h-12 w-12 mx-auto text-primary mb-4" />
-        <h2 className="text-xl font-mono mb-2">
-          T- {days}d {hours}h {minutes}m {seconds}s
-        </h2>
-        <p className="text-sm font-mono text-muted-foreground mb-4">
-          to containment Breach
-        </p>
-        <p className="text-base font-mono text-muted-foreground">
-          {isOver
+    <Card className="scp-paper border-2 border-border mb-6">
+      <CardHeader className="flex items-center gap-4">
+        <Clock className="h-6 w-6 text-primary" />
+        <h3 className="text-base font-mono font-semibold">
+          T‑ {days}d {hours}h {minutes}m {seconds}s
+        </h3>
+      </CardHeader>
+      <CardContent>
+        <p className="text-sm font-mono text-muted-foreground">
+          {diffMs <= 0
             ? "The breach has launched – you may now access the challenges."
             : "Please wait until the event starts."}
         </p>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -125,7 +119,7 @@ export default function Challenges() {
   const navigate = useNavigate();
 
   /* ------------------------------------------------------------------- */
-  /*  State – data & UI                                                  */
+  /*  State                                                            */
   /* ------------------------------------------------------------------- */
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [ctfSettings, setCtfSettings] = useState<CTFSettings | null>(null);
@@ -133,9 +127,8 @@ export default function Challenges() {
   const [loading, setLoading] = useState(true);
 
   /* ------------------------------------------------------------------- */
-  /*  Countdown overlay                                               */
+  /*  Countdown target                                                */
   /* ------------------------------------------------------------------- */
-  const [showOverlay, setShowOverlay] = useState(false);
   const COUNTDOWN_TARGET = new Date("2025-12-06T00:00:00Z"); // 6 Dec 2025 UTC
 
   /* ------------------------------------------------------------------- */
@@ -143,17 +136,13 @@ export default function Challenges() {
   /* ------------------------------------------------------------------- */
   useEffect(() => {
     loadData();
-    // If the contest hasn’t started yet, show the overlay immediately
-    if (new Date() < COUNTDOWN_TARGET) setShowOverlay(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadData = async () => {
     try {
       /* ---------------- Auth -------------------------------------- */
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      const { data: { user } } = await supabase.auth.getUser();
 
       if (!user) {
         navigate("/auth");
@@ -279,12 +268,16 @@ export default function Challenges() {
   return (
     <div className="min-h-screen flex flex-col matrix-bg">
       <Navbar />
-      <main className="flex-1 container mx-auto px-4 py-8 relative">
+
+      <main className="flex-1 container mx-auto px-4 py-8">
         <SCPHeader
           classification="EUCLID"
           itemNumber="SCP-CTF"
           title="ACTIVE CONTAINMENT BREACHES"
         />
+
+        {/* Countdown displayed in a card at the top of the page */}
+        <ContainmentCountdown until={COUNTDOWN_TARGET} />
 
         {challenges.length === 0 ? (
           <div className="max-w-3xl mx-auto mt-8">
@@ -347,25 +340,6 @@ export default function Challenges() {
                 </Card>
               );
             })}
-          </div>
-        )}
-
-        {/* ----------------------------------------------------------------- */}
-        {/*  Overlay – always present until dismissed                        */}
-        {/* ----------------------------------------------------------------- */}
-        {showOverlay && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-            <div className="scp-paper border-2 border-border p-8 relative text-center">
-              <ContainmentCountdown until={COUNTDOWN_TARGET} />
-
-              {/* Close button to let user go to other pages after timer is visible */}
-              <button
-                onClick={() => setShowOverlay(false)}
-                className="mt-6 w-full py-2 bg-primary text-primary-foreground rounded font-mono hover:bg-primary/80 transition-colors"
-              >
-                Close (you can now navigate)
-              </button>
-            </div>
           </div>
         )}
       </main>
