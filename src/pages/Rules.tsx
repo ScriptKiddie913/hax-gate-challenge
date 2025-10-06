@@ -6,7 +6,7 @@ export default function Rules() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-center mb-12">
@@ -27,7 +27,7 @@ export default function Rules() {
             </CardHeader>
             <CardContent>
               <p className="text-foreground">
-                All participants must follow these rules. Violation may result in disqualification 
+                All participants must follow these rules. Violation may result in disqualification
                 or permanent ban from the platform. Report any suspicious activity immediately.
               </p>
             </CardContent>
@@ -48,15 +48,21 @@ export default function Rules() {
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
-                  <span>Points are awarded only for the <strong>first correct submission</strong> per user per challenge.</span>
+                  <span>
+                    Points are awarded only for the <strong>first correct submission</strong> per user per challenge.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
-                  <span>Once you solve a challenge, it becomes <strong>locked</strong> - no further submissions are accepted for that challenge.</span>
+                  <span>
+                    Once you solve a challenge, it becomes <strong>locked</strong> - no further submissions are accepted for that challenge.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
-                  <span>Scoreboard ranks are determined by total points, with ties broken by the timestamp of the last successful submission (earlier is better).</span>
+                  <span>
+                    Scoreboard ranks are determined by total points, with ties broken by the timestamp of the last successful submission (earlier is better).
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
@@ -77,7 +83,10 @@ export default function Rules() {
               <ul className="space-y-3 list-none">
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
-                  <span>Flags must be submitted in the exact format specified in the challenge description (usually <code className="font-mono bg-secondary px-1 py-0.5 rounded">scpctf{"{...}"}</code>).</span>
+                  <span>
+                    Flags must be submitted in the exact format specified in the challenge description (usually{" "}
+                    <code className="font-mono bg-secondary px-1 py-0.5 rounded">scpctf{"{...}"}</code>).
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-primary">•</span>
@@ -110,27 +119,39 @@ export default function Rules() {
               <ul className="space-y-3 list-none">
                 <li className="flex gap-3">
                   <span className="text-destructive">✕</span>
-                  <span><strong>No attacks on the platform itself</strong> - Only attack the designated challenge services.</span>
+                  <span>
+                    <strong>No attacks on the platform itself</strong> - Only attack the designated challenge services.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-destructive">✕</span>
-                  <span><strong>No sharing of flags or writeups</strong> during the active period of challenges.</span>
+                  <span>
+                    <strong>No sharing of flags or writeups</strong> during the active period of challenges.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-destructive">✕</span>
-                  <span><strong>No automated brute-forcing</strong> - Excessive failed submission attempts will be flagged.</span>
+                  <span>
+                    <strong>No automated brute-forcing</strong> - Excessive failed submission attempts will be flagged.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-destructive">✕</span>
-                  <span><strong>No DDoS or flooding</strong> - Attacking challenge infrastructure is prohibited.</span>
+                  <span>
+                    <strong>No DDoS or flooding</strong> - Attacking challenge infrastructure is prohibited.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-destructive">✕</span>
-                  <span><strong>No multi-accounting</strong> - One account per person. Creating multiple accounts is cheating.</span>
+                  <span>
+                    <strong>No multi-accounting</strong> - One account per person. Creating multiple accounts is cheating.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-destructive">✕</span>
-                  <span><strong>No flag format manipulation</strong> - Don't try to circumvent the submission system.</span>
+                  <span>
+                    <strong>No flag format manipulation</strong> - Don't try to circumvent the submission system.
+                  </span>
                 </li>
               </ul>
             </CardContent>
@@ -171,10 +192,10 @@ export default function Rules() {
             </CardHeader>
             <CardContent>
               <p>
-                If you have questions about the rules, need clarification, or want to report suspicious 
+                If you have questions about the rules, need clarification, or want to report suspicious
                 activity, please contact us at:{" "}
-                <a 
-                  href="mailto:sagnik.saha.araptor@gmail.com" 
+                <a
+                  href="mailto:sagnik.saha.araptor@gmail.com"
                   className="text-primary hover:text-primary-glow transition-colors font-semibold"
                 >
                   sagnik.saha.araptor@gmail.com
