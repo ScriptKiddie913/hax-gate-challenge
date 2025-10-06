@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SCPHeader } from "@/components/SCPHeader";
-import { CTFCountdown } from "@/components/CTFCountdown";
 import { Shield, Lock, Trophy, Clock } from "lucide-react";
 import { toast } from "sonner";
 
@@ -93,19 +92,36 @@ const ContainmentCountdown = ({ until }: { until: Date }) => {
   const minutes = Math.floor((totalSec % 3600) / 60);
   const seconds = totalSec % 60;
 
+  /* human readable event date */
+  const eventDate = until.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <Card className="scp-paper border-2 border-border mb-6">
       <CardHeader className="flex items-center gap-4">
         <Clock className="h-6 w-6 text-primary" />
-        <h3 className="text-base font-mono font-semibold">
-          T‑ {days}d {hours}h {minutes}m {seconds}s
+        <h3 className="text-lg font-mono font-semibold text-primary">
+          Time to Containment Breach (Countdown)
         </h3>
       </CardHeader>
+
       <CardContent>
+        <p className="text-sm font-mono text-muted-foreground mb-1">
+          <strong>Countdown:</strong>{" "}
+          T‑{days}d {hours}h {minutes}m {seconds}s
+        </p>
+
+        <p className="text-sm font-mono text-muted-foreground mb-1">
+          <strong>Event date:</strong> {eventDate}
+        </p>
+
         <p className="text-sm font-mono text-muted-foreground">
           {diffMs <= 0
             ? "The breach has launched – you may now access the challenges."
-            : "Please wait until the event starts."}
+            : "Preparation underway: countdown continues."}
         </p>
       </CardContent>
     </Card>
@@ -205,7 +221,7 @@ export default function Challenges() {
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
           <div className="scp-paper border-2 border-border p-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4" />
             <p className="font-mono">ACCESSING DATABASE...</p>
           </div>
         </div>
@@ -228,47 +244,43 @@ export default function Challenges() {
   /* ------------------------------------------------------------------- */
   /*  If contest isn’t active and the user isn’t an admin              */
   /* ------------------------------------------------------------------- */
-/* ------------------------------------------------------------------- */
-/*  If contest isn’t active and the user isn’t an admin              */
-/* ------------------------------------------------------------------- */
-if (!isAdmin && !isCtfActive) {
-  return (
-    <div className="min-h-screen flex flex-col matrix-bg">
-      <Navbar />
+  if (!isAdmin && !isCtfActive) {
+    return (
+      <div className="min-h-screen flex flex-col matrix-bg">
+        <Navbar />
 
-      {/* Countdown card – shown even when the CTF is inactive */}
-      <ContainmentCountdown until={COUNTDOWN_TARGET} />
+        {/* Countdown card – shown even when the CTF is inactive */}
+        <ContainmentCountdown until={COUNTDOWN_TARGET} />
 
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <SCPHeader
-          classification="SAFE"
-          itemNumber="SCP-CTF"
-          title="CTF EVENT STATUS"
-        />
-        <div className="max-w-3xl mx-auto mt-8">
-          <Card className="scp-paper border-2 border-border">
-            <CardHeader>
-              <div className="classification-bar mb-3" />
-              <CardTitle className="flex items-center gap-2 font-mono">
-                <Lock className="h-5 w-5 text-muted-foreground" />
-                NO ACTIVE CONTAINMENT BREACH
-              </CardTitle>
-              <div className="classification-bar mt-3" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground font-mono text-sm">
-                There are currently no active CTF events scheduled. Please
-                check back later or contact Foundation administrators for
-                more information.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </main>
-    </div>
-  );
-}
-
+        <main className="flex-1 container mx-auto px-4 py-8">
+          <SCPHeader
+            classification="SAFE"
+            itemNumber="SCP-CTF"
+            title="CTF EVENT STATUS"
+          />
+          <div className="max-w-3xl mx-auto mt-8">
+            <Card className="scp-paper border-2 border-border">
+              <CardHeader>
+                <div className="classification-bar mb-3" />
+                <CardTitle className="flex items-center gap-2 font-mono">
+                  <Lock className="h-5 w-5 text-muted-foreground" />
+                  NO ACTIVE CONTAINMENT BREACH
+                </CardTitle>
+                <div className="classification-bar mt-3" />
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground font-mono text-sm">
+                  There are currently no active CTF events scheduled. Please
+                  check back later or contact Foundation administrators for
+                  more information.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   /* ------------------------------------------------------------------- */
   /*  Main layout – always rendered once data is ready                 */
@@ -291,12 +303,12 @@ if (!isAdmin && !isCtfActive) {
           <div className="max-w-3xl mx-auto mt-8">
             <Card className="scp-paper border-2 border-border">
               <CardHeader>
-                <div className="classification-bar mb-3"></div>
+                <div className="classification-bar mb-3" />
                 <CardTitle className="flex items-center gap-2 font-mono">
                   <Shield className="h-5 w-5 text-success" />
                   ALL ANOMALIES CONTAINED
                 </CardTitle>
-                <div className="classification-bar mt-3"></div>
+                <div className="classification-bar mt-3" />
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground font-mono text-sm">
@@ -317,7 +329,7 @@ if (!isAdmin && !isCtfActive) {
                   onClick={() => navigate(`/challenges/${challenge.id}`)}
                 >
                   <CardHeader>
-                    <div className="classification-bar mb-3"></div>
+                    <div className="classification-bar mb-3" />
                     <div className="flex items-start justify-between mb-2">
                       <Badge
                         variant="outline"
@@ -338,7 +350,7 @@ if (!isAdmin && !isCtfActive) {
                     <CardDescription className="font-mono text-xs">
                       Difficulty: {categoryInfo.difficulty}
                     </CardDescription>
-                    <div className="classification-bar mt-3"></div>
+                    <div className="classification-bar mt-3" />
                   </CardHeader>
                   <CardContent>
                     <p className="text-sm text-muted-foreground line-clamp-2 font-mono">
