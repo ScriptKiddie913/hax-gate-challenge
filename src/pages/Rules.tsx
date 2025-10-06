@@ -14,7 +14,7 @@ export default function Rules() {
 
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Page heading */}
+          {/* Heading */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4">
               <span className="text-gradient-cyan">Rules & Guidelines</span>
@@ -97,7 +97,7 @@ export default function Rules() {
                   <span className="text-primary">•</span>
                   <span>
                     Flags must be submitted in the exact format specified in the challenge description (usually{" "}
-                    <code className="font-mono bg-secondary px-1 py-0.5 rounded">scpctf{...}</code>).
+                    <code className="font-mono bg-secondary px-1 py-0.5 rounded">scpctf{"{...}"}</code>).
                   </span>
                 </li>
                 <li className="flex gap-3">
