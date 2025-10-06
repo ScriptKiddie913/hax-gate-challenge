@@ -1,14 +1,20 @@
 import { Navbar } from "@/components/Navbar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Flag, Target, Users, Shield } from "lucide-react";
 
 export default function About() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      
+
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
+          {/* Title section */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4">
               About <span className="text-gradient-cyan">SecureContainProtect CTF</span>
@@ -18,6 +24,7 @@ export default function About() {
             </p>
           </div>
 
+          {/* Our Mission */}
           <Card className="border-border bg-card/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -27,18 +34,19 @@ export default function About() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p>
-                SecureContainProtect CTF is a cybersecurity challenge platform designed to provide hands-on experience 
-                with real-world hacking scenarios in a safe, legal environment. Our goal is to foster 
-                learning and skill development in the cybersecurity community.
+                SecureContainProtect CTF is a cybersecurity challenge platform designed to provide hands‑on experience
+                with real‑world hacking scenarios in a safe, legal environment. Our goal is to foster
+                learning and skill development within the cybersecurity community.
               </p>
               <p>
-                Whether you're a beginner looking to learn the basics or an experienced hacker seeking 
-                to sharpen your skills, SecureContainProtect CTF offers challenges across multiple categories including 
+                Whether you're a beginner looking to learn the basics or an experienced hacker seeking
+                to sharpen your skills, SecureContainProtect CTF offers challenges across multiple categories including
                 web exploitation, cryptography, reverse engineering, forensics, and more.
               </p>
             </CardContent>
           </Card>
 
+          {/* How It Works */}
           <Card className="border-border bg-card/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -103,7 +111,7 @@ export default function About() {
                   <div>
                     <h3 className="font-semibold mb-1">Compete on the Scoreboard</h3>
                     <p className="text-muted-foreground">
-                      Track your progress and compete with others on the real-time scoreboard.
+                      Track your progress and compete with others on the real‑time scoreboard.
                     </p>
                   </div>
                 </div>
@@ -111,6 +119,7 @@ export default function About() {
             </CardContent>
           </Card>
 
+          {/* Community & Support */}
           <Card className="border-border bg-card/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -120,17 +129,24 @@ export default function About() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p>
-                Join our growing community of cybersecurity enthusiasts. Share knowledge, collaborate 
+                Join our growing community of cybersecurity enthusiasts. Share knowledge, collaborate
                 on challenges, and help each other improve.
               </p>
               <p>
-                For questions, suggestions, or support, please contact us at:{" "}
-                https://discord.gg/g8FnU4vGJv
+                For questions, suggestions, or support, please contact us at:
+                <a
+                  href="https://discord.gg/g8FnU4vGJv"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary underline ml-1"
+                >
+                  Discord
                 </a>
               </p>
             </CardContent>
           </Card>
 
+          {/* Legal & Ethics */}
           <Card className="border-border bg-card/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -140,12 +156,12 @@ export default function About() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p>
-                All challenges on HaxGate CTF are designed for educational purposes. The skills you 
-                learn here should be used ethically and responsibly. Unauthorized access to computer 
+                All challenges on SecureContainProtect CTF are designed for educational purposes. The skills you
+                learn here should be used ethically and responsibly. Unauthorized access to computer
                 systems is illegal and unethical.
               </p>
               <p className="text-sm text-muted-foreground">
-                By using this platform, you agree to use your skills for good and follow all applicable 
+                By using this platform, you agree to use your skills for good and follow all applicable
                 laws and regulations.
               </p>
             </CardContent>
