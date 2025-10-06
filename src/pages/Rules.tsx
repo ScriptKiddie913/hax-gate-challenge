@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AlertCircle, Trophy, Flag, Ban, Mail } from "lucide-react";
+import { AlertCircle, Trophy, Flag, Ban } from "lucide-react";
 
 export default function Rules() {
   return (
@@ -14,6 +14,7 @@ export default function Rules() {
 
       <main className="flex-1 container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-8">
+          {/* Page heading */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4">
               <span className="text-gradient-cyan">Rules & Guidelines</span>
@@ -23,6 +24,7 @@ export default function Rules() {
             </p>
           </div>
 
+          {/* Important notice */}
           <Card className="border-border bg-card/50 backdrop-blur border-primary/30">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-primary">
@@ -38,6 +40,7 @@ export default function Rules() {
             </CardContent>
           </Card>
 
+          {/* Scoring rules */}
           <Card className="border-border bg-card/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -80,6 +83,7 @@ export default function Rules() {
             </CardContent>
           </Card>
 
+          {/* Submission rules */}
           <Card className="border-border bg-card/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -118,6 +122,7 @@ export default function Rules() {
             </CardContent>
           </Card>
 
+          {/* Prohibited activities */}
           <Card className="border-border bg-card/50 backdrop-blur">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -167,6 +172,7 @@ export default function Rules() {
             </CardContent>
           </Card>
 
+          {/* Account & Access */}
           <Card className="border-border bg-card/50 backdrop-blur">
             <CardHeader>
               <CardTitle>Account & Access</CardTitle>
@@ -190,30 +196,6 @@ export default function Rules() {
                   <span>Accounts found violating rules may be suspended or permanently banned.</span>
                 </li>
               </ul>
-            </CardContent>
-          </Card>
-
-          <Card className="border-border bg-card/50 backdrop-blur border-success/30">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-success">
-                <Mail className="h-5 w-5" />
-                Questions or Issues?
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>
-                If you have questions about the rules, need clarification, or want to report suspicious
-                activity, please contact us at:{" "}
-                <a
-                  href="mailto:sagnik.saha.araptor@gmail.com"
-                  className="text-primary hover:text-primary/90 transition-colors font-semibold"
-                >
-                  sagnik.saha.araptor@gmail.com
-                </a>
-              </p>
-              <p className="mt-4 text-sm text-muted-foreground">
-                Last updated: {new Date().toLocaleDateString()}
-              </p>
             </CardContent>
           </Card>
         </div>
