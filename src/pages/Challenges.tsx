@@ -15,7 +15,8 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { SCPHeader } from "@/components/SCPHeader";
-import { Shield, Lock, Trophy, Clock } from "lucide-react";
+import { CTFCountdown } from "@/components/CTFCountdown";
+import { Shield, Lock } from "lucide-react";
 import { toast } from "sonner";
 
 /* --------------------------------------------------------------------- */
@@ -73,60 +74,6 @@ const getCategoryDetails = (category: string) => {
   }
 };
 
-/* --------------------------------------------------------------------- */
-/*  On‑page countdown component                                       */
-/* --------------------------------------------------------------------- */
-const ContainmentCountdown = ({ until }: { until: Date }) => {
-  const [now, setNow] = useState(new Date());
-
-  /* update every second */
-  useEffect(() => {
-    const timer = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const diffMs = until.getTime() - now.getTime();
-  const totalSec = Math.max(0, Math.floor(diffMs / 1000));
-  const days = Math.floor(totalSec / (24 * 60 * 60));
-  const hours = Math.floor((totalSec % (24 * 60 * 60)) / 3600);
-  const minutes = Math.floor((totalSec % 3600) / 60);
-  const seconds = totalSec % 60;
-
-  /* human readable event date */
-  const eventDate = until.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-
-  return (
-    <Card className="scp-paper border-2 border-border mb-6">
-      <CardHeader className="flex items-center gap-4">
-        <Clock className="h-6 w-6 text-primary" />
-        <h3 className="text-lg font-mono font-semibold text-primary">
-          Time to Containment Breach (Countdown)
-        </h3>
-      </CardHeader>
-
-      <CardContent>
-        <p className="text-sm font-mono text-muted-foreground mb-1">
-          <strong>Countdown:</strong>{" "}
-          T‑{days}d {hours}h {minutes}m {seconds}s
-        </p>
-
-        <p className="text-sm font-mono text-muted-foreground mb-1">
-          <strong>Event date:</strong> {eventDate}
-        </p>
-
-        <p className="text-sm font-mono text-muted-foreground">
-          {diffMs <= 0
-            ? "The breach has launched – you may now access the challenges."
-            : "Preparation underway: countdown continues."}
-        </p>
-      </CardContent>
-    </Card>
-  );
-};
 
 /* --------------------------------------------------------------------- */
 /*  Main component – Challenges                                        */
@@ -141,11 +88,6 @@ export default function Challenges() {
   const [ctfSettings, setCtfSettings] = useState<CTFSettings | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  /* ------------------------------------------------------------------- */
-  /*  Countdown target                                                */
-  /* ------------------------------------------------------------------- */
-  const COUNTDOWN_TARGET = new Date("2025-12-06T00:00:00Z"); // 6 Dec 2025 UTC
 
   /* ------------------------------------------------------------------- */
   /*  Load data once on mount                                          */
@@ -249,15 +191,20 @@ export default function Challenges() {
       <div className="min-h-screen flex flex-col matrix-bg">
         <Navbar />
 
-        {/* Countdown card – shown even when the CTF is inactive */}
-        <ContainmentCountdown until={COUNTDOWN_TARGET} />
-
         <main className="flex-1 container mx-auto px-4 py-8">
           <SCPHeader
             classification="SAFE"
             itemNumber="SCP-CTF"
             title="CTF EVENT STATUS"
           />
+          
+          {/* Show countdown only if there are settings and we're before start */}
+          {ctfSettings && isBeforeStart && (
+            <div className="mt-8">
+              <CTFCountdown startTime={ctfSettings.start_time} />
+            </div>
+          )}
+
           <div className="max-w-3xl mx-auto mt-8">
             <Card className="scp-paper border-2 border-border">
               <CardHeader>
@@ -270,7 +217,9 @@ export default function Challenges() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground font-mono text-sm">
-                 Still got time to suit up fellas. Get your best tools...
+                  {isBeforeStart 
+                    ? "Still got time to suit up fellas. Get your best tools..."
+                    : "No active CTF event. Check back later or contact administrators."}
                 </p>
               </CardContent>
             </Card>
@@ -294,8 +243,12 @@ export default function Challenges() {
           title="ACTIVE CONTAINMENT BREACHES"
         />
 
-        {/* Countdown displayed in a card at the top of the page */}
-        <ContainmentCountdown until={COUNTDOWN_TARGET} />
+        {/* Show countdown if CTF hasn't started yet */}
+        {ctfSettings && isBeforeStart && (
+          <div className="mt-8">
+            <CTFCountdown startTime={ctfSettings.start_time} />
+          </div>
+        )}
 
         {challenges.length === 0 ? (
           <div className="max-w-3xl mx-auto mt-8">
