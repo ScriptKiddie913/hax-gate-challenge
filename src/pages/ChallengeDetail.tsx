@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Flag, ArrowLeft, ExternalLink, Download, Send, Trophy, Lock } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import scpFacility from "@/assets/scp-facility.png";
 
 interface Challenge {
   id: string;
@@ -129,12 +130,20 @@ export default function ChallengeDetail() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col relative overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 animate-fade-in"
+          style={{ 
+            backgroundImage: `url(${scpFacility})`,
+            filter: 'brightness(0.3) contrast(1.3)'
+          }}
+        />
+        <div className="absolute inset-0 matrix-bg opacity-50" />
         <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="scp-paper border-2 border-border p-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4"></div>
-            <p className="font-mono">ACCESSING CLASSIFIED FILE...</p>
+        <div className="flex-1 flex items-center justify-center relative z-10">
+          <div className="scp-paper border-2 border-primary p-8 scan-line glow-red">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4" />
+            <p className="font-mono text-primary pulse-glow">ACCESSING CLASSIFIED FILE...</p>
           </div>
         </div>
       </div>
@@ -143,12 +152,20 @@ export default function ChallengeDetail() {
 
   if (!challenge) {
     return (
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col relative overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 animate-fade-in"
+          style={{ 
+            backgroundImage: `url(${scpFacility})`,
+            filter: 'brightness(0.3) contrast(1.3)'
+          }}
+        />
+        <div className="absolute inset-0 matrix-bg opacity-50" />
         <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="scp-paper border-2 border-border p-8 text-center">
-            <p className="font-mono text-xl mb-2">DOCUMENT NOT FOUND</p>
-            <p className="text-muted-foreground">Classification error or insufficient clearance</p>
+        <div className="flex-1 flex items-center justify-center relative z-10">
+          <div className="scp-paper border-2 border-destructive p-8 text-center glow-red">
+            <p className="font-mono text-xl mb-2 text-destructive flicker">DOCUMENT NOT FOUND</p>
+            <p className="text-muted-foreground font-mono">Classification error or insufficient clearance</p>
           </div>
         </div>
       </div>
@@ -156,14 +173,22 @@ export default function ChallengeDetail() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 animate-fade-in"
+        style={{ 
+          backgroundImage: `url(${scpFacility})`,
+          filter: 'brightness(0.3) contrast(1.3)'
+        }}
+      />
+      <div className="absolute inset-0 matrix-bg opacity-40" />
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8 relative z-10">
         <Button
           variant="outline"
           onClick={() => navigate("/challenges")}
-          className="mb-6 gap-2 font-mono border-2"
+          className="mb-6 gap-2 font-mono border-2 hover:border-primary hover:text-primary hover:scale-105 transition-all animate-fade-in"
         >
           <ArrowLeft className="h-4 w-4" />
           RETURN TO INDEX
@@ -171,15 +196,15 @@ export default function ChallengeDetail() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <Card className="scp-paper border-2 border-border">
+            <Card className="scp-paper border-2 border-border scan-line animate-fade-in backdrop-blur-sm">
               <CardHeader>
-                <div className="classification-bar mb-4"></div>
+                <div className="classification-bar mb-4 pulse-glow"></div>
                 <div className="flex items-start justify-between mb-4">
                   <div className="space-y-3 flex-1">
                     <div className="flex items-center gap-3 flex-wrap">
                       <Badge 
                         variant="outline" 
-                        className={`font-mono text-xs border-2 ${
+                        className={`font-mono text-xs border-2 animate-fade-in ${
                           challenge.category === 'Safe' ? 'bg-green-500/20 text-green-500 border-green-500/30' :
                           challenge.category === 'Archon' ? 'bg-blue-500/20 text-blue-500 border-blue-500/30' :
                           challenge.category === 'Keter' ? 'bg-orange-500/20 text-orange-500 border-orange-500/30' :
@@ -189,22 +214,22 @@ export default function ChallengeDetail() {
                       >
                         {challenge.category.toUpperCase()}
                       </Badge>
-                      <Badge variant="outline" className="bg-primary/20 text-primary border-primary font-mono text-xs">
+                      <Badge variant="outline" className="bg-primary/20 text-primary border-primary font-mono text-xs glow-red animate-fade-in-delay">
                         {challenge.points} POINTS
                       </Badge>
                       {isSolved && (
-                        <Badge variant="outline" className="bg-success/20 text-success border-success gap-1 font-mono text-xs">
+                        <Badge variant="outline" className="bg-success/20 text-success border-success gap-1 font-mono text-xs animate-fade-in pulse-glow">
                           <Trophy className="h-3 w-3" />
                           CONTAINED
                         </Badge>
                       )}
                     </div>
-                    <CardTitle className="text-2xl font-mono">{challenge.title}</CardTitle>
+                    <CardTitle className="text-2xl font-mono text-primary animate-fade-in">{challenge.title}</CardTitle>
                   </div>
                 </div>
-                <div className="classification-bar"></div>
+                <div className="classification-bar pulse-glow"></div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="animate-fade-in-delay">
                 <div className="prose prose-sm max-w-none [&>*]:text-foreground [&_strong]:text-foreground [&_em]:text-muted-foreground">
                   <ReactMarkdown>{challenge.description_md}</ReactMarkdown>
                 </div>
