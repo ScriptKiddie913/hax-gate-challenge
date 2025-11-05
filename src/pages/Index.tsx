@@ -1,33 +1,31 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { SCPHeader } from "@/components/SCPHeader";
 import { Shield, AlertTriangle, Lock, FileText, ArrowRight, TerminalSquare, Database, KeyRound } from "lucide-react";
+import scpFacility from "@/assets/scp-facility.png";
+import scpCorridor from "@/assets/scp-corridor.png";
+import scpCreature from "@/assets/scp-creature.png";
 
 const Index = () => {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    checkUser();
-  }, []);
-
-  const checkUser = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session && session.user.email_confirmed_at) {
-      navigate("/challenges");
-    }
-  };
-
   return (
-    <div className="min-h-screen flex flex-col matrix-bg">
+    <div className="min-h-screen flex flex-col">
       <Navbar />
       
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="py-16 px-4 relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-primary/5 via-transparent to-transparent pointer-events-none"></div>
+        <section className="py-16 px-4 relative overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 animate-fade-in"
+            style={{ 
+              backgroundImage: `url(${scpFacility})`,
+              filter: 'brightness(0.7) contrast(1.2)'
+            }}
+          ></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/90 via-background/70 to-background/90 pointer-events-none"></div>
+          <div className="absolute inset-0 matrix-bg opacity-30"></div>
           
           <div className="container mx-auto relative z-10">
             <SCPHeader 
@@ -104,8 +102,16 @@ const Index = () => {
               </div>
 
               {/* Features Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group scan-line animate-fade-in">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 relative">
+                <div 
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 rounded-lg animate-fade-in-delay"
+                  style={{ 
+                    backgroundImage: `url(${scpCorridor})`,
+                    filter: 'brightness(0.5) contrast(1.3)',
+                    zIndex: -1
+                  }}
+                ></div>
+                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary hover:scale-105 transition-all duration-300 group scan-line animate-fade-in backdrop-blur-sm">
                   <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-primary group-hover:glow-red transition-all relative">
                     <FileText className="h-10 w-10 group-hover:text-primary transition-colors" />
                     <div className="absolute inset-0 border-3 border-primary opacity-0 group-hover:opacity-100 animate-ping transition-opacity"></div>
@@ -117,7 +123,7 @@ const Index = () => {
                   </p>
                 </div>
 
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group scan-line animate-fade-in-delay">
+                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary hover:scale-105 transition-all duration-300 group scan-line animate-fade-in-delay backdrop-blur-sm">
                   <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-destructive group-hover:glow-red transition-all relative">
                     <AlertTriangle className="h-10 w-10 text-destructive group-hover:animate-pulse" />
                     <div className="absolute inset-0 border-3 border-destructive opacity-0 group-hover:opacity-100 animate-ping transition-opacity"></div>
@@ -129,7 +135,7 @@ const Index = () => {
                   </p>
                 </div>
 
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group scan-line animate-fade-in">
+                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary hover:scale-105 transition-all duration-300 group scan-line animate-fade-in backdrop-blur-sm">
                   <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-success group-hover:glow-red transition-all relative">
                     <Lock className="h-10 w-10 group-hover:text-success transition-colors" />
                     <div className="absolute inset-0 border-3 border-success opacity-0 group-hover:opacity-100 animate-ping transition-opacity"></div>
@@ -144,7 +150,7 @@ const Index = () => {
 
               {/* Additional System Section */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in-delay">
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group">
+                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary hover:scale-105 transition-all duration-300 group">
                   <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-primary transition-all relative">
                     <TerminalSquare className="h-10 w-10 group-hover:text-primary transition-colors" />
                   </div>
@@ -155,7 +161,7 @@ const Index = () => {
                   </p>
                 </div>
 
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group">
+                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary hover:scale-105 transition-all duration-300 group">
                   <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-primary transition-all relative">
                     <Database className="h-10 w-10 group-hover:text-primary transition-colors" />
                   </div>
@@ -166,7 +172,7 @@ const Index = () => {
                   </p>
                 </div>
 
-                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary transition-all group">
+                <div className="scp-paper border-2 border-border p-6 text-center hover:border-primary hover:scale-105 transition-all duration-300 group">
                   <div className="inline-flex items-center justify-center w-16 h-16 border-3 border-accent bg-background mb-4 group-hover:border-primary transition-all relative">
                     <KeyRound className="h-10 w-10 group-hover:text-primary transition-colors" />
                   </div>
@@ -179,8 +185,16 @@ const Index = () => {
               </div>
 
               {/* Security Notice */}
-              <div className="border-classified p-8 bg-primary/5 glow-red animate-fade-in-delay">
-                <div className="flex items-start gap-4">
+              <div className="border-classified p-8 bg-primary/5 glow-red animate-fade-in-delay relative overflow-hidden">
+                <div 
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15 animate-fade-in"
+                  style={{ 
+                    backgroundImage: `url(${scpCreature})`,
+                    filter: 'brightness(0.4) contrast(1.2)'
+                  }}
+                ></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/80 to-background/95"></div>
+                <div className="flex items-start gap-4 relative z-10">
                   <AlertTriangle className="h-12 w-12 text-primary flex-shrink-0 mt-1 animate-pulse" />
                   <div>
                     <h3 className="text-2xl font-bold mb-3 text-primary scp-header flicker">
