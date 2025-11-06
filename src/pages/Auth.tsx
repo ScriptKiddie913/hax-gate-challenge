@@ -17,11 +17,33 @@ export default function Auth() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // 🔒 List of common disposable email domains
+  const disposableDomains = [
+    "tempmail.com", "10minutemail.com", "guerrillamail.com", "mailinator.com",
+    "yopmail.com", "trashmail.com", "getnada.com", "fakeinbox.com", "dispostable.com",
+    "maildrop.cc", "throwawaymail.com", "sharklasers.com", "mailnesia.com", "temporary-mail.net",
+    "mintemail.com", "mailpoof.com", "moakt.cc", "spamgourmet.com", "anonbox.net", "mytemp.email"
+  ];
+
+  // ✅ Function to check if email domain is disposable
+  const isDisposableEmail = (email: string) => {
+    const domain = email.split("@")[1]?.toLowerCase();
+    return disposableDomains.some((d) => domain?.includes(d));
+  };
+
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
     try {
+      // 🚫 Reject temporary emails
+      if (isDisposableEmail(email)) {
+        toast.error("Temporary or disposable email addresses are not allowed.");
+        setLoading(false);
+        return;
+      }
+
+      // Check if username already exists
       const { data: existingUser } = await supabase
         .from("profiles")
         .select("username")
@@ -99,7 +121,6 @@ export default function Auth() {
         backgroundAttachment: "fixed",
       }}
     >
-      {/* Gradient overlay for consistency */}
       <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a]/50 via-[#0a0e1a]/40 to-[#0a0e1a]/60 backdrop-blur-[2px]"></div>
 
       <Navbar />
@@ -111,8 +132,7 @@ export default function Auth() {
               <Flag className="h-10 w-10 text-[#a8c8ff] animate-pulse-slow" />
             </div>
             <h1 className="text-3xl font-bold mb-2 text-[#bcd0ff]">
-              Welcome to{" "}
-              <span className="text-[#9fc3ff] font-bold">HaxGate CTF</span>
+              Welcome to <span className="text-[#9fc3ff] font-bold">SCP CTF</span>
             </h1>
             <p className="text-[#c9d8ff]/90 font-mono text-sm">
               Enter the gate. Capture the flags.
@@ -146,9 +166,7 @@ export default function Auth() {
                 <CardContent>
                   <form onSubmit={handleSignIn} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signin-email" className="text-[#c6d8ff]">
-                        Email
-                      </Label>
+                      <Label htmlFor="signin-email" className="text-[#c6d8ff]">Email</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-[#bcd0ff]/70" />
                         <Input
@@ -163,9 +181,7 @@ export default function Auth() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signin-password" className="text-[#c6d8ff]">
-                        Password
-                      </Label>
+                      <Label htmlFor="signin-password" className="text-[#c6d8ff]">Password</Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-3 h-4 w-4 text-[#bcd0ff]/70" />
                         <Input
@@ -195,9 +211,7 @@ export default function Auth() {
             <TabsContent value="signup">
               <Card className="border border-white/10 bg-white/5 backdrop-blur-2xl shadow-[0_0_30px_rgba(255,255,255,0.05)] rounded-xl text-[#eaf0ff]">
                 <CardHeader>
-                  <CardTitle className="text-[#bcd0ff]">
-                    Create Account
-                  </CardTitle>
+                  <CardTitle className="text-[#bcd0ff]">Create Account</CardTitle>
                   <CardDescription className="text-[#d4e0ff]/80">
                     Join the challenge and prove your skills
                   </CardDescription>
@@ -205,12 +219,7 @@ export default function Auth() {
                 <CardContent>
                   <form onSubmit={handleSignUp} className="space-y-4">
                     <div className="space-y-2">
-                      <Label
-                        htmlFor="signup-username"
-                        className="text-[#c6d8ff]"
-                      >
-                        Username
-                      </Label>
+                      <Label htmlFor="signup-username" className="text-[#c6d8ff]">Username</Label>
                       <div className="relative">
                         <User className="absolute left-3 top-3 h-4 w-4 text-[#bcd0ff]/70" />
                         <Input
@@ -225,9 +234,7 @@ export default function Auth() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email" className="text-[#c6d8ff]">
-                        Email
-                      </Label>
+                      <Label htmlFor="signup-email" className="text-[#c6d8ff]">Email</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-[#bcd0ff]/70" />
                         <Input
@@ -242,9 +249,7 @@ export default function Auth() {
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password" className="text-[#c6d8ff]">
-                        Password
-                      </Label>
+                      <Label htmlFor="signup-password" className="text-[#c6d8ff]">Password</Label>
                       <div className="relative">
                         <Lock className="absolute left-3 top-3 h-4 w-4 text-[#bcd0ff]/70" />
                         <Input
