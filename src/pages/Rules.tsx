@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import {
   Card,
@@ -8,32 +9,77 @@ import {
 import { AlertCircle, Trophy, Flag, Ban } from "lucide-react";
 
 export default function Rules() {
+  const [blobs, setBlobs] = useState<
+    { id: number; top: string; left: string; size: string; delay: string }[]
+  >([]);
+
+  useEffect(() => {
+    // Random glowing light blobs
+    const generatedBlobs = Array.from({ length: 8 }).map((_, i) => ({
+      id: i,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      size: `${80 + Math.random() * 120}px`,
+      delay: `${Math.random() * 5}s`,
+    }));
+    setBlobs(generatedBlobs);
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div
+      className="min-h-screen flex flex-col relative overflow-hidden"
+      style={{
+        backgroundImage: "url('/images/r.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      {/* Flickering blue ambient overlay */}
+      <div className="absolute inset-0 bg-[#010b1a]/80 backdrop-blur-sm animate-[ambient_6s_infinite]"></div>
+
+      {/* Glowing random light blobs */}
+      {blobs.map((blob) => (
+        <div
+          key={blob.id}
+          className="absolute rounded-full bg-cyan-400/10 blur-3xl animate-[blink_6s_infinite]"
+          style={{
+            top: blob.top,
+            left: blob.left,
+            width: blob.size,
+            height: blob.size,
+            animationDelay: blob.delay,
+          }}
+        ></div>
+      ))}
+
       <Navbar />
 
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-8">
+      <main className="flex-1 container mx-auto px-4 py-12 relative z-10">
+        <div className="max-w-4xl mx-auto space-y-8 text-[#cdd9ff]">
           {/* Heading */}
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">
-              <span className="text-gradient-cyan">Rules & Guidelines</span>
+          <div className="text-center mb-12 animate-fade-in">
+            <h1 className="text-5xl font-extrabold mb-4 text-[#9fc5ff] tracking-wide">
+              <span className="text-gradient-cyan drop-shadow-[0_0_10px_#005eff]">
+                Rules & Guidelines
+              </span>
             </h1>
-            <p className="text-lg text-muted-foreground">
-              Please read and follow these rules to ensure fair play
+            <p className="text-lg text-[#aebeff] font-light">
+              Please read and follow these rules to ensure fair play.
             </p>
           </div>
 
           {/* Important notice */}
-          <Card className="border-border bg-card/50 backdrop-blur border-primary/30">
+          <Card className="border border-[#3d6cff]/40 bg-[#0a1530]/60 backdrop-blur-xl shadow-[0_0_30px_rgba(0,60,255,0.15)] hover:shadow-[0_0_40px_rgba(0,90,255,0.25)] transition-all duration-500">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-primary">
+              <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
                 <AlertCircle className="h-5 w-5" />
                 Important Notice
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-foreground">
+              <p className="text-[#d9e3ff] leading-relaxed">
                 All participants must follow these rules. Violation may result in disqualification
                 or permanent ban from the platform. Report any suspicious activity immediately.
               </p>
@@ -41,165 +87,116 @@ export default function Rules() {
           </Card>
 
           {/* Scoring rules */}
-          <Card className="border-border bg-card/50 backdrop-blur">
+          <Card className="border border-[#3358ff]/30 bg-[#081226]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Trophy className="h-5 w-5 text-primary" />
+              <CardTitle className="flex items-center gap-2 text-[#62a0ff]">
+                <Trophy className="h-5 w-5" />
                 Scoring Rules
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 list-none">
+              <ul className="space-y-3 list-none text-[#d0dbff]">
                 <li className="flex gap-3">
-                  <span className="text-primary">•</span>
+                  <span className="text-[#4eaaff]">•</span>
                   <span>
                     Each challenge is worth a specific number of points based on difficulty.
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-primary">•</span>
+                  <span className="text-[#4eaaff]">•</span>
                   <span>
                     Points are awarded only for the <strong>first correct submission</strong> per user per challenge.
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-primary">•</span>
+                  <span className="text-[#4eaaff]">•</span>
                   <span>
-                    Once you solve a challenge, it becomes <strong>locked</strong> - no further submissions are accepted for that challenge.
+                    Once you solve a challenge, it becomes <strong>locked</strong> - no further submissions are accepted.
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-primary">•</span>
+                  <span className="text-[#4eaaff]">•</span>
                   <span>
-                    Scoreboard ranks are determined by total points, with ties broken by the timestamp of the last
-                    successful submission (earlier is better).
+                    Scoreboard ranks are determined by total points, with ties broken by the last
+                    correct submission timestamp.
                   </span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-primary">•</span>
-                  <span>Your username (chosen during registration) will be displayed on the public scoreboard.</span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
           {/* Submission rules */}
-          <Card className="border-border bg-card/50 backdrop-blur">
+          <Card className="border border-[#2f5aff]/30 bg-[#0b1935]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Flag className="h-5 w-5 text-primary" />
+              <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
+                <Flag className="h-5 w-5" />
                 Submission Rules
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 list-none">
+              <ul className="space-y-3 list-none text-[#d0dbff]">
                 <li className="flex gap-3">
-                  <span className="text-primary">•</span>
+                  <span className="text-[#4eaaff]">•</span>
                   <span>
-                    Flags must be submitted in the exact format specified in the challenge description (usually{" "}
-                    <code className="font-mono bg-secondary px-1 py-0.5 rounded">scpctf{"{...}"}</code>).
+                    Flags must match the format in the challenge description (usually{" "}
+                    <code className="font-mono bg-[#112249]/70 px-1 py-0.5 rounded text-[#b8d4ff]">scpctf{"{...}"}</code>).
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-primary">•</span>
-                  <span>You can attempt a challenge <strong>unlimited times</strong> until you find the correct flag.</span>
+                  <span className="text-[#4eaaff]">•</span>
+                  <span>You can attempt unlimited times until correct.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-primary">•</span>
-                  <span>Rate limiting is in place to prevent brute‑force attacks. Please solve challenges legitimately.</span>
+                  <span className="text-[#4eaaff]">•</span>
+                  <span>Rate limiting prevents brute-force submissions.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-primary">•</span>
-                  <span>
-                    Do not share flags or solutions publicly. Helping others learn is encouraged, but don&apos;t give away answers.
-                  </span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-primary">•</span>
-                  <span>Once a correct flag is submitted, the challenge is immediately locked for that user.</span>
+                  <span className="text-[#4eaaff]">•</span>
+                  <span>Do not share flags or writeups during the event.</span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
           {/* Prohibited activities */}
-          <Card className="border-border bg-card/50 backdrop-blur">
+          <Card className="border border-[#3c4fff]/30 bg-[#08162d]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Ban className="h-5 w-5 text-destructive" />
+              <CardTitle className="flex items-center gap-2 text-[#ff5c5c]">
+                <Ban className="h-5 w-5" />
                 Prohibited Activities
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 list-none">
+              <ul className="space-y-3 list-none text-[#d0dbff]">
                 <li className="flex gap-3">
-                  <span className="text-destructive">✕</span>
-                  <span>
-                    <strong>No attacks on the platform itself</strong> - Only attack the designated challenge services.
-                  </span>
+                  <span className="text-[#ff5c5c]">✕</span>
+                  <span><strong>No attacks on platform</strong> - Only attack designated challenges.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-destructive">✕</span>
-                  <span>
-                    <strong>No sharing of flags or writeups</strong> during the active period of challenges.
-                  </span>
+                  <span className="text-[#ff5c5c]">✕</span>
+                  <span><strong>No sharing of flags</strong> during active challenges.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-destructive">✕</span>
-                  <span>
-                    <strong>No automated brute‑forcing</strong> - Excessive failed submission attempts will be flagged.
-                  </span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-destructive">✕</span>
-                  <span>
-                    <strong>No DDoS or flooding</strong> - Attacking challenge infrastructure is prohibited.
-                  </span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-destructive">✕</span>
-                  <span>
-                    <strong>No multi‑accounting</strong> - One account per person. Creating multiple accounts is cheating.
-                  </span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-destructive">✕</span>
-                  <span>
-                    <strong>No flag format manipulation</strong> - Don&apos;t try to circumvent the submission system.
-                  </span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          {/* Account & Access */}
-          <Card className="border-border bg-card/50 backdrop-blur">
-            <CardHeader>
-              <CardTitle>Account & Access</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <ul className="space-y-3 list-none">
-                <li className="flex gap-3">
-                  <span className="text-primary">•</span>
-                  <span>Email verification is <strong>required</strong> before accessing challenges.</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-primary">•</span>
-                  <span>Keep your account credentials secure. You are responsible for all activity on your account.</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-primary">•</span>
-                  <span>Choose a username that is appropriate and professional (it will be public on the scoreboard).</span>
-                </li>
-                <li className="flex gap-3">
-                  <span className="text-primary">•</span>
-                  <span>Accounts found violating rules may be suspended or permanently banned.</span>
+                  <span className="text-[#ff5c5c]">✕</span>
+                  <span><strong>No DDoS or brute-forcing</strong> - violations trigger suspension.</span>
                 </li>
               </ul>
             </CardContent>
           </Card>
         </div>
       </main>
+
+      {/* Keyframes */}
+      <style>{`
+        @keyframes blink {
+          0%, 100% { opacity: 0; transform: scale(0.8); }
+          50% { opacity: 0.3; transform: scale(1.2); }
+        }
+        @keyframes ambient {
+          0%, 100% { opacity: 0.95; filter: brightness(0.9); }
+          50% { opacity: 0.85; filter: brightness(1.05); }
+        }
+      `}</style>
     </div>
   );
 }
