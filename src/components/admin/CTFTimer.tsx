@@ -50,10 +50,15 @@ export function CTFTimer() {
   };
 
   const formatDateTimeLocal = (isoString: string): string => {
+    // Convert UTC timestamp to local datetime-local format
     const date = new Date(isoString);
-    const offset = date.getTimezoneOffset() * 60000;
-    const localDate = new Date(date.getTime() - offset);
-    return localDate.toISOString().slice(0, 16);
+    // Get local date components
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
   const handleSave = async () => {
@@ -62,6 +67,7 @@ export function CTFTimer() {
       return;
     }
 
+    // Convert local datetime-local input to UTC timestamp
     const start = new Date(startTime);
     const end = new Date(endTime);
 
@@ -70,6 +76,10 @@ export function CTFTimer() {
       return;
     }
 
+    // Convert to ISO string (UTC)
+    const startUTC = start.toISOString();
+    const endUTC = end.toISOString();
+
     setSaving(true);
     try {
       if (settings) {
@@ -77,8 +87,8 @@ export function CTFTimer() {
         const { error } = await supabase
           .from('ctf_settings')
           .update({
-            start_time: start.toISOString(),
-            end_time: end.toISOString()
+            start_time: startUTC,
+            end_time: endUTC
           })
           .eq('id', settings.id);
 
@@ -88,15 +98,15 @@ export function CTFTimer() {
         const { error } = await supabase
           .from('ctf_settings')
           .insert({
-            start_time: start.toISOString(),
-            end_time: end.toISOString(),
+            start_time: startUTC,
+            end_time: endUTC,
             is_active: true
           });
 
         if (error) throw error;
       }
 
-      toast.success("CTF timer updated successfully");
+      toast.success("CTF timer updated successfully! Times stored in UTC.");
       await loadSettings();
     } catch (error: any) {
       toast.error("Error saving CTF settings");

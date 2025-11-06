@@ -18,11 +18,10 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
         return;
       }
 
-      // Ensure start time is parsed as UTC. Add "Z" if missing.
+      // Parse the start time - it's already a UTC timestamp from Supabase
       let parsedStartTime: number;
       try {
-        const normalized = startTime.endsWith("Z") ? startTime : startTime + "Z";
-        parsedStartTime = Date.parse(normalized);
+        parsedStartTime = Date.parse(startTime);
       } catch (err) {
         setIsValid(false);
         setTimeLeft("INVALID TIME");
