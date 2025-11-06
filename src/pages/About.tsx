@@ -14,13 +14,13 @@ export default function About() {
   >([]);
 
   useEffect(() => {
-    // Generate calm, random fireflies
-    const generated = Array.from({ length: 18 }).map((_, i) => ({
+    // Generate more visible calm fireflies
+    const generated = Array.from({ length: 25 }).map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
       delay: `${Math.random() * 6}s`,
-      size: `${2 + Math.random() * 3}px`,
+      size: `${3 + Math.random() * 4}px`,
     }));
     setFireflies(generated);
   }, []);
@@ -34,24 +34,27 @@ export default function About() {
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
+        filter: "brightness(1.05) contrast(1.1) saturate(1.15)",
       }}
     >
-      {/* Soft blue ambient overlay */}
-      <div className="absolute inset-0 bg-[#030b1d]/80 backdrop-blur-xl"></div>
+      {/* Deepened blue ambient overlay */}
+      <div className="absolute inset-0 bg-[#030b1d]/70 backdrop-blur-[3px]"></div>
 
-      {/* Blinking holographic light gradient */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(70,120,255,0.15),transparent_70%)] animate-[softblink_6s_infinite_ease-in-out]"></div>
+      {/* Pulsing holographic gradient shimmer */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_60%,rgba(90,150,255,0.2),transparent_70%)] animate-[softblink_5s_infinite_ease-in-out]"></div>
 
-      {/* Gentle floating fireflies */}
+      {/* Glowing floating fireflies */}
       {fireflies.map((f) => (
         <div
           key={f.id}
-          className="absolute bg-[#9ccaff]/70 rounded-full blur-[2px] opacity-70 animate-[float_10s_infinite_ease-in-out]"
+          className="absolute bg-[#b8d6ff] rounded-full blur-[3px] opacity-80 animate-[float_10s_infinite_ease-in-out]"
           style={{
             top: f.top,
             left: f.left,
             width: f.size,
             height: f.size,
+            boxShadow:
+              "0 0 10px rgba(160,200,255,0.6), 0 0 20px rgba(120,160,255,0.4)",
             animationDelay: f.delay,
           }}
         ></div>
@@ -63,22 +66,22 @@ export default function About() {
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Title section */}
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4 text-[#b5ceff]">
+            <h1 className="text-4xl font-bold mb-4 text-[#c7dbff] drop-shadow-[0_0_15px_rgba(90,150,255,0.5)]">
               About{" "}
-              <span className="text-[#7fbaff] drop-shadow-[0_0_10px_#4a8cff]">
+              <span className="text-[#8ebfff] drop-shadow-[0_0_12px_#5a9aff]">
                 SecureContainProtect CTF
               </span>
             </h1>
-            <p className="text-lg text-[#a8bfff]/90">
+            <p className="text-lg text-[#a8bfff]/95">
               A platform for cybersecurity enthusiasts to test and improve their hacking skills
             </p>
           </div>
 
           {/* Our Mission */}
-          <Card className="border border-[#3d6cff]/20 bg-[#081226]/40 backdrop-blur-xl shadow-[0_0_25px_rgba(0,80,255,0.15)] hover:shadow-[0_0_35px_rgba(0,90,255,0.25)] transition-all duration-500">
+          <Card className="border border-[#3d6cff]/30 bg-[#081226]/50 backdrop-blur-2xl shadow-[0_0_35px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(100,160,255,0.3)] transition-all duration-500">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#8abaff]">
-                <Target className="h-5 w-5 text-[#9ccaff]" />
+              <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
+                <Target className="h-5 w-5 text-[#b0d1ff]" />
                 Our Mission
               </CardTitle>
             </CardHeader>
@@ -97,14 +100,14 @@ export default function About() {
           </Card>
 
           {/* How It Works */}
-          <Card className="border border-[#2f5aff]/20 bg-[#08152b]/40 backdrop-blur-xl shadow-[0_0_20px_rgba(0,60,255,0.15)] hover:shadow-[0_0_30px_rgba(0,90,255,0.2)] transition-all duration-500">
+          <Card className="border border-[#3b6eff]/25 bg-[#0a1530]/55 backdrop-blur-2xl shadow-[0_0_30px_rgba(60,100,255,0.25)] hover:shadow-[0_0_40px_rgba(90,140,255,0.3)] transition-all duration-500">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
-                <Flag className="h-5 w-5 text-[#8abaff]" />
+              <CardTitle className="flex items-center gap-2 text-[#a2caff]">
+                <Flag className="h-5 w-5 text-[#b5d4ff]" />
                 How It Works
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 text-[#d0dbff]/90">
+            <CardContent className="space-y-4 text-[#d0dbff]/95">
               <div className="space-y-3">
                 {[
                   {
@@ -134,11 +137,11 @@ export default function About() {
                   },
                 ].map(({ step, title, desc }) => (
                   <div key={step} className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#8abaff]/10 border border-[#9ccaff]/40 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-[0_0_8px_rgba(138,186,255,0.3)]">
-                      <span className="text-[#b2d1ff] font-bold">{step}</span>
+                    <div className="w-8 h-8 rounded-full bg-[#8abaff]/15 border border-[#a2caff]/40 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-[0_0_12px_rgba(130,180,255,0.4)]">
+                      <span className="text-[#c8dcff] font-bold">{step}</span>
                     </div>
                     <div>
-                      <h3 className="font-semibold mb-1 text-[#bcd2ff]">{title}</h3>
+                      <h3 className="font-semibold mb-1 text-[#c0d4ff]">{title}</h3>
                       <p className="text-[#a8bfff]/90">{desc}</p>
                     </div>
                   </div>
@@ -148,14 +151,14 @@ export default function About() {
           </Card>
 
           {/* Community & Support */}
-          <Card className="border border-[#3c4fff]/20 bg-[#08162d]/40 backdrop-blur-xl shadow-[0_0_20px_rgba(0,60,255,0.15)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
+          <Card className="border border-[#3c4fff]/25 bg-[#08162d]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(80,130,255,0.3)] transition-all duration-500">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#7fbaff]">
-                <Users className="h-5 w-5 text-[#8abaff]" />
+              <CardTitle className="flex items-center gap-2 text-[#8abaff]">
+                <Users className="h-5 w-5 text-[#b2d1ff]" />
                 Community & Support
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 text-[#d9e3ff]/90 leading-relaxed">
+            <CardContent className="space-y-4 text-[#d9e3ff]/95 leading-relaxed">
               <p>
                 Join our growing community of cybersecurity enthusiasts. Share knowledge, collaborate
                 on challenges, and help each other improve.
@@ -166,7 +169,7 @@ export default function About() {
                   href="https://discord.gg/g8FnU4vGJv"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#9ccaff] underline ml-1 hover:text-[#b6d1ff]"
+                  className="text-[#a8c8ff] underline ml-1 hover:text-[#c2d8ff] transition-all"
                 >
                   Discord
                 </a>
@@ -175,20 +178,20 @@ export default function About() {
           </Card>
 
           {/* Legal & Ethics */}
-          <Card className="border border-[#2d4fff]/20 bg-[#0b1530]/40 backdrop-blur-xl shadow-[0_0_20px_rgba(0,60,255,0.15)] hover:shadow-[0_0_30px_rgba(0,90,255,0.25)] transition-all duration-500">
+          <Card className="border border-[#2d4fff]/25 bg-[#0b1530]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(0,90,255,0.3)] transition-all duration-500">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#8abaff]">
-                <Shield className="h-5 w-5 text-[#9ccaff]" />
+              <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
+                <Shield className="h-5 w-5 text-[#b5d4ff]" />
                 Legal & Ethics
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 text-[#d0dbff]/90 leading-relaxed">
+            <CardContent className="space-y-4 text-[#d0dbff]/95 leading-relaxed">
               <p>
                 All challenges on SecureContainProtect CTF are designed for educational purposes. The skills you
                 learn here should be used ethically and responsibly. Unauthorized access to computer
                 systems is illegal and unethical.
               </p>
-              <p className="text-sm text-[#a8bfff]/80">
+              <p className="text-sm text-[#a8bfff]/85">
                 By using this platform, you agree to use your skills for good and follow all applicable
                 laws and regulations.
               </p>
@@ -200,15 +203,15 @@ export default function About() {
       {/* Animations */}
       <style>{`
         @keyframes softblink {
-          0%, 100% { opacity: 0.3; filter: brightness(0.9); }
-          50% { opacity: 0.6; filter: brightness(1.1); }
+          0%, 100% { opacity: 0.4; filter: brightness(0.9); }
+          50% { opacity: 0.9; filter: brightness(1.15); }
         }
 
         @keyframes float {
           0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.6; }
-          25% { transform: translateY(-10px) translateX(4px) scale(1.1); opacity: 0.8; }
-          50% { transform: translateY(-5px) translateX(-3px) scale(0.9); opacity: 0.5; }
-          75% { transform: translateY(5px) translateX(6px) scale(1.05); opacity: 0.7; }
+          25% { transform: translateY(-15px) translateX(6px) scale(1.1); opacity: 0.9; }
+          50% { transform: translateY(-8px) translateX(-4px) scale(0.95); opacity: 0.5; }
+          75% { transform: translateY(8px) translateX(5px) scale(1.05); opacity: 0.8; }
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.6; }
         }
       `}</style>
