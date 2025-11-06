@@ -132,7 +132,7 @@ export default function Auth() {
               <Flag className="h-10 w-10 text-[#a8c8ff] animate-pulse-slow" />
             </div>
             <h1 className="text-3xl font-bold mb-2 text-[#bcd0ff]">
-              Welcome to <span className="text-[#9fc3ff] font-bold">HaxGate CTF</span>
+              Welcome to <span className="text-[#9fc3ff] font-bold">SCP CTF</span>
             </h1>
             <p className="text-[#c9d8ff]/90 font-mono text-sm">
               Enter the gate. Capture the flags.
