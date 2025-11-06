@@ -30,6 +30,8 @@ interface Challenge {
   category: string;
   points: number;
   description_md: string;
+  files?: Array<{ name: string; url: string }>;
+  links?: Array<{ name: string; url: string }>;
 }
 
 interface CTFSettings {
@@ -39,41 +41,30 @@ interface CTFSettings {
 }
 
 /* --------------------------------------------------------------------- */
-/*  Category styling helper                                           */
+/*  Category helpers                                                   */
 /* --------------------------------------------------------------------- */
-const getCategoryDetails = (category: string) => {
-  switch (category) {
-    case "Safe":
-      return {
-        label: "SAFE",
-        difficulty: "Very Easy",
-        color: "bg-green-500/20 text-green-500 border-green-500/30",
-      };
-    case "Archon":
-      return {
-        label: "ARCHON",
-        difficulty: "Easy",
-        color: "bg-blue-500/20 text-blue-500 border-blue-500/30",
-      };
-    case "Keter":
-      return {
-        label: "KETER",
-        difficulty: "Medium",
-        color: "bg-orange-500/20 text-orange-500 border-orange-500/30",
-      };
-    case "Euclid":
-      return {
-        label: "EUCLID",
-        difficulty: "Hard",
-        color: "bg-red-500/20 text-red-500 border-red-500/30",
-      };
-    default:
-      return {
-        label: category.toUpperCase(),
-        difficulty: "Unknown",
-        color: "bg-gray-500/20 text-gray-500 border-gray-500/30",
-      };
-  }
+const getCategoryIcon = (category: string) => {
+  const categoryMap: Record<string, string> = {
+    'OSINT': '🔍',
+    'Web': '🌐',
+    'Forensics': '🔬',
+    'Misc': '🎯',
+    'Crypto': '🔐',
+    'Malware': '☠️'
+  };
+  return categoryMap[category] || '📁';
+};
+
+const getCategoryColor = (category: string) => {
+  const colorMap: Record<string, string> = {
+    'OSINT': 'from-cyan-500/20 to-blue-600/20 border-cyan-500/30',
+    'Web': 'from-blue-500/20 to-indigo-600/20 border-blue-500/30',
+    'Forensics': 'from-purple-500/20 to-violet-600/20 border-purple-500/30',
+    'Misc': 'from-pink-500/20 to-rose-600/20 border-pink-500/30',
+    'Crypto': 'from-amber-500/20 to-yellow-600/20 border-amber-500/30',
+    'Malware': 'from-red-500/20 to-rose-600/20 border-red-500/30'
+  };
+  return colorMap[category] || 'from-gray-500/20 to-slate-600/20 border-gray-500/30';
 };
 
 /* --------------------------------------------------------------------- */
@@ -140,12 +131,16 @@ export default function Challenges() {
       if (isAdmin || isCtfActive) {
         const { data: challengesData, error } = await supabase
           .from("challenges")
-          .select("id, title, category, points, description_md")
+          .select("id, title, category, points, description_md, files, links")
           .eq("is_published", true)
           .order("points", { ascending: true });
 
         if (error) throw error;
-        setChallenges(challengesData ?? []);
+        setChallenges((challengesData ?? []).map(d => ({
+          ...d,
+          files: Array.isArray(d.files) ? d.files as Array<{ name: string; url: string }> : [],
+          links: Array.isArray(d.links) ? d.links as Array<{ name: string; url: string }> : []
+        })));
       }
     } catch (error: any) {
       toast.error("Error loading challenges");
@@ -162,16 +157,16 @@ export default function Challenges() {
     return (
       <div className="min-h-screen flex flex-col matrix-bg relative overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 animate-fade-in"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15 animate-fade-in"
           style={{ 
             backgroundImage: `url(${scpCorridor})`,
-            filter: 'brightness(0.4) contrast(1.2)'
+            filter: 'brightness(0.3) contrast(1.2)'
           }}
         />
         <Navbar />
         <div className="flex-1 flex items-center justify-center relative z-10">
           <div className="scp-paper border-2 border-border p-8 scan-line">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4 glow-red" />
+            <div className="animate-spin rounded-full h-12 w-12 border-b-4 border-primary mx-auto mb-4 glow-blue-box" />
             <p className="font-mono text-primary pulse-glow">ACCESSING DATABASE...</p>
           </div>
         </div>
@@ -198,10 +193,10 @@ export default function Challenges() {
     return (
       <div className="min-h-screen flex flex-col relative overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15 animate-fade-in"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 animate-fade-in"
           style={{ 
             backgroundImage: `url(${scpCreature})`,
-            filter: 'brightness(0.3) contrast(1.3)'
+            filter: 'brightness(0.2) contrast(1.3)'
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/85 to-background/95" />
@@ -225,7 +220,7 @@ export default function Challenges() {
           
           {!isBeforeStart && (
             <div className="max-w-3xl mx-auto mt-8 animate-fade-in-delay">
-              <Card className="scp-paper border-2 border-destructive glow-red">
+              <Card className="scp-paper border-2 border-destructive glow-blue-box">
                 <CardHeader>
                   <div className="classification-bar mb-3" />
                   <CardTitle className="flex items-center gap-2 font-mono text-primary">
@@ -249,15 +244,29 @@ export default function Challenges() {
   }
 
   /* ------------------------------------------------------------------- */
+  /*  Group challenges by category                                      */
+  /* ------------------------------------------------------------------- */
+  const groupedChallenges = challenges.reduce((acc, challenge) => {
+    const cat = challenge.category;
+    if (!acc[cat]) {
+      acc[cat] = [];
+    }
+    acc[cat].push(challenge);
+    return acc;
+  }, {} as Record<string, Challenge[]>);
+
+  const categories = Object.keys(groupedChallenges).sort();
+
+  /* ------------------------------------------------------------------- */
   /*  Main layout – always rendered once data is ready                 */
   /* ------------------------------------------------------------------- */
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10 animate-fade-in"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15 animate-fade-in"
         style={{ 
           backgroundImage: `url(${scpCorridor})`,
-          filter: 'brightness(0.4) contrast(1.2)'
+          filter: 'brightness(0.3) contrast(1.2)'
         }}
       />
       <div className="absolute inset-0 matrix-bg opacity-50" />
@@ -298,48 +307,62 @@ export default function Challenges() {
             </Card>
           </div>
         ) : (
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mt-8">
-            {challenges.map((challenge, index) => {
-              const categoryInfo = getCategoryDetails(challenge.category);
-              return (
-                <Card
-                  key={challenge.id}
-                  className="scp-paper border-2 border-border hover:border-primary hover:scale-105 transition-all duration-300 cursor-pointer scan-line group animate-fade-in backdrop-blur-sm"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                  onClick={() => navigate(`/challenge/${challenge.id}`)}
-                >
-                  <CardHeader>
-                    <div className="classification-bar mb-3 group-hover:opacity-100 opacity-70 transition-opacity" />
-                    <div className="flex items-start justify-between mb-2">
-                      <Badge
-                        variant="outline"
-                        className={`font-mono text-xs ${categoryInfo.color} group-hover:scale-110 transition-transform`}
-                      >
-                        {categoryInfo.label}
-                      </Badge>
-                      <Badge
-                        variant="outline"
-                        className="bg-primary/20 text-primary border-primary font-mono text-xs group-hover:glow-red transition-all"
-                      >
-                        {challenge.points} PTS
-                      </Badge>
-                    </div>
-                    <CardTitle className="font-mono text-lg group-hover:text-primary transition-colors">
-                      {challenge.title}
-                    </CardTitle>
-                    <CardDescription className="font-mono text-xs">
-                      Difficulty: {categoryInfo.difficulty}
-                    </CardDescription>
-                    <div className="classification-bar mt-3 group-hover:opacity-100 opacity-70 transition-opacity" />
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-muted-foreground line-clamp-2 font-mono">
-                      {challenge.description_md.substring(0, 100)}...
+          <div className="space-y-12 mt-8">
+            {categories.map((category, catIndex) => (
+              <div key={category} className="space-y-6 animate-fade-in" style={{ animationDelay: `${catIndex * 100}ms` }}>
+                <div className="flex items-center gap-4">
+                  <span className="text-4xl">{getCategoryIcon(category)}</span>
+                  <div>
+                    <h2 className="text-3xl font-bold tracking-tight text-primary glow-blue">
+                      {category}
+                    </h2>
+                    <p className="text-sm text-muted-foreground">
+                      {groupedChallenges[category].length} challenge{groupedChallenges[category].length !== 1 ? 's' : ''}
                     </p>
-                  </CardContent>
-                </Card>
-              );
-            })}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {groupedChallenges[category].map((challenge, index) => (
+                    <Card
+                      key={challenge.id}
+                      className={`group relative overflow-hidden bg-gradient-to-br ${getCategoryColor(category)} backdrop-blur-sm border cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/20 animate-fade-in`}
+                      style={{ animationDelay: `${(catIndex * 3 + index) * 50}ms` }}
+                      onClick={() => navigate(`/challenge/${challenge.id}`)}
+                    >
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="scan-line" />
+                      </div>
+                      
+                      <CardHeader className="relative z-10">
+                        <div className="flex items-start justify-between gap-2">
+                          <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors">
+                            {challenge.title}
+                          </CardTitle>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-2xl">{getCategoryIcon(category)}</span>
+                            <span className="px-3 py-1 bg-primary/20 rounded-full text-sm font-mono font-bold glow-blue">
+                              {challenge.points}pts
+                            </span>
+                          </div>
+                        </div>
+                        <CardDescription className="text-xs uppercase tracking-wider font-mono">
+                          {category}
+                        </CardDescription>
+                      </CardHeader>
+                      
+                      <CardContent className="relative z-10">
+                        <p className="text-sm text-muted-foreground line-clamp-3">
+                          {challenge.description_md.substring(0, 150)}...
+                        </p>
+                      </CardContent>
+
+                      <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity pulse-glow" />
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </main>

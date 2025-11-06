@@ -7,19 +7,19 @@
 @layer base {
   :root {
     /* SCP Foundation Color Palette - Dark Containment Theme */
-    --background: 0 0% 8%;         /* Very dark background */
-    --foreground: 0 0% 92%;        /* Light text */
+    --background: 222 47% 11%;
+    --foreground: 210 40% 98%;
 
-    --card: 0 0% 12%;              /* Dark card */
-    --card-foreground: 0 0% 92%;
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 10%;
-    --popover-foreground: 0 0% 92%;
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
 
-    /* Red Primary - SCP Foundation Color */
-    --primary: 0 75% 50%;          /* Bright red */
-    --primary-foreground: 0 0% 98%;
-    --primary-glow: 0 75% 60%;
+    /* Blue Primary - Cool Sci-Fi Theme */
+    --primary: 199 89% 48%;
+    --primary-foreground: 210 40% 98%;
+    --primary-glow: 199 89% 60%;
 
     /* Secondary - Darker gray */
     --secondary: 0 0% 18%;
@@ -132,6 +132,14 @@
     color: hsl(var(--primary));
     font-weight: 700;
     text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+  }
+
+  .glow-blue {
+    text-shadow: 0 0 10px hsla(199 89% 48% / 0.6), 0 0 20px hsla(199 89% 48% / 0.4);
+  }
+
+  .glow-blue-box {
+    box-shadow: 0 0 15px hsla(199 89% 48% / 0.5), 0 0 30px hsla(199 89% 48% / 0.3);
   }
 
   .border-classified {

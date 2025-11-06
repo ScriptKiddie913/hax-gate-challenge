@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2, Flag, Eye, EyeOff } from "lucide-react";
+import { Plus, Edit, Trash2, Flag, Eye, EyeOff, Link as LinkIcon, File } from "lucide-react";
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -19,6 +19,8 @@ interface Challenge {
   description_md: string;
   is_published: boolean;
   created_at: string;
+  files?: Array<{ name: string; url: string }>;
+  links?: Array<{ name: string; url: string }>;
 }
 
 export function AdminChallenges() {
@@ -29,10 +31,16 @@ export function AdminChallenges() {
 
   // Form state
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState("Safe");
+  const [category, setCategory] = useState("OSINT");
   const [points, setPoints] = useState(100);
   const [description, setDescription] = useState("");
   const [flagValue, setFlagValue] = useState("");
+  const [files, setFiles] = useState<Array<{ name: string; url: string }>>([]);
+  const [links, setLinks] = useState<Array<{ name: string; url: string }>>([]);
+  const [newFileName, setNewFileName] = useState("");
+  const [newFileUrl, setNewFileUrl] = useState("");
+  const [newLinkName, setNewLinkName] = useState("");
+  const [newLinkUrl, setNewLinkUrl] = useState("");
 
   useEffect(() => {
     loadChallenges();
@@ -46,7 +54,11 @@ export function AdminChallenges() {
         .order("created_at", { ascending: false });
 
       if (error) throw error;
-      setChallenges(data || []);
+      setChallenges((data || []).map(d => ({
+        ...d,
+        files: Array.isArray(d.files) ? d.files as Array<{ name: string; url: string }> : [],
+        links: Array.isArray(d.links) ? d.links as Array<{ name: string; url: string }> : []
+      })));
     } catch (error: any) {
       toast.error("Error loading challenges");
       console.error(error);
@@ -62,15 +74,23 @@ export function AdminChallenges() {
       setCategory(challenge.category);
       setPoints(challenge.points);
       setDescription(challenge.description_md);
-      setFlagValue(""); // Do not show existing flag for security
+      setFlagValue("");
+      setFiles(Array.isArray(challenge.files) ? challenge.files : []);
+      setLinks(Array.isArray(challenge.links) ? challenge.links : []);
     } else {
       setEditingChallenge(null);
       setTitle("");
-      setCategory("Safe");
+      setCategory("OSINT");
       setPoints(100);
       setDescription("");
       setFlagValue("");
+      setFiles([]);
+      setLinks([]);
     }
+    setNewFileName("");
+    setNewFileUrl("");
+    setNewLinkName("");
+    setNewLinkUrl("");
     setDialogOpen(true);
   };
 
@@ -93,6 +113,8 @@ export function AdminChallenges() {
             category,
             points,
             description_md: description,
+            files: files,
+            links: links,
           })
           .eq("id", editingChallenge.id);
 
@@ -120,6 +142,8 @@ export function AdminChallenges() {
             created_by: user.id,
             is_published: false,
             flag: flagValue || null,
+            files: files,
+            links: links,
           })
           .select()
           .single();
@@ -171,6 +195,30 @@ export function AdminChallenges() {
     } catch (error: any) {
       toast.error("Error deleting challenge");
     }
+  };
+
+  const addFile = () => {
+    if (newFileName && newFileUrl) {
+      setFiles([...files, { name: newFileName, url: newFileUrl }]);
+      setNewFileName("");
+      setNewFileUrl("");
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(files.filter((_, i) => i !== index));
+  };
+
+  const addLink = () => {
+    if (newLinkName && newLinkUrl) {
+      setLinks([...links, { name: newLinkName, url: newLinkUrl }]);
+      setNewLinkName("");
+      setNewLinkUrl("");
+    }
+  };
+
+  const removeLink = (index: number) => {
+    setLinks(links.filter((_, i) => i !== index));
   };
 
   if (loading) {
@@ -225,10 +273,12 @@ export function AdminChallenges() {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Safe">Safe (Very Easy)</SelectItem>
-                        <SelectItem value="Archon">Archon (Easy)</SelectItem>
-                        <SelectItem value="Keter">Keter (Medium)</SelectItem>
-                        <SelectItem value="Euclid">Euclid (Hard)</SelectItem>
+                        <SelectItem value="OSINT">🔍 OSINT</SelectItem>
+                        <SelectItem value="Web">🌐 Web</SelectItem>
+                        <SelectItem value="Forensics">🔬 Forensics</SelectItem>
+                        <SelectItem value="Misc">🎯 Misc</SelectItem>
+                        <SelectItem value="Crypto">🔐 Crypto</SelectItem>
+                        <SelectItem value="Malware">☠️ Malware</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -269,15 +319,89 @@ export function AdminChallenges() {
                       : "Flag will be stored in the challenge record."}
                   </p>
                 </div>
+
+                {/* Files Section */}
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <File className="h-4 w-4" />
+                    Challenge Files
+                  </Label>
+                  <div className="space-y-2">
+                    {files.map((file, index) => (
+                      <div key={index} className="flex items-center gap-2 p-2 border rounded bg-secondary/30">
+                        <span className="flex-1 text-sm truncate">{file.name}</span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeFile(index)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="File name"
+                        value={newFileName}
+                        onChange={(e) => setNewFileName(e.target.value)}
+                      />
+                      <Input
+                        placeholder="File URL"
+                        value={newFileUrl}
+                        onChange={(e) => setNewFileUrl(e.target.value)}
+                      />
+                      <Button size="sm" onClick={addFile}>
+                        Add
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Links Section */}
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <LinkIcon className="h-4 w-4" />
+                    Challenge Links
+                  </Label>
+                  <div className="space-y-2">
+                    {links.map((link, index) => (
+                      <div key={index} className="flex items-center gap-2 p-2 border rounded bg-secondary/30">
+                        <span className="flex-1 text-sm truncate">{link.name}</span>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeLink(index)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    ))}
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Link name"
+                        value={newLinkName}
+                        onChange={(e) => setNewLinkName(e.target.value)}
+                      />
+                      <Input
+                        placeholder="Link URL"
+                        value={newLinkUrl}
+                        onChange={(e) => setNewLinkUrl(e.target.value)}
+                      />
+                      <Button size="sm" onClick={addLink}>
+                        Add
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-end gap-2">
+              <DialogFooter>
                 <Button variant="outline" onClick={() => setDialogOpen(false)}>
                   Cancel
                 </Button>
                 <Button onClick={handleSaveChallenge}>
                   {editingChallenge ? "Update" : "Create"}
                 </Button>
-              </div>
+              </DialogFooter>
             </DialogContent>
           </Dialog>
         </div>
