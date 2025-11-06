@@ -22,52 +22,57 @@ const Index = () => {
 
       <main className="flex-1 relative">
         {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#060b15]/60 via-[#070c18]/50 to-[#0a1020]/70 z-0"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040915]/50 via-[#050b18]/40 to-[#08132c]/70 z-0"></div>
 
         {/* Hero Section */}
         <section className="py-16 px-4 relative overflow-hidden">
           <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 animate-fade-in-slow"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70 animate-fade-in-slow"
             style={{
               backgroundImage: `url(${scpFacility})`,
-              filter:
-                "brightness(0.7) contrast(1.1) saturate(0.9) blur(0.4px)",
+              filter: "brightness(0.6) contrast(1.05) saturate(0.9) blur(1px)",
             }}
           ></div>
 
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#060b15]/60 to-[#080f22]/80 pointer-events-none backdrop-blur-[1px]"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#040915]/70 to-[#08132c]/80 pointer-events-none backdrop-blur-[2px]"></div>
 
           <div className="container mx-auto relative z-10 text-center">
-            {/* Enhanced SCPHeader aesthetic */}
-            <div className="relative mx-auto mb-10 max-w-3xl bg-[#071225]/70 backdrop-blur-md border border-[#3b61ff]/20 shadow-[0_0_25px_rgba(0,80,255,0.2)] rounded-md p-6 transition-all duration-700 hover:shadow-[0_0_35px_rgba(0,120,255,0.25)]">
-              <div className="absolute inset-0 bg-gradient-to-b from-[#0c1933]/40 to-[#071225]/60 rounded-md"></div>
+            {/* Enhanced SCPHeader holographic aesthetic */}
+            <div className="relative mx-auto mb-10 max-w-3xl p-[1px] rounded-xl bg-gradient-to-r from-[#2a68ff]/40 via-[#4d9aff]/30 to-[#2a68ff]/40 shadow-[0_0_35px_rgba(70,130,255,0.25)]">
+              <div className="rounded-xl bg-[#081226]/40 backdrop-blur-2xl border border-[#4b6fff]/30 shadow-[inset_0_0_25px_rgba(70,130,255,0.2)]">
+                <div className="p-8 relative overflow-hidden">
+                  {/* Animated holographic overlay */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(80,130,255,0.08),transparent_60%)] animate-[pulseGlow_6s_infinite_ease-in-out]"></div>
+                  <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(70,120,255,0.07)_0%,transparent_30%,rgba(70,120,255,0.07)_60%,transparent_100%)] opacity-60 animate-[scanLine_9s_linear_infinite]"></div>
 
-              <div className="relative z-10 border border-[#2b4bbf]/30 rounded-md p-6 bg-[#0b1328]/70 backdrop-blur-sm">
-                <div className="mb-3 flex items-center justify-center gap-3">
-                  <AlertTriangle className="h-6 w-6 text-[#ff6c6c] animate-pulse-slow" />
-                  <h2 className="text-xl font-mono tracking-wide text-[#8abaff]">
-                    SCP-████ – CAPTURE THE FLAG DIVISION
-                  </h2>
-                  <span className="ml-2 px-4 py-1 border border-[#ff5252]/60 bg-[#ff5252]/15 text-[#ff8a8a] rounded-full text-xs font-bold tracking-widest uppercase">
-                    KETER
-                  </span>
+                  <div className="relative z-10 flex flex-col items-center gap-3">
+                    <div className="flex items-center justify-center gap-3">
+                      <AlertTriangle className="h-6 w-6 text-[#ff7474] animate-pulse-slow" />
+                      <h2 className="text-2xl font-mono tracking-wide text-[#9ccaff] drop-shadow-[0_0_8px_#4688ff]">
+                        SCP-████ – CAPTURE THE FLAG DIVISION
+                      </h2>
+                      <span className="ml-2 px-4 py-1 border border-[#ff6060]/50 bg-[#ff6060]/10 text-[#ff9090] rounded-full text-xs font-bold tracking-widest uppercase shadow-[0_0_10px_rgba(255,90,90,0.3)]">
+                        KETER
+                      </span>
+                    </div>
+                    <div className="w-full h-[2px] bg-gradient-to-r from-transparent via-[#357bff]/60 to-transparent my-2 animate-pulse-slow"></div>
+                    <p className="text-sm text-[#a8c9ff] font-mono tracking-wider uppercase opacity-80">
+                      SCP FOUNDATION DATABASE ACCESS NODE
+                    </p>
+                  </div>
                 </div>
-                <div className="h-[2px] bg-gradient-to-r from-transparent via-[#2b7fff]/60 to-transparent mb-3 animate-pulse-slow"></div>
-                <p className="text-sm text-[#9db5ff] font-mono tracking-wider uppercase opacity-80">
-                  SCP FOUNDATION DATABASE ACCESS NODE
-                </p>
               </div>
             </div>
 
             <div className="max-w-5xl mx-auto mt-12 animate-fade-in-soft">
-              <div className="p-4 md:p-8 backdrop-blur-md bg-[#0b1530]/50 border border-[#3d6cff]/20 rounded-xl shadow-[0_0_25px_rgba(0,80,255,0.2)]">
+              <div className="p-4 md:p-8 backdrop-blur-xl bg-[#081226]/40 border border-[#3d6cff]/20 rounded-xl shadow-[0_0_25px_rgba(60,120,255,0.25)]">
                 <div className="text-center mb-8 animate-fade-in-slow">
-                  <div className="inline-flex items-center justify-center w-24 h-24 border-4 border-[#8abaff]/30 bg-[#0b193a]/50 mb-6 rounded-full shadow-[0_0_30px_rgba(138,186,255,0.2)] relative">
+                  <div className="inline-flex items-center justify-center w-24 h-24 border-4 border-[#8abaff]/30 bg-[#0b193a]/30 mb-6 rounded-full shadow-[0_0_30px_rgba(138,186,255,0.25)] relative">
                     <Shield className="h-16 w-16 text-[#9fc3ff] animate-pulse-slow" />
-                    <div className="absolute inset-0 border-4 border-[#8abaff] animate-ping-slow opacity-5 rounded-full"></div>
+                    <div className="absolute inset-0 border-4 border-[#8abaff]/40 animate-ping-slow opacity-5 rounded-full"></div>
                   </div>
 
-                  <h2 className="text-5xl font-bold mb-4 text-[#b5ceff] glitch tracking-widest">
+                  <h2 className="text-5xl font-bold mb-4 text-[#b5ceff] tracking-widest glitch">
                     SECURE. CONTAIN. PROTECT.
                   </h2>
 
@@ -158,10 +163,10 @@ const Index = () => {
               {/* Features Grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 relative">
                 <div
-                  className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-20 rounded-xl animate-fade-in-slow"
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15 rounded-xl animate-fade-in-slow"
                   style={{
                     backgroundImage: `url(${scpCorridor})`,
-                    filter: "brightness(0.55) contrast(1.15)",
+                    filter: "brightness(0.5) contrast(1.2)",
                     zIndex: -1,
                   }}
                 ></div>
@@ -185,7 +190,7 @@ const Index = () => {
                 ].map(({ icon: Icon, title, desc }, i) => (
                   <div
                     key={i}
-                    className="border border-[#2a4aff]/20 bg-[#0a1433]/50 backdrop-blur-xl p-6 text-center hover:border-[#7fb3ff]/40 hover:scale-[1.03] transition-all duration-500 group rounded-xl shadow-[0_0_15px_rgba(40,90,255,0.1)]"
+                    className="border border-[#2a4aff]/20 bg-[#0a1433]/30 backdrop-blur-xl p-6 text-center hover:border-[#7fb3ff]/40 hover:scale-[1.03] transition-all duration-500 group rounded-xl shadow-[0_0_15px_rgba(40,90,255,0.1)]"
                   >
                     <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-[#8abaff]/20 bg-[#0b193a]/40 mb-4 group-hover:border-[#b2d1ff] rounded-full relative shadow-[0_0_15px_rgba(100,140,220,0.25)]">
                       <Icon className="h-10 w-10 group-hover:text-[#b2d1ff] transition-colors text-[#e6ecff]" />
@@ -200,7 +205,7 @@ const Index = () => {
               </div>
 
               {/* Security Notice */}
-              <div className="p-8 bg-[#0b1530]/60 backdrop-blur-xl border border-[#3d6cff]/20 rounded-xl shadow-[0_0_25px_rgba(0,80,255,0.15)] mt-10 relative overflow-hidden animate-fade-in-soft">
+              <div className="p-8 bg-[#081226]/40 backdrop-blur-xl border border-[#3d6cff]/20 rounded-xl shadow-[0_0_25px_rgba(0,80,255,0.15)] mt-10 relative overflow-hidden animate-fade-in-soft">
                 <div
                   className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-15"
                   style={{
@@ -208,7 +213,7 @@ const Index = () => {
                     filter: "brightness(0.6) contrast(1.1) blur(0.8px)",
                   }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a]/60 via-transparent to-[#0a0e1a]/40"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0e1a]/70 via-transparent to-[#0a0e1a]/40"></div>
 
                 <div className="relative z-10 flex items-start gap-4">
                   <AlertTriangle className="h-12 w-12 text-[#9fc3ff] flex-shrink-0 mt-1 animate-pulse-slow" />
@@ -232,19 +237,19 @@ const Index = () => {
                     <div className="classification-bar mb-4 opacity-60"></div>
 
                     <div className="grid grid-cols-2 gap-4 text-xs font-mono mb-6 text-[#f0f5ff]/90">
-                      <div className="bg-[#0a1433]/50 p-3 border border-[#2b4aff]/20 rounded-md">
+                      <div className="bg-[#0a1433]/40 p-3 border border-[#2b4aff]/20 rounded-md">
                         <p className="text-[#cbd8ff] mb-1">THREAT LEVEL:</p>
                         <p className="text-[#a8c8ff] font-bold">ELEVATED</p>
                       </div>
-                      <div className="bg-[#0a1433]/50 p-3 border border-[#2b4aff]/20 rounded-md">
+                      <div className="bg-[#0a1433]/40 p-3 border border-[#2b4aff]/20 rounded-md">
                         <p className="text-[#cbd8ff] mb-1">STATUS:</p>
                         <p className="text-[#81e9a0] font-bold">OPERATIONAL</p>
                       </div>
-                      <div className="bg-[#0a1433]/50 p-3 border border-[#2b4aff]/20 rounded-md">
+                      <div className="bg-[#0a1433]/40 p-3 border border-[#2b4aff]/20 rounded-md">
                         <p className="text-[#cbd8ff] mb-1">PARTICIPANTS:</p>
                         <p className="text-[#f0f5ff] font-bold">[CLASSIFIED]</p>
                       </div>
-                      <div className="bg-[#0a1433]/50 p-3 border border-[#2b4aff]/20 rounded-md">
+                      <div className="bg-[#0a1433]/40 p-3 border border-[#2b4aff]/20 rounded-md">
                         <p className="text-[#cbd8ff] mb-1">CLEARANCE:</p>
                         <p className="text-[#ff8383] font-bold">REQUIRED</p>
                       </div>
@@ -263,7 +268,7 @@ const Index = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-[#3d6cff]/20 py-6 px-4 bg-[#060b15]/70 backdrop-blur-md">
+      <footer className="border-t border-[#3d6cff]/20 py-6 px-4 bg-[#060b15]/60 backdrop-blur-md">
         <div className="container mx-auto text-center text-sm text-[#cbd8ff]">
           <div className="classification-bar mb-4 max-w-md mx-auto opacity-50"></div>
           <p className="font-mono">
@@ -290,6 +295,18 @@ const Index = () => {
           </p>
         </div>
       </footer>
+
+      {/* Animated holographic keyframes */}
+      <style>{`
+        @keyframes pulseGlow {
+          0%, 100% { opacity: 0.4; }
+          50% { opacity: 0.8; }
+        }
+        @keyframes scanLine {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+      `}</style>
     </div>
   );
 };
