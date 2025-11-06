@@ -14,7 +14,7 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
   >([]);
 
   useEffect(() => {
-    // Generate smooth drifting green fireflies
+    // Create calm glowing fireflies
     const generatedFireflies = Array.from({ length: 25 }).map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
@@ -79,23 +79,23 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
 
   return (
     <div
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden"
       style={{
         backgroundImage: "url('/images/bbbbbbbb.png')",
         backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundPosition: "center center",
         backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
       }}
     >
-      {/* Soft dark overlay to calm the image */}
-      <div className="absolute inset-0 bg-[#020e07]/70 backdrop-blur-[2px] z-0"></div>
+      {/* Semi-dark overlay for depth */}
+      <div className="absolute inset-0 bg-[#010b05]/60 backdrop-blur-[2px] z-0"></div>
 
-      {/* Ambient green glowing fireflies floating over everything */}
+      {/* Ambient fireflies floating gently */}
       {fireflies.map((fly) => (
         <div
           key={fly.id}
-          className="absolute rounded-full bg-[#80ffb0] opacity-60 blur-[3px] animate-float"
+          className="absolute rounded-full bg-[#80ffb0] opacity-70 blur-[2px] animate-float"
           style={{
             top: fly.top,
             left: fly.left,
@@ -107,12 +107,12 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
         ></div>
       ))}
 
-      {/* Countdown Card */}
-      <Card className="relative z-10 border-2 border-[#75ffa6]/40 bg-[#02190d]/40 backdrop-blur-md text-[#e3ffed] shadow-[0_0_30px_rgba(90,255,140,0.15)] hover:shadow-[0_0_45px_rgba(120,255,170,0.25)] transition-all duration-700 max-w-2xl w-full mx-4">
+      {/* Transparent countdown card */}
+      <Card className="relative z-10 border border-[#80ffb0]/30 bg-[#02140a]/25 backdrop-blur-sm text-[#e9fff1] shadow-[0_0_25px_rgba(90,255,140,0.1)] hover:shadow-[0_0_35px_rgba(120,255,180,0.15)] transition-all duration-700 max-w-2xl w-full mx-4">
         <CardHeader>
-          <div className="classification-bar mb-3 opacity-60"></div>
-          <CardTitle className="flex items-center gap-3 font-mono text-2xl text-[#9affc3]">
-            <AlertTriangle className="h-8 w-8 text-[#7bff9e] animate-pulse-slow" />
+          <div className="classification-bar mb-3 opacity-50"></div>
+          <CardTitle className="flex items-center gap-3 font-mono text-2xl text-[#a4ffc9]">
+            <AlertTriangle className="h-8 w-8 text-[#7dff9a] animate-pulse-slow" />
             <span
               className="glitch text-[#a4ffc9] tracking-wide"
               data-text="CONTAINMENT BREACH"
@@ -120,7 +120,7 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
               CONTAINMENT BREACH
             </span>
           </CardTitle>
-          <div className="classification-bar mt-3 opacity-60"></div>
+          <div className="classification-bar mt-3 opacity-50"></div>
         </CardHeader>
 
         <CardContent className="space-y-6">
@@ -128,9 +128,9 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
             <p className="text-sm font-mono text-[#b2ffcc]/70 mb-2 uppercase tracking-wider">
               SCHEDULED BREACH EVENT IN:
             </p>
-            <div className="bg-[#051a0f]/70 border-2 border-[#75ffa6]/40 rounded-lg p-6 backdrop-blur-md shadow-[0_0_25px_rgba(90,255,140,0.15)]">
+            <div className="bg-[#031d10]/25 border border-[#6aff9b]/30 rounded-lg p-6 backdrop-blur-sm shadow-[0_0_15px_rgba(60,255,120,0.08)]">
               <div className="flex items-center justify-center gap-3 mb-2">
-                <Clock className="h-6 w-6 text-[#75ffa6] animate-pulse-slow" />
+                <Clock className="h-6 w-6 text-[#70ff9a] animate-pulse-slow" />
                 <div className="text-4xl font-bold font-mono text-[#a4ffc9] tracking-wider">
                   {timeLeft}
                 </div>
@@ -139,13 +139,13 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
           </div>
 
           {!isValid && (
-            <div className="p-3 text-center border border-[#ff9b9b]/60 bg-[#1a0a0a]/60 font-mono text-sm text-[#ffbaba] rounded-md">
+            <div className="p-3 text-center border border-[#ff9b9b]/60 bg-[#1a0a0a]/40 font-mono text-sm text-[#ffbaba] rounded-md">
               INVALID START TIME FORMAT DETECTED. CHECK SUPABASE DATA.
             </div>
           )}
 
           <div className="space-y-3 text-sm font-mono">
-            <div className="flex items-start gap-2 p-3 bg-[#05180f]/70 border border-[#60ff9b]/30 rounded-md backdrop-blur-sm">
+            <div className="flex items-start gap-2 p-3 bg-[#05180f]/25 border border-[#60ff9b]/20 rounded-md backdrop-blur-sm">
               <div className="w-2 h-2 bg-[#6aff9b] mt-1.5 flex-shrink-0 animate-pulse"></div>
               <p>
                 <strong className="text-[#6aff9b]">ALERT:</strong> Containment protocols
@@ -154,7 +154,7 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
               </p>
             </div>
 
-            <div className="flex items-start gap-2 p-3 bg-[#05180f]/70 border border-[#60ff9b]/30 rounded-md backdrop-blur-sm">
+            <div className="flex items-start gap-2 p-3 bg-[#05180f]/25 border border-[#60ff9b]/20 rounded-md backdrop-blur-sm">
               <div className="w-2 h-2 bg-[#6aff9b] mt-1.5 flex-shrink-0 animate-pulse"></div>
               <p>
                 <strong className="text-[#6aff9b]">NOTICE:</strong> Unauthorized access
@@ -163,7 +163,7 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
               </p>
             </div>
 
-            <div className="flex items-start gap-2 p-3 bg-[#05180f]/70 border border-[#60ff9b]/30 rounded-md backdrop-blur-sm">
+            <div className="flex items-start gap-2 p-3 bg-[#05180f]/25 border border-[#60ff9b]/20 rounded-md backdrop-blur-sm">
               <div className="w-2 h-2 bg-[#6aff9b] mt-1.5 flex-shrink-0 animate-pulse"></div>
               <p>
                 <strong className="text-[#6aff9b]">DIRECTIVE:</strong> All Foundation
@@ -174,24 +174,24 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
             </div>
           </div>
 
-          <div className="classification-bar opacity-50"></div>
+          <div className="classification-bar opacity-40"></div>
 
           <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-            <div className="bg-[#0a2013]/50 p-2 border border-[#75ffa6]/30 rounded">
+            <div className="bg-[#0a2013]/25 p-2 border border-[#75ffa6]/20 rounded">
               <p className="text-[#a9ffcb]/60 mb-1">STATUS:</p>
               <p className="text-[#ff7a7a] font-bold">
                 {timeLeft === "BREACH IMMINENT" ? "ACTIVE" : "BREACH PENDING"}
               </p>
             </div>
-            <div className="bg-[#0a2013]/50 p-2 border border-[#75ffa6]/30 rounded">
+            <div className="bg-[#0a2013]/25 p-2 border border-[#75ffa6]/20 rounded">
               <p className="text-[#a9ffcb]/60 mb-1">THREAT LEVEL:</p>
               <p className="text-[#7dffb1] font-bold">CRITICAL</p>
             </div>
-            <div className="bg-[#0a2013]/50 p-2 border border-[#75ffa6]/30 rounded">
+            <div className="bg-[#0a2013]/25 p-2 border border-[#75ffa6]/20 rounded">
               <p className="text-[#a9ffcb]/60 mb-1">CLEARANCE:</p>
               <p className="text-[#e7ffee] font-bold">LEVEL-2+</p>
             </div>
-            <div className="bg-[#0a2013]/50 p-2 border border-[#75ffa6]/30 rounded">
+            <div className="bg-[#0a2013]/25 p-2 border border-[#75ffa6]/20 rounded">
               <p className="text-[#a9ffcb]/60 mb-1">PROTOCOL:</p>
               <p className="text-[#89ffad] font-bold">
                 {timeLeft === "BREACH IMMINENT" ? "ACTIVE" : "STANDBY"}
@@ -205,12 +205,12 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
         </CardContent>
       </Card>
 
-      {/* Smooth green firefly motion + pulse */}
+      {/* Firefly + pulse animation */}
       <style>{`
         @keyframes float {
-          0% { transform: translate(0, 0) scale(1); opacity: 0.6; }
-          50% { transform: translate(20px, -20px) scale(1.4); opacity: 1; }
-          100% { transform: translate(-15px, 10px) scale(1); opacity: 0.5; }
+          0% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+          50% { transform: translate(25px, -25px) scale(1.4); opacity: 1; }
+          100% { transform: translate(-15px, 15px) scale(1); opacity: 0.5; }
         }
         .animate-float {
           animation-name: float;
@@ -218,7 +218,7 @@ export function CTFCountdown({ startTime }: CTFCountdownProps) {
           animation-iteration-count: infinite;
         }
         .animate-pulse-slow {
-          animation: pulse-slow 2.5s infinite ease-in-out;
+          animation: pulse-slow 3s infinite ease-in-out;
         }
         @keyframes pulse-slow {
           0%, 100% { opacity: 0.6; }
