@@ -96,10 +96,10 @@ export type Database = {
         Insert: {
           created_at?: string | null
           created_by?: string | null
-          end_time: string
+          end_time?: string
           id?: string
           is_active?: boolean | null
-          start_time: string
+          start_time?: string
           updated_at?: string | null
         }
         Update: {
@@ -152,6 +152,7 @@ export type Database = {
           id: string
           is_admin: boolean
           is_banned: boolean
+          updated_at: string
           username: string
         }
         Insert: {
@@ -163,6 +164,7 @@ export type Database = {
           id: string
           is_admin?: boolean
           is_banned?: boolean
+          updated_at?: string
           username: string
         }
         Update: {
@@ -174,6 +176,7 @@ export type Database = {
           id?: string
           is_admin?: boolean
           is_banned?: boolean
+          updated_at?: string
           username?: string
         }
         Relationships: []
@@ -243,7 +246,7 @@ export type Database = {
     }
     Functions: {
       get_scoreboard: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           last_submission: string
           solved_count: number
@@ -259,10 +262,7 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_ctf_active: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      is_ctf_active: { Args: never; Returns: boolean }
       secure_set_flag: {
         Args: { challenge_id: string; flag: string }
         Returns: undefined
