@@ -27,9 +27,22 @@ export default function Profile() {
   const [stats, setStats] = useState<UserStats>({ total_points: 0, solved_count: 0, total_submissions: 0 });
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [fireflies, setFireflies] = useState<
+    { id: number; top: string; left: string; delay: string; size: string }[]
+  >([]);
 
   useEffect(() => {
     loadProfile();
+    
+    // Generate fireflies
+    const generated = Array.from({ length: 25 }).map((_, i) => ({
+      id: i,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 6}s`,
+      size: `${3 + Math.random() * 4}px`,
+    }));
+    setFireflies(generated);
   }, []);
 
   const loadProfile = async () => {
@@ -97,10 +110,41 @@ export default function Profile() {
   if (!profile) return null;
 
   return (
-    <div className="min-h-screen flex flex-col matrix-bg">
+    <div 
+      className="min-h-screen flex flex-col relative overflow-hidden"
+      style={{
+        backgroundImage: "url('/images/s.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      {/* Blue ambient overlay */}
+      <div className="absolute inset-0 bg-[#030b1d]/75 backdrop-blur-[2px]"></div>
+
+      {/* Pulsing gradient */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(90,150,255,0.15),transparent_70%)] animate-[pulse_8s_infinite_ease-in-out]"></div>
+
+      {/* Fireflies */}
+      {fireflies.map((f) => (
+        <div
+          key={f.id}
+          className="absolute bg-[#b8d6ff] rounded-full blur-[3px] opacity-70 animate-[float_10s_infinite_ease-in-out]"
+          style={{
+            top: f.top,
+            left: f.left,
+            width: f.size,
+            height: f.size,
+            boxShadow: "0 0 10px rgba(160,200,255,0.6), 0 0 20px rgba(120,160,255,0.4)",
+            animationDelay: f.delay,
+          }}
+        ></div>
+      ))}
+
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8 relative z-10">
         <SCPHeader 
           classification="SAFE"
           itemNumber="SCP-PROFILE"
@@ -239,6 +283,17 @@ export default function Profile() {
           </Card>
         </div>
       </main>
+
+      {/* Animations */}
+      <style>{`
+        @keyframes float {
+          0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
+          25% { transform: translateY(-15px) translateX(6px) scale(1.1); opacity: 0.9; }
+          50% { transform: translateY(-8px) translateX(-4px) scale(0.95); opacity: 0.4; }
+          75% { transform: translateY(8px) translateX(5px) scale(1.05); opacity: 0.8; }
+          100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
+        }
+      `}</style>
     </div>
   );
 }

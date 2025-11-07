@@ -16,9 +16,22 @@ interface ScoreEntry {
 export default function Scoreboard() {
   const [scores, setScores] = useState<ScoreEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [fireflies, setFireflies] = useState<
+    { id: number; top: string; left: string; delay: string; size: string }[]
+  >([]);
 
   useEffect(() => {
     loadScoreboard();
+    
+    // Generate fireflies
+    const generated = Array.from({ length: 30 }).map((_, i) => ({
+      id: i,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 6}s`,
+      size: `${3 + Math.random() * 4}px`,
+    }));
+    setFireflies(generated);
     
     // Set up real-time subscription for live scoreboard updates
     const channel = supabase
@@ -81,10 +94,41 @@ export default function Scoreboard() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
+    <div 
+      className="min-h-screen flex flex-col relative overflow-hidden"
+      style={{
+        backgroundImage: "url('/images/s.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
+    >
+      {/* Blue ambient overlay */}
+      <div className="absolute inset-0 bg-[#030b1d]/75 backdrop-blur-[2px]"></div>
+
+      {/* Pulsing gradient */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(90,150,255,0.15),transparent_70%)] animate-[pulse_8s_infinite_ease-in-out]"></div>
+
+      {/* Fireflies */}
+      {fireflies.map((f) => (
+        <div
+          key={f.id}
+          className="absolute bg-[#b8d6ff] rounded-full blur-[3px] opacity-70 animate-[float_10s_infinite_ease-in-out]"
+          style={{
+            top: f.top,
+            left: f.left,
+            width: f.size,
+            height: f.size,
+            boxShadow: "0 0 10px rgba(160,200,255,0.6), 0 0 20px rgba(120,160,255,0.4)",
+            animationDelay: f.delay,
+          }}
+        ></div>
+      ))}
+
       <Navbar />
       
-      <main className="flex-1 container mx-auto px-4 py-8">
+      <main className="flex-1 container mx-auto px-4 py-8 relative z-10">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/20 mb-4 animate-pulse">
             <Trophy className="h-8 w-8 text-primary" />
@@ -165,6 +209,17 @@ export default function Scoreboard() {
           </CardContent>
         </Card>
       </main>
+
+      {/* Animations */}
+      <style>{`
+        @keyframes float {
+          0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
+          25% { transform: translateY(-15px) translateX(6px) scale(1.1); opacity: 0.9; }
+          50% { transform: translateY(-8px) translateX(-4px) scale(0.95); opacity: 0.4; }
+          75% { transform: translateY(8px) translateX(5px) scale(1.05); opacity: 0.8; }
+          100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
+        }
+      `}</style>
     </div>
   );
 }

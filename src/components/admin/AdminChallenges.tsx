@@ -114,11 +114,11 @@ export function AdminChallenges() {
 
       // Upload file to Supabase Storage
       const filePath = `${Date.now()}-${file.name}`;
-      const { data, error } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from("challenge_files")
         .upload(filePath, file);
 
-      if (error) throw error;
+      if (uploadError) throw uploadError;
 
       // Get the public URL
       const { data: urlData } = supabase.storage
@@ -132,6 +132,7 @@ export function AdminChallenges() {
       toast.success("File uploaded successfully!");
     } catch (error: any) {
       toast.error(error.message || "Error uploading file");
+      console.error("File upload error:", error);
     }
   };
 
