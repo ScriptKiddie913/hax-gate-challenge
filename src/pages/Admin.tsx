@@ -4,11 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Users, Flag, FileText } from "lucide-react";
-import { AdminUsers } from "@/components/admin/AdminUsers";
 import { AdminChallenges } from "@/components/admin/AdminChallenges";
+import { AdminUsers } from "@/components/admin/AdminUsers";
 import { AdminSubmissions } from "@/components/admin/AdminSubmissions";
 import { CTFTimer } from "@/components/admin/CTFTimer";
-import { BlockchainIdentities } from "@/components/admin/BlockchainIdentities";
+import { SecurityAlerts } from "@/components/admin/SecurityAlerts";
 
 export default function Admin() {
   const [loading, setLoading] = useState(true);
@@ -137,9 +137,9 @@ export default function Admin() {
               <Shield className="h-4 w-4" />
               <span className="hidden sm:inline">CTF Timer</span>
             </TabsTrigger>
-            <TabsTrigger value="blockchain" className="gap-2">
+            <TabsTrigger value="alerts" className="gap-2">
               <Shield className="h-4 w-4" />
-              <span className="hidden sm:inline">Blockchain</span>
+              <span className="hidden sm:inline">Security</span>
             </TabsTrigger>
           </TabsList>
 
@@ -159,8 +159,8 @@ export default function Admin() {
             <CTFTimer />
           </TabsContent>
 
-          <TabsContent value="blockchain">
-            <BlockchainIdentities />
+          <TabsContent value="alerts">
+            <SecurityAlerts />
           </TabsContent>
         </Tabs>
       </main>

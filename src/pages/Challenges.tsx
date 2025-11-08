@@ -5,6 +5,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { ChallengeDialog } from "@/components/ChallengeDialog";
 import { Navbar } from "@/components/Navbar";
 import {
   Card,
@@ -80,6 +81,8 @@ export default function Challenges() {
   const [ctfSettings, setCtfSettings] = useState<CTFSettings | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   /* ------------------------------------------------------------------- */
   /*  Load data once on mount                                          */
@@ -328,7 +331,10 @@ export default function Challenges() {
                       key={challenge.id}
                       className={`group relative overflow-hidden bg-gradient-to-br ${getCategoryColor(category)} backdrop-blur-sm border cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/20 animate-fade-in`}
                       style={{ animationDelay: `${(catIndex * 3 + index) * 50}ms` }}
-                      onClick={() => navigate(`/challenge/${challenge.id}`)}
+                      onClick={() => {
+                        setSelectedChallenge(challenge);
+                        setDialogOpen(true);
+                      }}
                     >
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="scan-line" />
@@ -366,6 +372,12 @@ export default function Challenges() {
           </div>
         )}
       </main>
+
+      <ChallengeDialog 
+        challenge={selectedChallenge}
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+      />
     </div>
   );
 }

@@ -33,50 +33,85 @@ export default function Auth() {
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+
+    if (!email || !password || !username) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+
+    if (isDisposableEmail(email)) {
+      toast.error("Disposable email addresses are not allowed");
+      return;
+    }
 
     try {
-      // 🚫 Reject temporary emails
-      if (isDisposableEmail(email)) {
-        toast.error("Temporary or disposable email addresses are not allowed.");
-        setLoading(false);
-        return;
-      }
-
-      // Check if username already exists
       const { data: existingUser } = await supabase
         .from("profiles")
         .select("username")
         .eq("username", username)
-        .single();
+        .maybeSingle();
 
       if (existingUser) {
         toast.error("Username already taken");
-        setLoading(false);
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({
+      const redirectUrl = `${window.location.origin}/`;
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: { username: username },
-        },
+          data: { username },
+          emailRedirectTo: redirectUrl
+        }
       });
 
       if (error) throw error;
-
-      if (data.user) {
-        toast.success("Check your email for verification link!");
-        setEmail("");
-        setPassword("");
-        setUsername("");
-      }
+      
+      toast.success("Account created! Please check your email to confirm.");
+      navigate("/");
     } catch (error: any) {
-      toast.error(error.message || "Error signing up");
-    } finally {
-      setLoading(false);
+      toast.error(error.message || "Error creating account");
+    }
+  };
+
+  const handleResetPassword = async () => {
+    if (!email) {
+      toast.error("Please enter your email address or username");
+      return;
+    }
+
+    let resetEmail = email;
+
+    // If username provided, get email
+    if (!email.includes('@')) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("email")
+        .eq("username", email)
+        .maybeSingle();
+
+      if (!profile || !profile.email) {
+        toast.error("Username not found");
+        return;
+      }
+      resetEmail = profile.email;
+    }
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+        redirectTo: `${window.location.origin}/auth`,
+      });
+
+      if (error) throw error;
+      toast.success("Password reset email sent! Check your inbox.");
+    } catch (error: any) {
+      toast.error(error.message || "Error sending reset email");
     }
   };
 
@@ -85,23 +120,44 @@ export default function Auth() {
     setLoading(true);
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      let signInEmail = email;
 
-      if (error) throw error;
+      // Check if it's a username, then get the email
+      if (!email.includes('@')) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("email")
+          .eq("username", email)
+          .maybeSingle();
 
-      if (data.user) {
-        if (!data.user.email_confirmed_at) {
-          toast.error("Please verify your email before logging in");
-          await supabase.auth.signOut();
+        if (!profile || !profile.email) {
+          toast.error("Username not found");
           setLoading(false);
           return;
         }
+        signInEmail = profile.email;
+      }
 
-        toast.success("Signed in successfully!");
-        navigate("/challenges");
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: signInEmail,
+        password,
+      });
+
+      if (error) {
+        if (error.message.includes("Email not confirmed")) {
+          toast.error("Please confirm your email before signing in");
+        } else if (error.message.includes("Invalid")) {
+          toast.error("Invalid credentials");
+        } else {
+          throw error;
+        }
+        setLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        toast.success("Successfully signed in!");
+        navigate("/");
       }
     } catch (error: any) {
       toast.error(error.message || "Error signing in");

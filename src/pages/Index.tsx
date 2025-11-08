@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navbar } from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
@@ -15,9 +16,39 @@ import scpCreature from "@/assets/scp-creature.png";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [fireflies, setFireflies] = useState<
+    { id: number; top: string; left: string; delay: string; size: string }[]
+  >([]);
+
+  useEffect(() => {
+    const generated = Array.from({ length: 50 }).map((_, i) => ({
+      id: i,
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 8}s`,
+      size: `${2 + Math.random() * 5}px`,
+    }));
+    setFireflies(generated);
+  }, []);
 
   return (
-    <div className="min-h-screen flex flex-col relative text-[#eaf0ff]">
+    <div className="min-h-screen flex flex-col relative text-[#eaf0ff] overflow-hidden">
+      {/* Animated fireflies */}
+      {fireflies.map((f) => (
+        <div
+          key={f.id}
+          className="absolute bg-[#b8d6ff] rounded-full blur-[2px] opacity-60 animate-[float_12s_infinite_ease-in-out] pointer-events-none"
+          style={{
+            top: f.top,
+            left: f.left,
+            width: f.size,
+            height: f.size,
+            boxShadow: "0 0 15px rgba(160,200,255,0.7), 0 0 25px rgba(120,160,255,0.5)",
+            animationDelay: f.delay,
+          }}
+        ></div>
+      ))}
+
       <Navbar />
 
       <main className="flex-1 relative">
@@ -305,6 +336,13 @@ const Index = () => {
         @keyframes scanLine {
           0% { transform: translateX(-100%); }
           100% { transform: translateX(100%); }
+        }
+        @keyframes float {
+          0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.4; }
+          25% { transform: translateY(-20px) translateX(10px) scale(1.15); opacity: 0.9; }
+          50% { transform: translateY(-10px) translateX(-8px) scale(0.9); opacity: 0.3; }
+          75% { transform: translateY(12px) translateX(8px) scale(1.1); opacity: 0.85; }
+          100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.4; }
         }
       `}</style>
     </div>

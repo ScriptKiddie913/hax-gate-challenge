@@ -10,13 +10,10 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 interface User {
   id: string;
   username: string;
-  email: string;
+  email: string | null;
   is_banned: boolean;
   is_admin: boolean;
   created_at: string;
-  blockchain_address: string | null;
-  blockchain_verified: boolean;
-  blockchain_signature: string | null;
 }
 
 export function AdminUsers() {
@@ -32,7 +29,7 @@ export function AdminUsers() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, username, email, is_banned, is_admin, created_at')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -131,11 +128,6 @@ export function AdminUsers() {
                           BANNED
                         </Badge>
                       )}
-                      {user.blockchain_verified && (
-                        <Badge variant="outline" className="bg-success/20 text-success border-success font-mono text-xs">
-                          VERIFIED
-                        </Badge>
-                      )}
                     </div>
                     <p className="text-sm text-muted-foreground font-mono">{user.email}</p>
                     <p className="text-xs text-muted-foreground mt-1 font-mono">
@@ -213,31 +205,6 @@ export function AdminUsers() {
                         </p>
                       </div>
                     </div>
-
-                    {user.blockchain_address && (
-                      <div className="bg-background/50 p-3 border border-border">
-                        <p className="text-muted-foreground mb-2 text-xs font-mono">BLOCKCHAIN IDENTITY:</p>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-2">
-                            <p className="text-xs font-mono break-all">{user.blockchain_address}</p>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-6 w-6 p-0 flex-shrink-0"
-                              onClick={() => copyToClipboard(user.blockchain_address!, "Blockchain Address")}
-                            >
-                              <Copy className="h-3 w-3" />
-                            </Button>
-                          </div>
-                          {user.blockchain_signature && (
-                            <div className="text-[10px] font-mono text-muted-foreground break-all mt-2 p-2 bg-background/50 border border-border">
-                              <p className="mb-1">SIGNATURE:</p>
-                              {user.blockchain_signature}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    )}
 
                     <div className="classification-bar mt-3"></div>
                   </div>
