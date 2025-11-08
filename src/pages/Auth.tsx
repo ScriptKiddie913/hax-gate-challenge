@@ -211,7 +211,6 @@ export default function Auth() {
               </TabsTrigger>
             </TabsList>
 
-            {/* ==================== SIGN IN TAB ==================== */}
             <TabsContent value="signin">
               <Card className="border border-white/10 bg-white/5 backdrop-blur-2xl shadow-[0_0_30px_rgba(255,255,255,0.05)] rounded-xl text-[#eaf0ff]">
                 <CardHeader>
@@ -223,13 +222,13 @@ export default function Auth() {
                 <CardContent>
                   <form onSubmit={handleSignIn} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signin-email" className="text-[#c6d8ff]">Email or Username</Label>
+                      <Label htmlFor="signin-email" className="text-[#c6d8ff]">Email</Label>
                       <div className="relative">
                         <Mail className="absolute left-3 top-3 h-4 w-4 text-[#bcd0ff]/70" />
                         <Input
                           id="signin-email"
-                          type="text"
-                          placeholder="your@email.com or username"
+                          type="email"
+                          placeholder="your@email.com"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           required
@@ -252,19 +251,6 @@ export default function Auth() {
                         />
                       </div>
                     </div>
-
-                    {/* 🔹 Forgot Password Button */}
-                    <div className="text-right">
-                      <button
-                        type="button"
-                        onClick={handleResetPassword}
-                        className="text-sm text-[#9fc3ff] hover:text-[#bcd0ff] underline font-mono disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={!email}
-                      >
-                        Forgot password?
-                      </button>
-                    </div>
-
                     <Button
                       type="submit"
                       className="w-full bg-[#2a62cc]/70 hover:bg-[#3c74dd]/80 text-white shadow-[0_0_20px_rgba(80,130,255,0.4)] hover:shadow-[0_0_35px_rgba(100,150,255,0.5)] transition-all duration-300 rounded-lg font-mono"
@@ -278,7 +264,6 @@ export default function Auth() {
               </Card>
             </TabsContent>
 
-            {/* ==================== SIGN UP TAB ==================== */}
             <TabsContent value="signup">
               <Card className="border border-white/10 bg-white/5 backdrop-blur-2xl shadow-[0_0_30px_rgba(255,255,255,0.05)] rounded-xl text-[#eaf0ff]">
                 <CardHeader>
@@ -356,3 +341,7 @@ export default function Auth() {
     </div>
   );
 }
+
+
+
+
