@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trophy, Medal, Award, Flag } from "lucide-react";
+import { Trophy, Medal, Award, Flag, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
 interface ScoreEntry {
   user_id: string;
@@ -13,15 +14,34 @@ interface ScoreEntry {
   last_submission: string;
 }
 
+interface ScoreProgression {
+  timestamp: string;
+  [key: string]: number | string;
+}
+
 export default function Scoreboard() {
   const [scores, setScores] = useState<ScoreEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [progressionData, setProgressionData] = useState<ScoreProgression[]>([]);
+  const [topUsers, setTopUsers] = useState<string[]>([]);
   const [fireflies, setFireflies] = useState<
     { id: number; top: string; left: string; delay: string; size: string }[]
   >([]);
 
+  const CHART_COLORS = [
+    '#3b82f6', // blue
+    '#ef4444', // red
+    '#10b981', // green
+    '#f59e0b', // amber
+    '#8b5cf6', // purple
+    '#ec4899', // pink
+    '#14b8a6', // teal
+    '#f97316', // orange
+  ];
+
   useEffect(() => {
     loadScoreboard();
+    loadScoreProgression();
     
     // Generate fireflies
     const generated = Array.from({ length: 30 }).map((_, i) => ({
@@ -39,12 +59,13 @@ export default function Scoreboard() {
       .on(
         'postgres_changes',
         {
-          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          event: '*',
           schema: 'public',
           table: 'submissions'
         },
         () => {
           loadScoreboard();
+          loadScoreProgression();
         }
       )
       .subscribe();
@@ -53,6 +74,90 @@ export default function Scoreboard() {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  const loadScoreProgression = async () => {
+    try {
+      // Get top 8 users
+      const { data: topScores } = await supabase.rpc('get_scoreboard');
+      const topUserIds = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.user_id);
+      const topUsernames = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.username);
+      setTopUsers(topUsernames);
+
+      if (topUserIds.length === 0) {
+        setProgressionData([]);
+        return;
+      }
+
+      // Get all correct submissions for top users
+      const { data: submissions, error } = await supabase
+        .from('submissions')
+        .select('user_id, created_at, challenge_id, challenges(points)')
+        .in('user_id', topUserIds)
+        .eq('result', 'CORRECT')
+        .order('created_at', { ascending: true });
+
+      if (error) throw error;
+
+      // Build progression data
+      const userScores: { [key: string]: number } = {};
+      const timePoints: { [key: string]: any } = {};
+
+      topUserIds.forEach(uid => {
+        userScores[uid] = 0;
+      });
+
+      // Add initial point at time 0
+      const startTime = submissions && submissions.length > 0 
+        ? new Date(submissions[0].created_at).getTime() 
+        : Date.now();
+      
+      const initialPoint: any = { timestamp: new Date(startTime).toLocaleTimeString() };
+      topUsernames.forEach(username => {
+        initialPoint[username] = 0;
+      });
+      timePoints[startTime] = initialPoint;
+
+      // Process each submission
+      submissions?.forEach((sub: any) => {
+        const userId = sub.user_id;
+        const userIndex = topUserIds.indexOf(userId);
+        if (userIndex === -1) return;
+
+        const username = topUsernames[userIndex];
+        const points = sub.challenges?.points || 0;
+        userScores[userId] += points;
+
+        const time = new Date(sub.created_at).getTime();
+        if (!timePoints[time]) {
+          // Copy previous scores
+          const prevScores = Object.keys(timePoints).length > 0
+            ? timePoints[Math.max(...Object.keys(timePoints).map(Number))]
+            : initialPoint;
+          timePoints[time] = { 
+            timestamp: new Date(time).toLocaleTimeString(),
+            ...Object.fromEntries(topUsernames.map(u => [u, prevScores[u] || 0]))
+          };
+        }
+        timePoints[time][username] = userScores[userId];
+
+        // Forward fill scores for all users at this timestamp
+        topUsernames.forEach(u => {
+          if (timePoints[time][u] === undefined) {
+            const prevTime = Math.max(...Object.keys(timePoints).map(Number).filter(t => t < time));
+            timePoints[time][u] = prevTime ? timePoints[prevTime][u] : 0;
+          }
+        });
+      });
+
+      const progression = Object.keys(timePoints)
+        .sort((a, b) => Number(a) - Number(b))
+        .map(time => timePoints[Number(time)]);
+
+      setProgressionData(progression);
+    } catch (error: any) {
+      console.error('Error loading progression:', error);
+    }
+  };
 
   const loadScoreboard = async () => {
     try {
@@ -138,6 +243,61 @@ export default function Scoreboard() {
           </h1>
           <p className="text-muted-foreground text-lg">Real-time rankings • Updates automatically</p>
         </div>
+
+        {/* Score Progression Chart */}
+        {progressionData.length > 0 && (
+          <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-6">
+            <CardHeader className="border-b border-border/50">
+              <CardTitle className="flex items-center gap-3 text-xl">
+                <div className="p-2 rounded-lg bg-primary/10">
+                  <TrendingUp className="h-6 w-6 text-primary" />
+                </div>
+                Score Progression
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart data={progressionData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                  <XAxis 
+                    dataKey="timestamp" 
+                    stroke="hsl(var(--muted-foreground))"
+                    style={{ fontSize: '12px' }}
+                  />
+                  <YAxis 
+                    stroke="hsl(var(--muted-foreground))"
+                    style={{ fontSize: '12px' }}
+                  />
+                  <Tooltip 
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--popover))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                      color: 'hsl(var(--popover-foreground))'
+                    }}
+                  />
+                  <Legend 
+                    wrapperStyle={{
+                      paddingTop: '20px',
+                      fontSize: '14px'
+                    }}
+                  />
+                  {topUsers.map((username, index) => (
+                    <Line
+                      key={username}
+                      type="monotone"
+                      dataKey={username}
+                      stroke={CHART_COLORS[index % CHART_COLORS.length]}
+                      strokeWidth={2}
+                      dot={{ r: 3 }}
+                      activeDot={{ r: 5 }}
+                    />
+                  ))}
+                </LineChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        )}
 
         <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
           <CardHeader className="border-b border-border/50">
