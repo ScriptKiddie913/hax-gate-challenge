@@ -12,14 +12,6 @@ import { AlertCircle, Trophy, Flag, Ban } from "lucide-react";
 ==============================================================
  FLAG: scpctf{Rul3s_4r3_m3ant_t0_b3_br0k3n}
 ==============================================================
- */ helps preserve it through some
-   build minifiers (like Terser) which keep "important" comments.
-
- If you want to ensure it survives production builds:
-   - Set "terserOptions: { format: { comments: /!/ } }" in your build.
-   - OR serve this file unminified during the CTF.
-
-==============================================================
 */
 
 export default function Rules() {
@@ -28,7 +20,6 @@ export default function Rules() {
   >([]);
 
   useEffect(() => {
-    // Random glowing light blobs generation
     const generatedBlobs = Array.from({ length: 8 }).map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
@@ -72,7 +63,6 @@ export default function Rules() {
 
       <main className="flex-1 container mx-auto px-4 py-12 relative z-10">
         <div className="max-w-4xl mx-auto space-y-8 text-[#cdd9ff]">
-          {/* Heading Section */}
           <div className="text-center mb-12 animate-fade-in">
             <h1 className="text-5xl font-extrabold mb-4 text-[#9fc5ff] tracking-wide">
               <span className="text-gradient-cyan drop-shadow-[0_0_10px_#005eff]">
@@ -84,7 +74,6 @@ export default function Rules() {
             </p>
           </div>
 
-          {/* Important Notice Card */}
           <Card className="border border-[#3d6cff]/40 bg-[#0a1530]/60 backdrop-blur-xl shadow-[0_0_30px_rgba(0,60,255,0.15)] hover:shadow-[0_0_40px_rgba(0,90,255,0.25)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
@@ -99,7 +88,6 @@ export default function Rules() {
             </CardContent>
           </Card>
 
-          {/* Scoring Rules Card */}
           <Card className="border border-[#3358ff]/30 bg-[#081226]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#62a0ff]">
@@ -111,33 +99,24 @@ export default function Rules() {
               <ul className="space-y-3 list-none text-[#d0dbff]">
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
-                  <span>
-                    Each challenge is worth a specific number of points based on its difficulty level.
-                  </span>
+                  <span>Each challenge is worth a specific number of points based on its difficulty level.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
-                  <span>
-                    Points are awarded only for the <strong>first correct submission</strong> per user per challenge.
-                  </span>
+                  <span>Points are awarded only for the <strong>first correct submission</strong> per user per challenge.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
-                  <span>
-                    Once you solve a challenge, it becomes <strong>locked</strong> — no further submissions are accepted.
-                  </span>
+                  <span>Once you solve a challenge, it becomes <strong>locked</strong> — no further submissions are accepted.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
-                  <span>
-                    Scoreboard ranks are determined by total points, with ties broken by the earliest correct submission timestamp.
-                  </span>
+                  <span>Scoreboard ranks are determined by total points, with ties broken by the earliest correct submission timestamp.</span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
-          {/* Submission Rules Card */}
           <Card className="border border-[#2f5aff]/30 bg-[#0b1935]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
@@ -172,7 +151,6 @@ export default function Rules() {
             </CardContent>
           </Card>
 
-          {/* Prohibited Activities Card */}
           <Card className="border border-[#3c4fff]/30 bg-[#08162d]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#ff5c5c]">
@@ -184,21 +162,15 @@ export default function Rules() {
               <ul className="space-y-3 list-none text-[#d0dbff]">
                 <li className="flex gap-3">
                   <span className="text-[#ff5c5c]">✕</span>
-                  <span>
-                    <strong>No attacks on the platform</strong> — only target designated challenge environments.
-                  </span>
+                  <span><strong>No attacks on the platform</strong> — only target designated challenge environments.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#ff5c5c]">✕</span>
-                  <span>
-                    <strong>No flag sharing</strong> or collaboration beyond what is allowed by event rules.
-                  </span>
+                  <span><strong>No flag sharing</strong> or collaboration beyond what is allowed by event rules.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#ff5c5c]">✕</span>
-                  <span>
-                    <strong>No DDoS, brute-forcing, or service abuse</strong> — violations result in immediate suspension.
-                  </span>
+                  <span><strong>No DDoS, brute-forcing, or service abuse</strong> — violations result in immediate suspension.</span>
                 </li>
               </ul>
             </CardContent>
@@ -206,7 +178,6 @@ export default function Rules() {
         </div>
       </main>
 
-      {/* Hidden keyframes block also containing flag in comment */}
       {/* FLAG: scpctf{Rul3s_4r3_m3ant_t0_b3_br0k3n} */}
       <style>{`
         @keyframes blink {
@@ -219,7 +190,6 @@ export default function Rules() {
             transform: scale(1.2);
           }
         }
-
         @keyframes ambient {
           0%, 100% {
             opacity: 0.95;
