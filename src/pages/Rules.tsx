@@ -8,13 +8,32 @@ import {
 } from "@/components/ui/card";
 import { AlertCircle, Trophy, Flag, Ban } from "lucide-react";
 
+/*!
+==============================================================
+ FLAG: scpctf{Rul3s_4r3_m3ant_t0_b3_br0k3n}
+==============================================================
+ This comment is intentionally included in the source code to
+ serve as a hidden flag for your CTF challenge.
+
+ - It will not be visible on the rendered webpage.
+ - It will only be visible through developer tools (Inspect → Sources).
+ - The comment style /*! ... */ helps preserve it through some
+   build minifiers (like Terser) which keep "important" comments.
+
+ If you want to ensure it survives production builds:
+   - Set "terserOptions: { format: { comments: /!/ } }" in your build.
+   - OR serve this file unminified during the CTF.
+
+==============================================================
+*/
+
 export default function Rules() {
   const [blobs, setBlobs] = useState<
     { id: number; top: string; left: string; size: string; delay: string }[]
   >([]);
 
   useEffect(() => {
-    // Random glowing light blobs
+    // Random glowing light blobs generation
     const generatedBlobs = Array.from({ length: 8 }).map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
@@ -58,7 +77,7 @@ export default function Rules() {
 
       <main className="flex-1 container mx-auto px-4 py-12 relative z-10">
         <div className="max-w-4xl mx-auto space-y-8 text-[#cdd9ff]">
-          {/* Heading */}
+          {/* Heading Section */}
           <div className="text-center mb-12 animate-fade-in">
             <h1 className="text-5xl font-extrabold mb-4 text-[#9fc5ff] tracking-wide">
               <span className="text-gradient-cyan drop-shadow-[0_0_10px_#005eff]">
@@ -66,11 +85,11 @@ export default function Rules() {
               </span>
             </h1>
             <p className="text-lg text-[#aebeff] font-light">
-              Please read and follow these rules to ensure fair play.
+              Please read and follow these rules to ensure fair play and a smooth experience for everyone.
             </p>
           </div>
 
-          {/* Important notice */}
+          {/* Important Notice Card */}
           <Card className="border border-[#3d6cff]/40 bg-[#0a1530]/60 backdrop-blur-xl shadow-[0_0_30px_rgba(0,60,255,0.15)] hover:shadow-[0_0_40px_rgba(0,90,255,0.25)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
@@ -80,13 +99,12 @@ export default function Rules() {
             </CardHeader>
             <CardContent>
               <p className="text-[#d9e3ff] leading-relaxed">
-                All participants must follow these rules. Violation may result in disqualification
-                or permanent ban from the platform. Report any suspicious activity immediately.
+                All participants must follow these rules. Violation may result in disqualification or a permanent ban from the platform. Report any suspicious activity immediately to the moderators or event admins.
               </p>
             </CardContent>
           </Card>
 
-          {/* Scoring rules */}
+          {/* Scoring Rules Card */}
           <Card className="border border-[#3358ff]/30 bg-[#081226]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#62a0ff]">
@@ -99,7 +117,7 @@ export default function Rules() {
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
                   <span>
-                    Each challenge is worth a specific number of points based on difficulty.
+                    Each challenge is worth a specific number of points based on its difficulty level.
                   </span>
                 </li>
                 <li className="flex gap-3">
@@ -111,21 +129,20 @@ export default function Rules() {
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
                   <span>
-                    Once you solve a challenge, it becomes <strong>locked</strong> - no further submissions are accepted.
+                    Once you solve a challenge, it becomes <strong>locked</strong> — no further submissions are accepted.
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
                   <span>
-                    Scoreboard ranks are determined by total points, with ties broken by the last
-                    correct submission timestamp.
+                    Scoreboard ranks are determined by total points, with ties broken by the earliest correct submission timestamp.
                   </span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
-          {/* Submission rules */}
+          {/* Submission Rules Card */}
           <Card className="border border-[#2f5aff]/30 bg-[#0b1935]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
@@ -138,27 +155,29 @@ export default function Rules() {
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
                   <span>
-                    Flags must match the format in the challenge description (usually{" "}
-                    <code className="font-mono bg-[#112249]/70 px-1 py-0.5 rounded text-[#b8d4ff]">scpctf{"{...}"}</code>).
+                    Flags must match the format described in each challenge, typically in the format{" "}
+                    <code className="font-mono bg-[#112249]/70 px-1 py-0.5 rounded text-[#b8d4ff]">
+                      scpctf{"{...}"}
+                    </code>.
                   </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
-                  <span>You can attempt unlimited times until correct.</span>
+                  <span>You can attempt unlimited submissions until correct.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
-                  <span>Rate limiting prevents brute-force submissions.</span>
+                  <span>Rate limiting is enforced to prevent brute-force attempts.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
-                  <span>Do not share flags or writeups during the event.</span>
+                  <span>Do not share flags or write-ups during the active event period.</span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
-          {/* Prohibited activities */}
+          {/* Prohibited Activities Card */}
           <Card className="border border-[#3c4fff]/30 bg-[#08162d]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#ff5c5c]">
@@ -170,15 +189,21 @@ export default function Rules() {
               <ul className="space-y-3 list-none text-[#d0dbff]">
                 <li className="flex gap-3">
                   <span className="text-[#ff5c5c]">✕</span>
-                  <span><strong>No attacks on platform</strong> - Only attack designated challenges.</span>
+                  <span>
+                    <strong>No attacks on the platform</strong> — only target designated challenge environments.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#ff5c5c]">✕</span>
-                  <span><strong>No sharing of flags</strong> during active challenges.</span>
+                  <span>
+                    <strong>No flag sharing</strong> or collaboration beyond what is allowed by event rules.
+                  </span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#ff5c5c]">✕</span>
-                  <span><strong>No DDoS or brute-forcing</strong> - violations trigger suspension.</span>
+                  <span>
+                    <strong>No DDoS, brute-forcing, or service abuse</strong> — violations result in immediate suspension.
+                  </span>
                 </li>
               </ul>
             </CardContent>
@@ -186,15 +211,29 @@ export default function Rules() {
         </div>
       </main>
 
-      {/* Keyframes scpctf{Rul3s_4r3_m3ant_t0_b3_br0k3n}*/ }
+      {/* Hidden keyframes block also containing flag in comment */}
+      {/* FLAG: scpctf{Rul3s_4r3_m3ant_t0_b3_br0k3n} */}
       <style>{`
         @keyframes blink {
-          0%, 100% { opacity: 0; transform: scale(0.8); }
-          50% { opacity: 0.3; transform: scale(1.2); }
+          0%, 100% {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          50% {
+            opacity: 0.3;
+            transform: scale(1.2);
+          }
         }
+
         @keyframes ambient {
-          0%, 100% { opacity: 0.95; filter: brightness(0.9); }
-          50% { opacity: 0.85; filter: brightness(1.05); }
+          0%, 100% {
+            opacity: 0.95;
+            filter: brightness(0.9);
+          }
+          50% {
+            opacity: 0.85;
+            filter: brightness(1.05);
+          }
         }
       `}</style>
     </div>
