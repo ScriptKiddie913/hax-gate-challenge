@@ -105,7 +105,7 @@ export default function Auth() {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-        redirectTo: `${window.location.origin}/auth`,
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) throw error;
@@ -250,6 +250,15 @@ export default function Auth() {
                           className="pl-10 bg-white/5 border border-white/10 text-[#f0f5ff] placeholder:text-[#cbd8ff]/40"
                         />
                       </div>
+                    </div>
+                    <div className="text-right">
+                      <button
+                        type="button"
+                        onClick={handleResetPassword}
+                        className="text-sm text-[#8abaff] hover:text-[#a8c8ff] transition-colors"
+                      >
+                        Forgot password?
+                      </button>
                     </div>
                     <Button
                       type="submit"
