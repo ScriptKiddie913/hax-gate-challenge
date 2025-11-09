@@ -69,7 +69,9 @@ export function ChallengeDialog({ challenge, open, onOpenChange }: ChallengeDial
                 challengeId: challenge.id,
                 result: submission.result,
               },
-            }).catch(err => console.error("Monitor error:", err));
+            }).catch(() => {
+              // Silently fail - monitoring is non-critical
+            });
           }
         } else if (submission.result === "LOCKED") {
           toast.info(submission.message);
@@ -85,7 +87,9 @@ export function ChallengeDialog({ challenge, open, onOpenChange }: ChallengeDial
                 challengeId: challenge.id,
                 result: submission.result,
               },
-            }).catch(err => console.error("Monitor error:", err));
+            }).catch(() => {
+              // Silently fail - monitoring is non-critical
+            });
           }
         }
       }

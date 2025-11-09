@@ -278,7 +278,41 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      user_submissions: {
+        Row: {
+          challenge_id: string | null
+          created_at: string | null
+          id: string | null
+          result: string | null
+          submitted_flag: string | null
+          user_id: string | null
+        }
+        Insert: {
+          challenge_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          result?: string | null
+          submitted_flag?: never
+          user_id?: string | null
+        }
+        Update: {
+          challenge_id?: string | null
+          created_at?: string | null
+          id?: string | null
+          result?: string | null
+          submitted_flag?: never
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       get_scoreboard: {

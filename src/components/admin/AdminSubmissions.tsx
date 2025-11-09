@@ -96,7 +96,6 @@ export function AdminSubmissions() {
       setSubmissions(enrichedSubmissions);
     } catch (error: any) {
       toast.error("Error loading submissions");
-      console.error(error);
     } finally {
       setLoading(false);
     }

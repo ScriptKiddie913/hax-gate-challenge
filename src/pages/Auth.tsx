@@ -76,7 +76,13 @@ export default function Auth() {
       toast.success("Account created! Please check your email to confirm.");
       navigate("/");
     } catch (error: any) {
-      toast.error(error.message || "Error creating account");
+      if (error.message?.includes('profiles_username_unique')) {
+        toast.error("Username already taken");
+      } else if (error.message?.includes('profiles_username_format')) {
+        toast.error("Username can only contain letters, numbers, underscores, and hyphens");
+      } else {
+        toast.error(error.message || "Error creating account");
+      }
     }
   };
 

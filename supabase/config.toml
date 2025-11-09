@@ -1,1 +1,4 @@
 project_id = "rtvauvrqbfqbkibtbgnq"
+
+[functions.monitor-submissions]
+verify_jwt = true

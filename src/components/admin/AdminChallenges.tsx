@@ -132,7 +132,6 @@ export function AdminChallenges() {
       toast.success("File uploaded successfully!");
     } catch (error: any) {
       toast.error(error.message || "Error uploading file");
-      console.error("File upload error:", error);
     }
   };
 
