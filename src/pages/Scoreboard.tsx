@@ -304,8 +304,17 @@ export default function Scoreboard() {
                       dataKey={username}
                       stroke={CHART_COLORS[index % CHART_COLORS.length]}
                       strokeWidth={3}
-                      dot={false}
-                      activeDot={{ r: 6, strokeWidth: 2 }}
+                      dot={{ 
+                        r: 4, 
+                        fill: CHART_COLORS[index % CHART_COLORS.length],
+                        strokeWidth: 2,
+                        stroke: '#0f1729'
+                      }}
+                      activeDot={{ 
+                        r: 6, 
+                        strokeWidth: 2,
+                        fill: CHART_COLORS[index % CHART_COLORS.length]
+                      }}
                       animationDuration={1000}
                     />
                   ))}
