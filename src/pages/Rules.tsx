@@ -12,12 +12,7 @@ import { AlertCircle, Trophy, Flag, Ban } from "lucide-react";
 ==============================================================
  FLAG: scpctf{Rul3s_4r3_m3ant_t0_b3_br0k3n}
 ==============================================================
- This comment is intentionally included in the source code to
- serve as a hidden flag for your CTF challenge.
-
- - It will not be visible on the rendered webpage.
- - It will only be visible through developer tools (Inspect → Sources).
- - The comment style /*! ... */ helps preserve it through some
+ */ helps preserve it through some
    build minifiers (like Terser) which keep "important" comments.
 
  If you want to ensure it survives production builds:
