@@ -29,14 +29,14 @@ export default function Scoreboard() {
   >([]);
 
   const CHART_COLORS = [
+    '#fbbf24', // gold/yellow
+    '#a855f7', // purple
     '#3b82f6', // blue
-    '#ef4444', // red
-    '#10b981', // green
-    '#f59e0b', // amber
-    '#8b5cf6', // purple
-    '#ec4899', // pink
-    '#14b8a6', // teal
+    '#06b6d4', // cyan
     '#f97316', // orange
+    '#10b981', // green
+    '#ec4899', // pink
+    '#ef4444', // red
   ];
 
   useEffect(() => {
@@ -246,7 +246,7 @@ export default function Scoreboard() {
 
         {/* Score Progression Chart */}
         {progressionData.length > 0 && (
-          <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-6">
+          <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
             <CardHeader className="border-b border-border/50">
               <CardTitle className="flex items-center gap-3 text-xl">
                 <div className="p-2 rounded-lg bg-primary/10">
@@ -255,32 +255,47 @@ export default function Scoreboard() {
                 Score Progression
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-6">
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={progressionData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+            <CardContent className="pt-6 pb-8">
+              <ResponsiveContainer width="100%" height={450}>
+                <LineChart 
+                  data={progressionData}
+                  margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
+                >
+                  <CartesianGrid 
+                    strokeDasharray="3 3" 
+                    stroke="rgba(100, 116, 139, 0.2)" 
+                    vertical={false}
+                  />
                   <XAxis 
                     dataKey="timestamp" 
-                    stroke="hsl(var(--muted-foreground))"
-                    style={{ fontSize: '12px' }}
+                    stroke="rgba(148, 163, 184, 0.6)"
+                    tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
+                    tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
                   />
                   <YAxis 
-                    stroke="hsl(var(--muted-foreground))"
-                    style={{ fontSize: '12px' }}
+                    stroke="rgba(148, 163, 184, 0.6)"
+                    tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
+                    tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
                   />
                   <Tooltip 
                     contentStyle={{
-                      backgroundColor: 'hsl(var(--popover))',
-                      border: '1px solid hsl(var(--border))',
+                      backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                      border: '1px solid rgba(100, 116, 139, 0.3)',
                       borderRadius: '8px',
-                      color: 'hsl(var(--popover-foreground))'
+                      color: 'rgba(226, 232, 240, 0.95)',
+                      backdropFilter: 'blur(8px)'
+                    }}
+                    itemStyle={{
+                      color: 'rgba(226, 232, 240, 0.95)'
                     }}
                   />
                   <Legend 
                     wrapperStyle={{
-                      paddingTop: '20px',
-                      fontSize: '14px'
+                      paddingTop: '25px',
+                      fontSize: '13px',
+                      fontFamily: 'monospace'
                     }}
+                    iconType="line"
                   />
                   {topUsers.map((username, index) => (
                     <Line
@@ -288,9 +303,10 @@ export default function Scoreboard() {
                       type="monotone"
                       dataKey={username}
                       stroke={CHART_COLORS[index % CHART_COLORS.length]}
-                      strokeWidth={2}
-                      dot={{ r: 3 }}
-                      activeDot={{ r: 5 }}
+                      strokeWidth={3}
+                      dot={false}
+                      activeDot={{ r: 6, strokeWidth: 2 }}
+                      animationDuration={1000}
                     />
                   ))}
                 </LineChart>
