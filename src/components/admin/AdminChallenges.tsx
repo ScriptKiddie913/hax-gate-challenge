@@ -28,6 +28,7 @@ interface Challenge {
   description_md: string;
   is_published: boolean;
   created_at: string;
+  flag?: string | null;
   files?: Array<{ name: string; url: string }>;
   links?: Array<{ name: string; url: string }>;
 }
@@ -87,7 +88,7 @@ export function AdminChallenges() {
       setCategory(challenge.category);
       setPoints(challenge.points);
       setDescription(challenge.description_md);
-      setFlagValue("");
+      setFlagValue(challenge.flag || "");
       setFiles(Array.isArray(challenge.files) ? challenge.files : []);
       setLinks(Array.isArray(challenge.links) ? challenge.links : []);
     } else {
@@ -171,18 +172,12 @@ export function AdminChallenges() {
             description_md: description,
             files,
             links,
+            flag: flagValue || null,
           })
           .eq("id", editingChallenge.id);
 
         if (error) throw error;
 
-        if (flagValue) {
-          const { error: flagUpdateError } = await supabase
-            .from("challenges")
-            .update({ flag: flagValue } as any)
-            .eq("id", editingChallenge.id);
-          if (flagUpdateError) throw flagUpdateError;
-        }
 
         toast.success("Challenge updated successfully");
       } else {
@@ -215,6 +210,15 @@ export function AdminChallenges() {
 
   const togglePublish = async (id: string, currentStatus: boolean) => {
     try {
+      // Prevent publishing without a configured flag
+      if (!currentStatus) {
+        const found = challenges.find((c) => c.id === id);
+        if (!found || !found.flag || !found.flag.toString().trim()) {
+          toast.error("Please set a flag before publishing this challenge.");
+          return;
+        }
+      }
+
       const { error } = await supabase
         .from("challenges")
         .update({ is_published: !currentStatus })
