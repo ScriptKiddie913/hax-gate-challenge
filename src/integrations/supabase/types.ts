@@ -134,6 +134,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "flags_challenge_fk"
+            columns: ["challenge_id"]
+            isOneToOne: true
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "flags_challenge_id_fkey"
             columns: ["challenge_id"]
             isOneToOne: true
