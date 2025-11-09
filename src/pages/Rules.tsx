@@ -186,7 +186,7 @@ export default function Rules() {
         </div>
       </main>
 
-      {/* Keyframes */}
+      {/* Keyframes scpctf{Rul3s_4r3_m3ant_t0_b3_br0k3n}*/ }
       <style>{`
         @keyframes blink {
           0%, 100% { opacity: 0; transform: scale(0.8); }
