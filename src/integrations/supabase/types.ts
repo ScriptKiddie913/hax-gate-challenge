@@ -113,42 +113,6 @@ export type Database = {
         }
         Relationships: []
       }
-      flags: {
-        Row: {
-          challenge_id: string
-          created_at: string
-          hash: string
-          id: string
-        }
-        Insert: {
-          challenge_id: string
-          created_at?: string
-          hash: string
-          id?: string
-        }
-        Update: {
-          challenge_id?: string
-          created_at?: string
-          hash?: string
-          id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "flags_challenge_fk"
-            columns: ["challenge_id"]
-            isOneToOne: true
-            referencedRelation: "challenges"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "flags_challenge_id_fkey"
-            columns: ["challenge_id"]
-            isOneToOne: true
-            referencedRelation: "challenges"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       profiles: {
         Row: {
           blockchain_address: string | null
@@ -340,14 +304,6 @@ export type Database = {
         Returns: boolean
       }
       is_ctf_active: { Args: never; Returns: boolean }
-      secure_set_flag: {
-        Args: { challenge_id: string; flag: string }
-        Returns: undefined
-      }
-      set_flag: {
-        Args: { challenge_id: string; flag: string }
-        Returns: undefined
-      }
       submit_flag: {
         Args: { challenge_id: string; submitted_flag: string }
         Returns: {
@@ -355,10 +311,6 @@ export type Database = {
           points: number
           result: string
         }[]
-      }
-      verify_flag: {
-        Args: { challenge_id: string; submitted: string }
-        Returns: boolean
       }
     }
     Enums: {
