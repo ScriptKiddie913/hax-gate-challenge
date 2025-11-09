@@ -24,6 +24,8 @@ export default function Scoreboard() {
   const [loading, setLoading] = useState(true);
   const [progressionData, setProgressionData] = useState<ScoreProgression[]>([]);
   const [topUsers, setTopUsers] = useState<string[]>([]);
+  const [ctfActive, setCtfActive] = useState(false);
+  const [ctfLoading, setCtfLoading] = useState(true);
   const [fireflies, setFireflies] = useState<
     { id: number; top: string; left: string; delay: string; size: string }[]
   >([]);
@@ -40,6 +42,7 @@ export default function Scoreboard() {
   ];
 
   useEffect(() => {
+    checkCtfStatus();
     loadScoreboard();
     loadScoreProgression();
     
@@ -74,6 +77,29 @@ export default function Scoreboard() {
       supabase.removeChannel(channel);
     };
   }, []);
+
+  const checkCtfStatus = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('ctf_settings')
+        .select('start_time, end_time, is_active')
+        .eq('is_active', true)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        const now = new Date();
+        const start = new Date(data.start_time);
+        const end = new Date(data.end_time);
+        setCtfActive(now >= start && now <= end && data.is_active);
+      }
+    } catch (error: any) {
+      console.error('Error checking CTF status:', error);
+    } finally {
+      setCtfLoading(false);
+    }
+  };
 
   const loadScoreProgression = async () => {
     try {
@@ -187,7 +213,7 @@ export default function Scoreboard() {
     }
   };
 
-  if (loading) {
+  if (loading || ctfLoading) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
@@ -197,6 +223,9 @@ export default function Scoreboard() {
       </div>
     );
   }
+
+  const topThree = scores.slice(0, 3);
+  const restOfScores = scores.slice(3);
 
   return (
     <div 
@@ -244,9 +273,55 @@ export default function Scoreboard() {
           <p className="text-muted-foreground text-lg">Real-time rankings • Updates automatically</p>
         </div>
 
-        {/* Score Progression Chart */}
-        {progressionData.length > 0 && (
-          <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
+        {!ctfActive ? (
+          <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
+            <CardContent className="py-16 text-center">
+              <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+              <h2 className="text-3xl font-bold mb-2">CTF Not Started</h2>
+              <p className="text-muted-foreground text-lg">The competition will begin soon. Stay tuned!</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            {/* Top 3 Podium */}
+            {topThree.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                {topThree.map((entry, index) => {
+                  const rank = index + 1;
+                  const bgGradient = rank === 1 
+                    ? 'from-yellow-500/20 to-yellow-600/20 border-yellow-500/40'
+                    : rank === 2
+                    ? 'from-gray-400/20 to-gray-500/20 border-gray-400/40'
+                    : 'from-amber-600/20 to-amber-700/20 border-amber-600/40';
+                  
+                  return (
+                    <Card key={entry.user_id} className={`border bg-gradient-to-br ${bgGradient} backdrop-blur-xl shadow-xl`}>
+                      <CardContent className="p-6 text-center">
+                        <div className="mb-3">
+                          {getRankIcon(rank)}
+                        </div>
+                        <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
+                          {rank === 1 ? '1st' : rank === 2 ? '2nd' : '3rd'} Place
+                        </p>
+                        <h3 className="font-mono font-bold text-2xl mb-2">{entry.username}</h3>
+                        <div className="flex items-center justify-center gap-2 text-muted-foreground mb-3">
+                          <Flag className="h-4 w-4" />
+                          <span className="text-sm">{entry.solved_count} solved</span>
+                        </div>
+                        <div className={`text-4xl font-mono font-bold ${rank === 1 ? 'text-yellow-400' : rank === 2 ? 'text-gray-400' : 'text-amber-600'}`}>
+                          {entry.total_points}
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-1">POINTS</p>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Score Progression Chart */}
+            {progressionData.length > 0 ? (
+              <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
             <CardHeader className="border-b border-border/50">
               <CardTitle className="flex items-center gap-3 text-xl">
                 <div className="p-2 rounded-lg bg-primary/10">
@@ -320,11 +395,26 @@ export default function Scoreboard() {
                   ))}
                 </LineChart>
               </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        )}
+              </CardContent>
+            </Card>
+            ) : (
+              <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
+                <CardHeader className="border-b border-border/50">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <TrendingUp className="h-6 w-6 text-primary" />
+                    </div>
+                    Score Progression
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="py-16 text-center">
+                  <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+                  <p className="text-muted-foreground">No submissions yet. Be the first to solve a challenge!</p>
+                </CardContent>
+              </Card>
+            )}
 
-        <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
+            <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
           <CardHeader className="border-b border-border/50">
             <CardTitle className="flex items-center gap-3 text-xl">
               <div className="p-2 rounded-lg bg-primary/10">
@@ -337,62 +427,57 @@ export default function Scoreboard() {
               </div>
             </CardTitle>
           </CardHeader>
-          <CardContent>
-            {scores.length === 0 ? (
-              <div className="text-center py-12">
-                <Flag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No submissions yet. Be the first!</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {scores.map((entry, index) => (
-                  <div
-                    key={entry.user_id}
-                    className={`flex items-center justify-between p-5 rounded-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg ${
-                      index === 0
-                        ? 'bg-gradient-to-r from-yellow-500/10 to-yellow-600/10 border-yellow-500/30 shadow-yellow-500/20'
-                        : index === 1
-                        ? 'bg-gradient-to-r from-gray-400/10 to-gray-500/10 border-gray-400/30 shadow-gray-400/20'
-                        : index === 2
-                        ? 'bg-gradient-to-r from-amber-600/10 to-amber-700/10 border-amber-600/30 shadow-amber-600/20'
-                        : 'bg-secondary/40 border-border hover:border-primary/30'
-                    }`}
-                  >
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className="w-14 flex items-center justify-center">
-                        {getRankIcon(index + 1)}
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-mono font-bold text-lg">{entry.username}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <Flag className="h-3 w-3 text-muted-foreground" />
-                          <p className="text-sm text-muted-foreground">
-                            {entry.solved_count} challenge{entry.solved_count !== 1 ? 's' : ''} solved
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className={`font-mono font-bold text-2xl ${
-                        index < 3 ? 'text-primary glow-text' : 'text-primary'
-                      }`}>
-                        {entry.total_points}
-                      </p>
-                      <p className="text-xs text-muted-foreground font-medium">
-                        POINTS
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {entry.last_submission 
-                          ? new Date(entry.last_submission).toLocaleString()
-                          : 'No submissions'}
-                      </p>
-                    </div>
+              <CardContent>
+                {restOfScores.length === 0 && topThree.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Flag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No submissions yet. Be the first!</p>
                   </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                ) : (
+                  <div className="space-y-2">
+                    {restOfScores.map((entry, index) => {
+                      const actualRank = index + 4;
+                      return (
+                        <div
+                          key={entry.user_id}
+                          className="flex items-center justify-between p-5 rounded-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg bg-secondary/40 border-border hover:border-primary/30"
+                        >
+                          <div className="flex items-center gap-4 flex-1">
+                            <div className="w-14 flex items-center justify-center">
+                              <span className="text-muted-foreground font-mono">#{actualRank}</span>
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-mono font-bold text-lg">{entry.username}</p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Flag className="h-3 w-3 text-muted-foreground" />
+                                <p className="text-sm text-muted-foreground">
+                                  {entry.solved_count} challenge{entry.solved_count !== 1 ? 's' : ''} solved
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-mono font-bold text-2xl text-primary">
+                              {entry.total_points}
+                            </p>
+                            <p className="text-xs text-muted-foreground font-medium">
+                              POINTS
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {entry.last_submission 
+                                ? new Date(entry.last_submission).toLocaleString()
+                                : 'No submissions'}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </main>
 
       {/* Animations */}
