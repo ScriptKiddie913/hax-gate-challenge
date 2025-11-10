@@ -188,7 +188,7 @@ export function AdminChallenges() {
 
         toast.success("Challenge updated successfully");
       } else {
-        const { error: challengeError } = await supabase
+        const { data: newChallenge, error: challengeError } = await supabase
           .from("challenges")
           .insert({
             title,
@@ -197,12 +197,22 @@ export function AdminChallenges() {
             description_md: description,
             created_by: user.id,
             is_published: false,
-            flag: flagValue || null,
             files,
             links,
-          });
+          })
+          .select()
+          .single();
 
         if (challengeError) throw challengeError;
+
+        // Set flag using secure RPC function if provided
+        if (newChallenge && flagValue && flagValue.trim()) {
+          const { error: flagError } = await supabase.rpc('admin_set_flag', {
+            p_challenge_id: newChallenge.id,
+            p_flag: flagValue.trim()
+          });
+          if (flagError) throw flagError;
+        }
 
         toast.success("Challenge created successfully!");
       }
