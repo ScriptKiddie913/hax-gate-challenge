@@ -28,7 +28,6 @@ interface Challenge {
   description_md: string;
   is_published: boolean;
   created_at: string;
-  flag?: string | null;
   files?: Array<{ name: string; url: string }>;
   links?: Array<{ name: string; url: string }>;
 }
@@ -88,7 +87,7 @@ export function AdminChallenges() {
       setCategory(challenge.category);
       setPoints(challenge.points);
       setDescription(challenge.description_md);
-      setFlagValue(challenge.flag || "");
+      setFlagValue("");
       setFiles(Array.isArray(challenge.files) ? challenge.files : []);
       setLinks(Array.isArray(challenge.links) ? challenge.links : []);
     } else {
@@ -172,11 +171,19 @@ export function AdminChallenges() {
             description_md: description,
             files,
             links,
-            flag: flagValue || null,
           })
           .eq("id", editingChallenge.id);
 
         if (error) throw error;
+
+        // Set flag using secure RPC function if provided
+        if (flagValue && flagValue.trim()) {
+          const { error: flagError } = await supabase.rpc('admin_set_flag', {
+            p_challenge_id: editingChallenge.id,
+            p_flag: flagValue.trim()
+          });
+          if (flagError) throw flagError;
+        }
 
 
         toast.success("Challenge updated successfully");
@@ -212,8 +219,11 @@ export function AdminChallenges() {
     try {
       // Prevent publishing without a configured flag
       if (!currentStatus) {
-        const found = challenges.find((c) => c.id === id);
-        if (!found || !found.flag || !found.flag.toString().trim()) {
+        // Check if flag exists using secure RPC function
+        const { data: hasFlag, error: flagError } = await supabase
+          .rpc('admin_has_flag', { p_challenge_id: id });
+        
+        if (flagError || !hasFlag) {
           toast.error("Please set a flag before publishing this challenge.");
           return;
         }

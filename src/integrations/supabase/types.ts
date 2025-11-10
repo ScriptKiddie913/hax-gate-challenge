@@ -45,7 +45,6 @@ export type Database = {
           created_by: string | null
           description_md: string
           files: Json | null
-          flag: string | null
           id: string
           is_published: boolean
           links: Json | null
@@ -59,7 +58,6 @@ export type Database = {
           created_by?: string | null
           description_md: string
           files?: Json | null
-          flag?: string | null
           id?: string
           is_published?: boolean
           links?: Json | null
@@ -73,7 +71,6 @@ export type Database = {
           created_by?: string | null
           description_md?: string
           files?: Json | null
-          flag?: string | null
           id?: string
           is_published?: boolean
           links?: Json | null
@@ -112,6 +109,38 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      h36gtnduu776h: {
+        Row: {
+          challenge_id: string
+          created_at: string
+          flag_hash: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          challenge_id: string
+          created_at?: string
+          flag_hash: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          challenge_id?: string
+          created_at?: string
+          flag_hash?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "h36gtnduu776h_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: true
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -286,6 +315,11 @@ export type Database = {
       }
     }
     Functions: {
+      admin_has_flag: { Args: { p_challenge_id: string }; Returns: boolean }
+      admin_set_flag: {
+        Args: { p_challenge_id: string; p_flag: string }
+        Returns: undefined
+      }
       get_scoreboard: {
         Args: never
         Returns: {

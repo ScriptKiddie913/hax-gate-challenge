@@ -20,7 +20,6 @@ interface Challenge {
   description_md: string;
   files: any;
   links: any;
-  flag?: string;
 }
 
 export default function ChallengeDetail() {
@@ -48,7 +47,7 @@ export default function ChallengeDetail() {
 
       const { data: challengeData, error: challengeError } = await supabase
         .from('challenges')
-        .select('*, flag')
+        .select('*')
         .eq('id', id)
         .eq('is_published', true)
         .maybeSingle();
@@ -91,35 +90,24 @@ export default function ChallengeDetail() {
     setSubmitting(true);
 
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Not authenticated");
+      // Use secure submit_flag RPC function
+      const { data, error } = await supabase.rpc('submit_flag', {
+        challenge_id: id,
+        submitted_flag: flag.trim()
+      });
 
-      // Direct flag comparison
-      if (!challenge?.flag) {
-        toast.error("Challenge flag not configured");
-        return;
-      }
-
-      const isCorrect = flag.trim() === challenge.flag.trim();
-
-      // Record submission
-      const { error: submissionError } = await supabase
-        .from('submissions')
-        .insert({
-          user_id: user.id,
-          challenge_id: id,
-          result: isCorrect ? 'CORRECT' : 'INCORRECT',
-          submitted_flag: flag.substring(0, 50),
-        });
-
-      if (submissionError) throw submissionError;
-
-      if (isCorrect) {
-        toast.success(`Correct! You earned ${challenge?.points} points! 🎉`);
+      if (error) throw error;
+      
+      const result = data?.[0];
+      
+      if (result?.result === 'LOCKED') {
+        toast.error(result.message);
+      } else if (result?.result === 'CORRECT') {
+        toast.success(result.message || `Correct! You earned ${result.points} points! 🎉`);
         setIsSolved(true);
         setFlag("");
       } else {
-        toast.error("Incorrect flag. Try again!");
+        toast.error(result?.message || "Incorrect flag. Try again!");
       }
     } catch (error: any) {
       toast.error(error.message || "Error submitting flag");
