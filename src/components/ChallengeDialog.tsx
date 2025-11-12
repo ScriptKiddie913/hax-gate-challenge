@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import ReactMarkdown from "react-markdown";
 import {
@@ -39,12 +39,12 @@ export function ChallengeDialog({ challenge, open, onOpenChange, initialSolvedSt
   const [result, setResult] = useState<{ type: string; message: string } | null>(null);
   const [isSolved, setIsSolved] = useState(initialSolvedState);
 
-  // Reset state when challenge or initialSolvedState changes
-  useState(() => {
+  // Sync solved state when challenge changes or dialog opens
+  useEffect(() => {
     setIsSolved(initialSolvedState);
     setResult(null);
     setFlag("");
-  });
+  }, [challenge?.id, initialSolvedState, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -286,11 +286,11 @@ export function ChallengeDialog({ challenge, open, onOpenChange, initialSolvedSt
             {isSolved ? (
               <div className="text-center py-8">
                 <div className="w-16 h-16 border-4 border-green-500 bg-background flex items-center justify-center mx-auto mb-4">
-                  <Lock className="h-10 w-10 text-green-400" />
+                  <CheckCircle2 className="h-10 w-10 text-green-400" />
                 </div>
-                <p className="text-green-400 font-bold font-mono mb-2">SOLVED</p>
+                <p className="text-green-400 font-bold font-mono text-lg mb-2">CHALLENGE SOLVED</p>
                 <p className="text-xs text-green-300/70 font-mono">
-                  This challenge has been successfully solved and locked.
+                  This challenge has been successfully completed and is now locked.
                 </p>
               </div>
             ) : (
@@ -312,16 +312,10 @@ export function ChallengeDialog({ challenge, open, onOpenChange, initialSolvedSt
                 <Button
                   type="submit"
                   disabled={submitting || !flag.trim() || disabledInteraction}
-                  className={`w-full ${
-                    isSolved
-                      ? "bg-green-700/50 text-green-400 cursor-not-allowed"
-                      : ""
-                  }`}
+                  className="w-full"
                 >
                   {submitting
                     ? "VERIFYING..."
-                    : isSolved
-                    ? "CHALLENGE SOLVED"
                     : "SUBMIT FLAG"}
                 </Button>
               </div>
