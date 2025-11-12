@@ -29,17 +29,26 @@ interface ChallengeDialogProps {
   challenge: Challenge | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  initialSolvedState?: boolean;
+  onChallengeUpdate?: () => void;
 }
 
-export function ChallengeDialog({ challenge, open, onOpenChange }: ChallengeDialogProps) {
+export function ChallengeDialog({ challenge, open, onOpenChange, initialSolvedState = false, onChallengeUpdate }: ChallengeDialogProps) {
   const [flag, setFlag] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<{ type: string; message: string } | null>(null);
-  const [isSolved, setIsSolved] = useState(false);
+  const [isSolved, setIsSolved] = useState(initialSolvedState);
+
+  // Reset state when challenge or initialSolvedState changes
+  useState(() => {
+    setIsSolved(initialSolvedState);
+    setResult(null);
+    setFlag("");
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!challenge || !flag.trim()) return;
+    if (!challenge || !flag.trim() || isSolved) return;
 
     setSubmitting(true);
     setResult(null);
@@ -60,6 +69,12 @@ export function ChallengeDialog({ challenge, open, onOpenChange }: ChallengeDial
           setIsSolved(true);
           toast.success(submission.message);
           setFlag("");
+          
+          // Trigger refresh of challenges list
+          if (onChallengeUpdate) {
+            onChallengeUpdate();
+          }
+          
           setTimeout(() => onOpenChange(false), 2000);
 
           const { data: { user } } = await supabase.auth.getUser();

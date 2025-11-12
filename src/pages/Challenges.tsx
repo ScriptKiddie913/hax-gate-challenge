@@ -33,6 +33,7 @@ interface Challenge {
   description_md: string;
   files?: Array<{ name: string; url: string }>;
   links?: Array<{ name: string; url: string }>;
+  isSolved?: boolean;
 }
 
 interface CTFSettings {
@@ -83,6 +84,7 @@ export default function Challenges() {
   const [loading, setLoading] = useState(true);
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [solvedChallenges, setSolvedChallenges] = useState<Set<string>>(new Set());
 
   /* ------------------------------------------------------------------- */
   /*  Load data once on mount                                          */
@@ -139,10 +141,22 @@ export default function Challenges() {
           .order("points", { ascending: true });
 
         if (error) throw error;
+
+        /* ---------------- Fetch solved challenges for user ---- */
+        const { data: solvedData } = await supabase
+          .from("submissions")
+          .select("challenge_id")
+          .eq("user_id", user.id)
+          .eq("result", "CORRECT");
+
+        const solved = new Set(solvedData?.map(s => s.challenge_id) || []);
+        setSolvedChallenges(solved);
+
         setChallenges((challengesData ?? []).map(d => ({
           ...d,
           files: Array.isArray(d.files) ? d.files as Array<{ name: string; url: string }> : [],
-          links: Array.isArray(d.links) ? d.links as Array<{ name: string; url: string }> : []
+          links: Array.isArray(d.links) ? d.links as Array<{ name: string; url: string }> : [],
+          isSolved: solved.has(d.id)
         })));
       }
     } catch (error: any) {
@@ -329,7 +343,11 @@ export default function Challenges() {
                   {groupedChallenges[category].map((challenge, index) => (
                     <Card
                       key={challenge.id}
-                      className={`group relative overflow-hidden bg-gradient-to-br ${getCategoryColor(category)} backdrop-blur-sm border cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-primary/20 animate-fade-in`}
+                      className={`group relative overflow-hidden backdrop-blur-sm border transition-all duration-300 animate-fade-in ${
+                        challenge.isSolved
+                          ? 'bg-gradient-to-br from-green-500/30 to-green-600/30 border-green-500/50 cursor-default'
+                          : `bg-gradient-to-br ${getCategoryColor(category)} cursor-pointer hover:scale-105 hover:shadow-2xl hover:shadow-primary/20`
+                      }`}
                       style={{ animationDelay: `${(catIndex * 3 + index) * 50}ms` }}
                       onClick={() => {
                         setSelectedChallenge(challenge);
@@ -342,18 +360,26 @@ export default function Challenges() {
                       
                       <CardHeader className="relative z-10">
                         <div className="flex items-start justify-between gap-2">
-                          <CardTitle className="text-xl font-bold group-hover:text-primary transition-colors">
+                          <CardTitle className={`text-xl font-bold transition-colors ${
+                            challenge.isSolved ? 'text-green-400' : 'group-hover:text-primary'
+                          }`}>
                             {challenge.title}
                           </CardTitle>
                           <div className="flex items-center gap-2 shrink-0">
                             <span className="text-2xl">{getCategoryIcon(category)}</span>
-                            <span className="px-3 py-1 bg-primary/20 rounded-full text-sm font-mono font-bold glow-blue">
+                            <span className={`px-3 py-1 rounded-full text-sm font-mono font-bold ${
+                              challenge.isSolved 
+                                ? 'bg-green-500/30 text-green-400 border border-green-500/50' 
+                                : 'bg-primary/20 glow-blue'
+                            }`}>
                               {challenge.points}pts
                             </span>
                           </div>
                         </div>
-                        <CardDescription className="text-xs uppercase tracking-wider font-mono">
-                          {category}
+                        <CardDescription className={`text-xs uppercase tracking-wider font-mono ${
+                          challenge.isSolved ? 'text-green-400/80' : ''
+                        }`}>
+                          {category} {challenge.isSolved && '✓ SOLVED'}
                         </CardDescription>
                       </CardHeader>
                       
@@ -377,6 +403,8 @@ export default function Challenges() {
         challenge={selectedChallenge}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
+        initialSolvedState={selectedChallenge?.isSolved || false}
+        onChallengeUpdate={loadData}
       />
     </div>
   );
