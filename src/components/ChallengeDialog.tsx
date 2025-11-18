@@ -199,17 +199,21 @@ export function ChallengeDialog({ challenge, open, onOpenChange, initialSolvedSt
               </h3>
               <div className="space-y-2">
                 {challenge.files.map((file, idx) => (
-                  <span
+                  <a
                     key={idx}
+                    href={file.url}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={`flex items-center gap-2 text-sm font-mono ${
                       disabledInteraction
                         ? "text-green-400/60 pointer-events-none select-none"
-                        : "text-primary hover:underline"
+                        : "text-primary hover:underline cursor-pointer"
                     }`}
                   >
                     <Download className="h-4 w-4" />
                     {file.name}
-                  </span>
+                  </a>
                 ))}
               </div>
             </div>
@@ -232,17 +236,20 @@ export function ChallengeDialog({ challenge, open, onOpenChange, initialSolvedSt
               </h3>
               <div className="space-y-2">
                 {challenge.links.map((link, idx) => (
-                  <span
+                  <a
                     key={idx}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className={`flex items-center gap-2 text-sm font-mono ${
                       disabledInteraction
                         ? "text-green-400/60 pointer-events-none select-none"
-                        : "text-primary hover:underline"
+                        : "text-primary hover:underline cursor-pointer"
                     }`}
                   >
                     <ExternalLink className="h-4 w-4" />
                     {link.name}
-                  </span>
+                  </a>
                 ))}
               </div>
             </div>
