@@ -2,72 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Merry Christmas CTF Design System - Festive & Joyful */
+/* SCP Foundation Design System - Christmas Containment Protocol */
 
 @layer base {
   :root {
-    /* Bright Merry Christmas Palette */
-    --background: 0 0% 98%;
-    --foreground: 140 60% 15%;
+    /* Christmas SCP Color Palette - Festive Containment Theme */
+    --background: 140 30% 8%;
+    --foreground: 0 0% 98%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 140 60% 15%;
+    --card: 140 25% 12%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 140 60% 15%;
+    --popover: 140 25% 12%;
+    --popover-foreground: 0 0% 98%;
 
-    /* Bright Christmas Red Primary */
+    /* Christmas Red Primary - Festive Alert */
     --primary: 355 85% 55%;
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 355 95% 65%;
+    --primary-foreground: 0 0% 98%;
+    --primary-glow: 355 90% 65%;
 
-    /* Bright Christmas Green Secondary */
-    --secondary: 145 65% 45%;
-    --secondary-foreground: 0 0% 100%;
+    /* Christmas Green Secondary */
+    --secondary: 145 65% 35%;
+    --secondary-foreground: 0 0% 98%;
 
-    /* Light Muted - Soft cream backgrounds */
-    --muted: 30 20% 95%;
-    --muted-foreground: 140 40% 30%;
+    /* Muted - Dark evergreen backgrounds */
+    --muted: 140 20% 15%;
+    --muted-foreground: 0 0% 65%;
 
-    /* Bright Gold Accent - Shiny Ornament */
-    --accent: 45 100% 55%;
-    --accent-foreground: 140 60% 15%;
-    --accent-glow: 45 100% 70%;
+    /* Gold Accent - Christmas Ornament */
+    --accent: 45 100% 50%;
+    --accent-foreground: 140 30% 8%;
+    --accent-glow: 45 100% 60%;
 
-    /* Success - Bright Holly Green */
-    --success: 145 70% 50%;
-    --success-foreground: 0 0% 100%;
+    /* Success - Holly Green */
+    --success: 145 70% 45%;
+    --success-foreground: 0 0% 98%;
 
-    /* Destructive - Bright Candy Cane Red */
+    /* Destructive - Candy Cane Red */
     --destructive: 355 90% 60%;
-    --destructive-foreground: 0 0% 100%;
+    --destructive-foreground: 0 0% 98%;
 
     /* Borders & Inputs */
-    --border: 145 40% 80%;
-    --input: 0 0% 95%;
-    --ring: 45 100% 55%;
+    --border: 145 30% 25%;
+    --input: 140 20% 15%;
+    --ring: 45 100% 50%;
 
-    --radius: 0.5rem;  /* Softer, friendlier corners */
+    --radius: 0.25rem;  /* Slightly softer for festive feel */
 
-    /* Bright Christmas Gradients */
-    --gradient-hero: linear-gradient(180deg, hsl(355, 100%, 95%), hsl(145, 100%, 95%));
-    --gradient-card: linear-gradient(135deg, hsl(0, 0%, 100%), hsl(30, 30%, 98%));
-    --gradient-stamp: linear-gradient(45deg, hsl(355, 85%, 55%), hsl(355, 95%, 65%));
-    --gradient-gold: linear-gradient(135deg, hsl(45, 100%, 60%), hsl(35, 100%, 55%));
-    --gradient-festive: linear-gradient(90deg, hsl(355, 85%, 60%), hsl(145, 70%, 50%), hsl(45, 100%, 55%));
-    --gradient-snow: linear-gradient(180deg, hsl(0, 0%, 100%), hsl(200, 50%, 98%));
+    /* Christmas Gradients */
+    --gradient-hero: linear-gradient(180deg, hsl(140, 30%, 10%), hsl(140, 35%, 8%));
+    --gradient-card: linear-gradient(180deg, hsl(140, 25%, 14%), hsl(140, 25%, 10%));
+    --gradient-stamp: linear-gradient(45deg, hsl(355, 85%, 55%), hsl(355, 90%, 45%));
+    --gradient-gold: linear-gradient(135deg, hsl(45, 100%, 50%), hsl(35, 100%, 45%));
+    --gradient-festive: linear-gradient(90deg, hsl(355, 85%, 55%), hsl(145, 65%, 35%), hsl(45, 100%, 50%));
 
-    /* Bright Christmas Shadows - Cheerful glows */
-    --shadow-document: 0 4px 20px hsla(355, 85%, 55%, 0.15), 0 4px 30px hsla(145, 70%, 50%, 0.1);
-    --shadow-stamp: 0 0 0 3px hsl(355, 85%, 55%);
-    --shadow-gold: 0 0 25px hsla(45, 100%, 55%, 0.5), 0 0 50px hsla(45, 100%, 55%, 0.3);
-    --shadow-christmas: 0 0 40px hsla(355, 85%, 60%, 0.4), 0 0 70px hsla(145, 70%, 50%, 0.3);
-    --shadow-joy: 0 10px 40px hsla(355, 85%, 60%, 0.2), 0 0 60px hsla(45, 100%, 55%, 0.2);
+    /* Christmas Shadows - Festive glows */
+    --shadow-document: 0 4px 20px hsla(355, 85%, 55%, 0.15), 0 0 40px hsla(145, 65%, 35%, 0.1);
+    --shadow-stamp: inset 0 0 0 2px hsl(355, 85%, 55%);
+    --shadow-redacted: 0 0 10px hsl(355, 85%, 55%);
+    --shadow-gold: 0 0 20px hsla(45, 100%, 50%, 0.4), 0 0 40px hsla(45, 100%, 50%, 0.2);
+    --shadow-christmas: 0 0 30px hsla(355, 85%, 55%, 0.3), 0 0 60px hsla(145, 65%, 35%, 0.2);
 
     /* Animations */
     --transition-smooth: all 0.3s ease;
     --transition-fast: all 0.15s ease;
-    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 }
 
@@ -137,22 +135,7 @@
   .text-scp-red {
     color: hsl(var(--primary));
     font-weight: 700;
-    text-shadow: 0 0 20px hsl(var(--primary) / 0.3);
-  }
-
-  .text-christmas-red {
-    color: hsl(var(--primary));
-    font-weight: 700;
-  }
-
-  .text-christmas-green {
-    color: hsl(var(--secondary));
-    font-weight: 700;
-  }
-
-  .text-christmas-gold {
-    color: hsl(var(--accent));
-    font-weight: 700;
+    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
   }
 
   .glow-blue {
@@ -172,50 +155,20 @@
     background: repeating-linear-gradient(
       45deg,
       hsl(var(--primary)),
-      hsl(var(--primary)) 15px,
-      hsl(var(--secondary)) 15px,
-      hsl(var(--secondary)) 30px,
-      hsl(var(--accent)) 30px,
-      hsl(var(--accent)) 45px
+      hsl(var(--primary)) 10px,
+      hsl(var(--secondary)) 10px,
+      hsl(var(--secondary)) 20px,
+      hsl(var(--accent)) 20px,
+      hsl(var(--accent)) 30px
     );
-    height: 10px;
-    animation: christmas-shimmer 2s linear infinite;
+    height: 8px;
+    animation: christmas-shimmer 3s linear infinite;
   }
 
   @keyframes christmas-shimmer {
-    0% { filter: brightness(1.1) hue-rotate(0deg); }
-    50% { filter: brightness(1.3) hue-rotate(10deg); }
-    100% { filter: brightness(1.1) hue-rotate(0deg); }
-  }
-
-  .christmas-border {
-    border: 4px solid transparent;
-    background: linear-gradient(white, white) padding-box,
-                repeating-linear-gradient(
-                  45deg,
-                  hsl(var(--primary)),
-                  hsl(var(--primary)) 10px,
-                  hsl(var(--secondary)) 10px,
-                  hsl(var(--secondary)) 20px
-                ) border-box;
-  }
-
-  .bounce-in {
-    animation: bounce-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  }
-
-  @keyframes bounce-in {
-    0% {
-      transform: scale(0.3);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.05);
-    }
-    100% {
-      transform: scale(1);
-      opacity: 1;
-    }
+    0% { filter: brightness(1) hue-rotate(0deg); }
+    50% { filter: brightness(1.2) hue-rotate(5deg); }
+    100% { filter: brightness(1) hue-rotate(0deg); }
   }
 
   .text-balance {
@@ -382,40 +335,12 @@
   }
 
   .christmas-lights {
-    animation: twinkle 1.5s ease-in-out infinite;
+    animation: twinkle 2s ease-in-out infinite;
   }
 
   @keyframes twinkle {
-    0%, 100% { 
-      opacity: 1; 
-      text-shadow: 0 0 15px currentColor, 0 0 25px currentColor; 
-      transform: scale(1);
-    }
-    50% { 
-      opacity: 0.6; 
-      text-shadow: 0 0 8px currentColor; 
-      transform: scale(0.95);
-    }
-  }
-
-  .jingle {
-    animation: jingle 0.5s ease-in-out;
-  }
-
-  @keyframes jingle {
-    0%, 100% { transform: rotate(0deg); }
-    25% { transform: rotate(-15deg); }
-    75% { transform: rotate(15deg); }
-  }
-
-  .present-shake {
-    animation: present-shake 0.8s ease-in-out infinite;
-  }
-
-  @keyframes present-shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px) rotate(-2deg); }
-    75% { transform: translateX(5px) rotate(2deg); }
+    0%, 100% { opacity: 1; text-shadow: 0 0 10px currentColor; }
+    50% { opacity: 0.4; text-shadow: 0 0 5px currentColor; }
   }
 
   .gold-shimmer {
@@ -437,16 +362,15 @@
   @keyframes festive-pulse {
     0%, 100% {
       box-shadow: 
-        0 0 20px hsl(var(--primary) / 0.4),
-        0 0 35px hsl(var(--secondary) / 0.3),
-        0 0 50px hsl(var(--accent) / 0.2);
+        0 0 10px hsl(var(--primary) / 0.3),
+        0 0 20px hsl(var(--secondary) / 0.2),
+        0 0 30px hsl(var(--accent) / 0.1);
     }
     50% {
       box-shadow: 
-        0 0 35px hsl(var(--primary) / 0.6),
-        0 0 50px hsl(var(--secondary) / 0.5),
-        0 0 70px hsl(var(--accent) / 0.4);
-      transform: scale(1.02);
+        0 0 20px hsl(var(--primary) / 0.5),
+        0 0 30px hsl(var(--secondary) / 0.3),
+        0 0 40px hsl(var(--accent) / 0.2);
     }
   }
 
