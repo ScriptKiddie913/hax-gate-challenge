@@ -168,7 +168,7 @@ export const Navbar = () => {
               SCP FOUNDATION
             </span>
             <span className="text-xs text-muted-foreground font-mono">
-              CTF DIVISION — WINTER OPS
+              WINTER OPS
             </span>
           </div>
         </Link>
