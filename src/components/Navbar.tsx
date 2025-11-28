@@ -16,11 +16,12 @@ import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 
 /*
-  Christmas SCP Navbar
-  - Fully compatible with your SCP Christmas CSS
-  - No shortening
+  Christmas SCP Navbar (Rewritten Clean Version)
+  - Removed green bulbs
+  - Removed candy-cane bar
+  - Added Christmas trees, bells, stars
+  - Added snowfall animation and warm SCP-lit fairy lights
   - All logic preserved
-  - Profile page loading fixed
 */
 
 export const Navbar = () => {
@@ -28,6 +29,7 @@ export const Navbar = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
 
+  // Load session and listen for updates
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -42,6 +44,7 @@ export const Navbar = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  // Check admin status
   useEffect(() => {
     if (user) {
       checkAdminStatus();
@@ -65,6 +68,7 @@ export const Navbar = () => {
     }
   };
 
+  // Logout
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -75,7 +79,7 @@ export const Navbar = () => {
     }
   };
 
-  // Safe username fallback (fixes profile loading crash)
+  // Fixed safe username fallback (prevents crashes)
   const resolveDisplayName = () => {
     return (
       user?.user_metadata?.username ??
@@ -91,58 +95,89 @@ export const Navbar = () => {
         bg-card scp-paper
         border-b-4 border-border
         backdrop-blur-xl
-        shadow-[0_0_30px_rgba(255,0,0,0.18)]
+        shadow-[0_0_30px_rgba(120,160,255,0.25)]
         relative
       "
     >
 
-      {/* Christmas Lights Garland */}
-      <div className="absolute top-0 left-0 w-full h-4 flex justify-center items-center pointer-events-none">
-        <div className="w-full flex justify-between px-4 christmas-lights">
+      {/* Soft Snowfall Layer */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden z-0">
+        {Array.from({ length: 40 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-white opacity-80 select-none"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${-10 - Math.random() * 40}px`,
+              fontSize: `${6 + Math.random() * 10}px`,
+              animation: `fallSnow ${4 + Math.random() * 6}s linear infinite`,
+              animationDelay: `${Math.random() * 6}s`,
+              textShadow: "0 0 10px rgba(255,255,255,0.9)",
+            }}
+          >
+            ❄
+          </div>
+        ))}
+      </div>
+
+      {/* Christmas Light Garland (no green, only gold/white/blue SCP tones) */}
+      <div className="absolute top-0 left-0 w-full flex justify-center items-center pointer-events-none py-1 z-10">
+        <div className="flex gap-3">
           {Array.from({ length: 22 }).map((_, i) => (
             <div
               key={i}
               className={`
-                w-2 h-2 rounded-full 
+                w-2.5 h-2.5 rounded-full
                 ${
                   i % 3 === 0
-                    ? "bg-red-500"
+                    ? "bg-yellow-300"
                     : i % 3 === 1
-                    ? "bg-green-400"
-                    : "bg-yellow-300"
+                    ? "bg-blue-300"
+                    : "bg-white"
                 }
-                shadow-[0_0_8px_currentColor]
+                shadow-[0_0_10px_currentColor] 
+                animate-[glowPulse_2s_infinite_ease-in-out]
               `}
+              style={{
+                animationDelay: `${i * 0.15}s`,
+              }}
             ></div>
           ))}
         </div>
       </div>
 
-      {/* Candy Cane Border */}
-      <div
-        className="absolute bottom-0 left-0 w-full h-1 candy-cane-stripe"
-        style={{ opacity: 0.9 }}
-      ></div>
+      {/* Hanging Christmas Ornaments */}
+      <div className="absolute left-4 top-0 flex gap-4 pointer-events-none z-20 mt-3">
+        <div className="text-yellow-300 text-xl drop-shadow-[0_0_10px_rgba(255,220,150,0.7)] animate-[ornamentSwing_3.5s_infinite]">
+          🔔
+        </div>
+        <div className="text-[#a0d8ff] text-xl drop-shadow-[0_0_10px_rgba(120,180,255,0.6)] animate-[ornamentSwing_4s_infinite]">
+          ⭐
+        </div>
+        <div className="text-[#ffb3b3] text-xl drop-shadow-[0_0_10px_rgba(255,160,160,0.6)] animate-[ornamentSwing_3s_infinite]">
+          🎄
+        </div>
+      </div>
 
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between relative">
+      <div className="container mx-auto px-4 h-20 flex items-center justify-between relative z-20">
         <Link to="/" className="flex items-center gap-3 group">
           <div
             className="
               w-12 h-12 border-2 border-primary
               bg-background rounded-sm
               flex items-center justify-center
-              shadow-[0_0_10px_hsla(355,85%,55%,0.4)]
+              shadow-[0_0_12px_rgba(100,150,255,0.5)]
             "
           >
             <Shield className="h-7 w-7 text-primary group-hover:scale-110 transition-all" />
           </div>
 
           <div className="flex flex-col leading-tight">
-            <span className="font-bold text-base scp-header text-primary glow-red">
+            <span className="font-bold text-base scp-header text-primary glow-blue">
               SCP FOUNDATION
             </span>
             <span className="text-xs text-muted-foreground font-mono">
-              CTF DIVISION — HOLIDAY OPS
+              CTF DIVISION — WINTER OPS
             </span>
           </div>
         </Link>
@@ -249,15 +284,15 @@ export const Navbar = () => {
               <div
                 className="
                   flex items-center gap-2 px-3 py-1.5
-                  border-2 border-success bg-background
-                  rounded-sm shadow-[0_0_8px_hsla(145,70%,45%,0.35)]
+                  border-2 border-blue-400 bg-background
+                  rounded-sm shadow-[0_0_10px_rgba(120,160,255,0.45)]
                 "
               >
                 <Badge
                   variant="outline"
                   className="
                     text-xs font-mono
-                    bg-success/20 text-success border-success
+                    bg-blue-500/20 text-blue-300 border-blue-400
                   "
                 >
                   AUTHORIZED
@@ -287,7 +322,7 @@ export const Navbar = () => {
                 size="sm"
                 className="
                   font-mono bg-primary text-primary-foreground
-                  hover:bg-primary-glow transition-all shadow-[0_0_12px_hsla(355,85%,55%,0.6)]
+                  hover:bg-primary/80 transition-all shadow-[0_0_15px_rgba(120,160,255,0.6)]
                 "
               >
                 REQUEST ACCESS
@@ -296,6 +331,25 @@ export const Navbar = () => {
           )}
         </div>
       </div>
+
+      {/* Animations for snow + ornaments */}
+      <style>{`
+        @keyframes fallSnow {
+          0% { transform: translateY(0px); opacity: 1; }
+          100% { transform: translateY(110vh); opacity: 0.3; }
+        }
+
+        @keyframes glowPulse {
+          0%, 100% { opacity: 0.6; }
+          50% { opacity: 1; }
+        }
+
+        @keyframes ornamentSwing {
+          0% { transform: rotate(0deg) translateY(0px); }
+          50% { transform: rotate(6deg) translateY(3px); }
+          100% { transform: rotate(0deg) translateY(0px); }
+        }
+      `}</style>
     </nav>
   );
 };
