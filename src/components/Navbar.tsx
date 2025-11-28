@@ -3,15 +3,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
-import {
-  Shield,
-  LogOut,
-  Trophy,
-  User as UserIcon,
-  Info,
-  ScrollText,
-  FileText,
-} from "lucide-react";
+import { Shield, LogOut, Trophy, User as UserIcon, Info, ScrollText, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "./ui/badge";
 
@@ -25,9 +17,7 @@ export const Navbar = () => {
       setUser(session?.user ?? null);
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
@@ -42,14 +32,14 @@ export const Navbar = () => {
 
   const checkAdminStatus = async () => {
     if (!user) return;
-
+    
     const { data, error } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .eq('role', 'admin')
       .maybeSingle();
-
+    
     if (!error && data) {
       setIsAdmin(true);
     } else {
@@ -68,105 +58,15 @@ export const Navbar = () => {
   };
 
   return (
-    <nav
-      className="
-        sticky top-0 z-50
-        border-b-4
-        bg-[#02040a]/90
-        backdrop-blur-xl
-        shadow-[0_0_40px_rgba(0,80,255,0.25)]
-        relative
-        festive-glow
-      "
-    >
-
-      {/* ❄️ Global Snowfall Layer */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none snowfall">
-        {Array.from({ length: 40 }).map((_, i) => (
-          <div
-            key={`snowflake-${i}`}
-            className="snowflake"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDuration: `${5 + Math.random() * 6}s`,
-              animationDelay: `${Math.random() * 5}s`,
-              fontSize: `${0.4 + Math.random() * 1.2}rem`,
-            }}
-          >
-            ❄
-          </div>
-        ))}
-      </div>
-
-      {/* ✨ Soft Twinkling Light Particles */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 25 }).map((_, i) => (
-          <div
-            key={`twinkle-${i}`}
-            className="christmas-lights absolute rounded-full"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: "4px",
-              height: "4px",
-              backgroundColor: "white",
-              opacity: 0.7,
-              animationDelay: `${Math.random()}s`,
-            }}
-          ></div>
-        ))}
-      </div>
-
-      {/* Christmas lights garland */}
-      <div className="absolute top-0 left-0 w-full h-3 flex justify-center items-center">
-        <div className="w-full flex justify-between px-4 animate-pulse-slow pointer-events-none">
-          {Array.from({ length: 20 }).map((_, i) => (
-            <div
-              key={i}
-              className={`
-                w-2 h-2 rounded-full christmas-lights
-                ${
-                  i % 3 === 0
-                    ? "bg-red-400"
-                    : i % 3 === 1
-                    ? "bg-green-400"
-                    : "bg-yellow-300"
-                }
-                shadow-[0_0_12px_currentColor]
-              `}
-            ></div>
-          ))}
-        </div>
-      </div>
-
-      {/* 🎄 Candy Cane Animated Border */}
-      <div
-        className="absolute bottom-0 left-0 w-full h-1 candy-cane-stripe"
-        style={{
-          animation: "jingle 3s ease-in-out infinite",
-        }}
-      ></div>
-
-      <div className="container mx-auto px-4 h-20 flex items-center justify-between relative">
-        <Link to="/" className="flex items-center gap-3 group jingle">
-          <div
-            className="
-              w-12 h-12 border-4
-              bg-[#0a0e1a]/80
-              border-[#2b4aff]
-              shadow-[0_0_20px_rgba(80,130,255,0.45)]
-              rounded-md flex items-center justify-center ornament-spin
-            "
-          >
-            <Shield className="h-7 w-7 text-[#9fc3ff] group-hover:text-[#cde0ff] transition-all" />
+    <nav className="border-b-3 border-border bg-card scp-paper sticky top-0 z-50">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 border-3 border-primary bg-background flex items-center justify-center">
+            <Shield className="h-6 w-6 text-primary" />
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="font-bold text-base text-[#cfe3ff] drop-shadow-[0_0_4px_#4a78ff]">
-              SCP FOUNDATION
-            </span>
-            <span className="text-xs text-[#9bb8ff] font-mono">
-              CTF DIVISION — HOLIDAY OPS
-            </span>
+            <span className="font-bold text-sm scp-header">SCP FOUNDATION</span>
+            <span className="text-xs text-muted-foreground font-mono">CTF DIVISION</span>
           </div>
         </Link>
 
@@ -174,93 +74,38 @@ export const Navbar = () => {
           {user && (
             <>
               <Link to="/challenges">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="
-                    gap-2 font-mono text-[#d6e2ff]
-                    hover:text-white
-                    hover:bg-[#1c2a55]/60
-                    present-shake
-                  "
-                >
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
                   <FileText className="h-4 w-4" />
                   CHALLENGES
                 </Button>
               </Link>
-
               <Link to="/scoreboard">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="
-                    gap-2 font-mono text-[#d6e2ff]
-                    hover:text-white
-                    hover:bg-[#1c2a55]/60
-                  "
-                >
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
                   <Trophy className="h-4 w-4" />
                   SCOREBOARD
                 </Button>
               </Link>
-
               <Link to="/about">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="
-                    gap-2 font-mono text-[#d6e2ff]
-                    hover:text-white
-                    hover:bg-[#1c2a55]/60
-                  "
-                >
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
                   <Info className="h-4 w-4" />
                   ABOUT
                 </Button>
               </Link>
-
               <Link to="/rules">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="
-                    gap-2 font-mono text-[#d6e2ff]
-                    hover:text-white
-                    hover:bg-[#1c2a55]/60
-                  "
-                >
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
                   <ScrollText className="h-4 w-4" />
                   RULES
                 </Button>
               </Link>
-
               <Link to="/profile">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="
-                    gap-2 font-mono text-[#d6e2ff]
-                    hover:text-white
-                    hover:bg-[#1c2a55]/60
-                  "
-                >
+                <Button variant="ghost" size="sm" className="gap-2 font-mono">
                   <UserIcon className="h-4 w-4" />
                   PROFILE
                 </Button>
               </Link>
-
               {isAdmin && (
                 <Link to="/admin">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="
-                      gap-2 text-red-400 font-mono
-                      hover:text-red-300
-                      hover:bg-[#381212]/60
-                      glow-red
-                    "
-                  >
+                  <Button variant="ghost" size="sm" className="gap-2 text-destructive font-mono">
                     <Shield className="h-4 w-4" />
                     ADMIN
                   </Button>
@@ -268,68 +113,31 @@ export const Navbar = () => {
               )}
             </>
           )}
-
+          
           {!user && (
             <>
               <Link to="/about">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="font-mono text-[#cde0ff] hover:text-white hover:bg-[#162341]"
-                >
-                  ABOUT
-                </Button>
+                <Button variant="ghost" size="sm" className="font-mono">ABOUT</Button>
               </Link>
-
               <Link to="/rules">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="font-mono text-[#cde0ff] hover:text-white hover:bg-[#162341]"
-                >
-                  RULES
-                </Button>
+                <Button variant="ghost" size="sm" className="font-mono">RULES</Button>
               </Link>
             </>
           )}
 
           {user ? (
             <div className="flex items-center gap-3">
-              <div
-                className="
-                  flex items-center gap-2 px-3 py-1.5 border-2
-                  border-[#2b4aff]/40 bg-[#0a0e1a]/70
-                  rounded-md shadow-[0_0_12px_rgba(80,120,255,0.3)]
-                "
-              >
-                <Badge
-                  variant="outline"
-                  className="
-                    text-xs font-mono
-                    bg-green-600/20 text-green-300
-                    border-green-500
-                    pulse-glow
-                  "
-                >
+              <div className="flex items-center gap-2 px-3 py-1.5 border-2 border-border bg-background">
+                <Badge variant="outline" className="text-xs font-mono bg-success/20 text-success border-success">
                   AUTHORIZED
                 </Badge>
-                <span className="text-xs font-mono text-[#d6e2ff]">
-                  {user.email?.split("@")[0]}
-                </span>
+                <span className="text-xs font-mono">{user.email?.split('@')[0]}</span>
               </div>
-
-              <Button
-                onClick={handleLogout}
-                variant="outline"
+              <Button 
+                onClick={handleLogout} 
+                variant="outline" 
                 size="sm"
-                className="
-                  gap-2 font-mono border-2
-                  border-[#8abaff]/40
-                  bg-[#0a0e1a]/60
-                  text-[#d6e2ff]
-                  hover:bg-[#1b294f]
-                  present-shake
-                "
+                className="gap-2 font-mono border-2"
               >
                 <LogOut className="h-4 w-4" />
                 LOGOUT
@@ -337,16 +145,7 @@ export const Navbar = () => {
             </div>
           ) : (
             <Link to="/auth">
-              <Button
-                size="sm"
-                className="
-                  font-mono bg-[#2b4aff]/80
-                  hover:bg-[#4d6aff]/90
-                  shadow-[0_0_20px_rgba(80,130,255,0.4)]
-                  text-white
-                  festive-glow
-                "
-              >
+              <Button size="sm" className="font-mono bg-primary hover:bg-primary/90">
                 REQUEST ACCESS
               </Button>
             </Link>
@@ -356,5 +155,3 @@ export const Navbar = () => {
     </nav>
   );
 };
-
-
