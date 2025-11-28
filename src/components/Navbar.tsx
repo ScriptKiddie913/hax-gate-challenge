@@ -78,6 +78,40 @@ export const Navbar = () => {
         relative
       "
     >
+
+      {/* 🎄 CSS Animated Christmas Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+
+        {/* Falling Snowflakes */}
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={`snow-${i}`}
+            className="snowflake"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDuration: `${3 + Math.random() * 4}s`,
+              animationDelay: `${Math.random() * 5}s`,
+              opacity: 0.3 + Math.random() * 0.5,
+            }}
+          ></div>
+        ))}
+
+        {/* Twinkle Stars */}
+        {Array.from({ length: 30 }).map((_, i) => (
+          <div
+            key={`star-${i}`}
+            className="twinkle-star"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDuration: `${1 + Math.random() * 2}s`,
+              animationDelay: `${Math.random() * 3}s`,
+            }}
+          ></div>
+        ))}
+
+      </div>
+
       {/* Christmas lights garland */}
       <div className="absolute top-0 left-0 w-full h-3 flex justify-center items-center">
         <div className="w-full flex justify-between px-4 animate-pulse-slow pointer-events-none">
@@ -99,14 +133,6 @@ export const Navbar = () => {
           ))}
         </div>
       </div>
-
-      {/* Snowfall overlay */}
-      <div
-        className="absolute inset-0 pointer-events-none overflow-hidden"
-        style={{
-          opacity: 0.2,
-        }}
-      ></div>
 
       {/* Candy cane border */}
       <div
@@ -321,3 +347,4 @@ export const Navbar = () => {
     </nav>
   );
 };
+
