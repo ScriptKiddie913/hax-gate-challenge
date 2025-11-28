@@ -2,71 +2,115 @@
 @tailwind components;
 @tailwind utilities;
 
-/* SCP Foundation Design System - Christmas Containment Protocol */
+/* SCP Foundation Design System – Winter Night Ops Edition */
+/* FULL FILE REWRITE – NO GREEN – NO SHORTENING – NO BUFF */
+/* ALL ANIMATIONS + ALL UTILITIES KEPT */
+
+/*  
+   WINTER NIGHT COLOR PALETTE:
+   - Deep navy blues
+   - Ice-blue highlights
+   - Soft blue glows
+   - Red stays for warnings (SCP primary)
+*/
 
 @layer base {
   :root {
-    /* Christmas SCP Color Palette - Festive Containment Theme */
-    --background: 140 30% 8%;
+    /* === CORE BACKGROUND COLORS (REPLACED GREEN WITH NAVY BLUE) === */
+    --background: 220 30% 7%;         /* deep winter navy */
     --foreground: 0 0% 98%;
 
-    --card: 140 25% 12%;
+    --card: 220 28% 11%;             /* darker navy card surface */
     --card-foreground: 0 0% 98%;
 
-    --popover: 140 25% 12%;
+    --popover: 220 28% 11%;
     --popover-foreground: 0 0% 98%;
 
-    /* Christmas Red Primary - Festive Alert */
+    /* === PRIMARY (SCP RED – unchanged) === */
     --primary: 355 85% 55%;
     --primary-foreground: 0 0% 98%;
-    --primary-glow: 355 90% 65%;
+    --primary-glow: 355 90% 60%;
 
-    /* Christmas Green Secondary */
-    --secondary: 145 65% 35%;
+    /* === SECONDARY (REPLACED GREEN WITH ICE-BLUE) === */
+    --secondary: 210 65% 60%;        /* frosty cyan-blue */
     --secondary-foreground: 0 0% 98%;
 
-    /* Muted - Dark evergreen backgrounds */
-    --muted: 140 20% 15%;
-    --muted-foreground: 0 0% 65%;
+    /* === MUTED (REPLACED GREEN TONES WITH DARK BLUE) === */
+    --muted: 220 20% 15%;            /* deep cold navy */
+    --muted-foreground: 0 0% 70%;
 
-    /* Gold Accent - Christmas Ornament */
-    --accent: 45 100% 50%;
-    --accent-foreground: 140 30% 8%;
-    --accent-glow: 45 100% 60%;
+    /* === ACCENT (from gold to icy light-blue) === */
+    --accent: 195 100% 67%;          /* bright ice shine */
+    --accent-foreground: 220 30% 8%;
+    --accent-glow: 195 100% 75%;
 
-    /* Success - Holly Green */
-    --success: 145 70% 45%;
+    /* === SUCCESS (NO GREEN – icy blue success color) === */
+    --success: 200 70% 70%;
     --success-foreground: 0 0% 98%;
 
-    /* Destructive - Candy Cane Red */
+    /* === DESTRUCTIVE (red stays red) === */
     --destructive: 355 90% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    /* Borders & Inputs */
-    --border: 145 30% 25%;
-    --input: 140 20% 15%;
-    --ring: 45 100% 50%;
+    /* === Borders & Inputs (dark navy blues) === */
+    --border: 220 32% 25%;
+    --input: 220 25% 15%;
+    --ring: 210 80% 70%;
 
     --radius: 0.25rem;
 
-    /* Christmas Gradients */
-    --gradient-hero: linear-gradient(180deg, hsl(140, 30%, 10%), hsl(140, 35%, 8%));
-    --gradient-card: linear-gradient(180deg, hsl(140, 25%, 14%), hsl(140, 25%, 10%));
-    --gradient-stamp: linear-gradient(45deg, hsl(355, 85%, 55%), hsl(355, 90%, 45%));
-    --gradient-gold: linear-gradient(135deg, hsl(45, 100%, 50%), hsl(35, 100%, 45%));
-    --gradient-festive: linear-gradient(90deg, hsl(355, 85%, 55%), hsl(145, 65%, 35%), hsl(45, 100%, 50%));
+    /* === BLUE WINTER GRADIENTS === */
+    --gradient-hero: 
+      linear-gradient(180deg,
+      hsl(220, 32%, 12%),
+      hsl(220, 30%, 7%));
 
-    /* Shadows */
-    --shadow-document: 0 4px 20px hsla(355, 85%, 55%, 0.15), 0 0 40px hsla(145, 65%, 35%, 0.1);
-    --shadow-stamp: inset 0 0 0 2px hsl(355, 85%, 55%);
-    --shadow-redacted: 0 0 10px hsl(355, 85%, 55%);
-    --shadow-gold: 0 0 20px hsla(45, 100%, 50%, 0.4), 0 0 40px hsla(45, 100%, 50%, 0.2);
-    --shadow-christmas: 0 0 30px hsla(355, 85%, 55%, 0.3), 0 0 60px hsla(145, 65%, 35%, 0.2);
+    --gradient-card: 
+      linear-gradient(180deg,
+      hsl(220, 27%, 14%),
+      hsl(220, 28%, 10%));
+
+    --gradient-stamp:
+      linear-gradient(45deg,
+      hsl(215, 85%, 56%),
+      hsl(215, 90%, 42%));
+
+    --gradient-gold:
+      linear-gradient(135deg,
+      hsl(195, 100%, 65%),
+      hsl(190, 100%, 60%));
+
+    --gradient-festive:
+      linear-gradient(90deg,
+      hsl(355, 85%, 55%),
+      hsl(215, 65%, 50%),
+      hsl(195, 100%, 67%));
+
+    /* === BLUE SHADOWS === */
+    --shadow-document:
+      0 4px 20px hsla(215, 85%, 55%, 0.15),
+      0 0 40px hsla(210, 65%, 45%, 0.1);
+
+    --shadow-stamp:
+      inset 0 0 0 2px hsl(355, 85%, 55%);
+
+    --shadow-redacted:
+      0 0 10px hsl(355, 85%, 55%);
+
+    --shadow-gold:
+      0 0 20px hsla(195, 100%, 65%, 0.5),
+      0 0 40px hsla(195, 100%, 65%, 0.2);
+
+    --shadow-christmas:
+      0 0 30px hsla(215, 85%, 55%, 0.25),
+      0 0 60px hsla(210, 60%, 45%, 0.15);
 
     --transition-smooth: all 0.3s ease;
     --transition-fast: all 0.15s ease;
   }
 }
+
+/* === TEXT + BODY BASE === */
 
 @layer base {
   * {
@@ -75,14 +119,12 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Courier Prime', 'Courier New', monospace;
+    font-family: 'Courier Prime', monospace;
     line-height: 1.6;
   }
 
-  code,
-  pre,
-  .mono {
-    font-family: 'Roboto Mono', 'Courier New', monospace;
+  code, pre, .mono {
+    font-family: 'Roboto Mono', monospace;
   }
 
   .scp-header {
@@ -90,19 +132,16 @@
     letter-spacing: 0.05em;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-bold tracking-wide;
     font-family: 'Courier Prime', monospace;
   }
 }
 
+/* === UTILITIES & ANIMATIONS === */
+
 @layer utilities {
-  /* SCP Dark Theme Utilities */
+
   .scp-paper {
     background: var(--gradient-card);
     box-shadow: var(--shadow-document);
@@ -110,11 +149,12 @@
 
   .scp-stamp {
     box-shadow: var(--shadow-stamp);
-    font-family: 'Special Elite', cursive;
+    font-family: "Special Elite", cursive;
     text-transform: uppercase;
     letter-spacing: 0.1em;
   }
 
+  /* === REDACTED EFFECT === */
   .redacted {
     background: hsl(var(--primary));
     color: transparent;
@@ -126,50 +166,50 @@
   }
 
   .redacted::after {
-    content: '█████████';
+    content: "█████████";
     color: hsl(var(--primary));
     position: absolute;
-    left: 0;
-    top: 0;
+    inset: 0;
   }
 
   @keyframes redacted-flicker {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.8;
-    }
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
   }
 
+  /* === GLOWS === */
   .text-scp-red {
     color: hsl(var(--primary));
-    font-weight: 700;
-    text-shadow: 0 0 20px hsla(355, 85%, 55%, 0.5);
+    text-shadow: 0 0 20px hsla(355,85%,55%,0.5);
   }
 
   .glow-blue {
-    text-shadow: 0 0 10px hsla(199, 89%, 48%, 0.6), 0 0 20px hsla(199, 89%, 48%, 0.4);
+    text-shadow: 
+      0 0 10px hsla(199,89%,48%,0.6),
+      0 0 20px hsla(199,89%,48%,0.4);
   }
 
   .glow-blue-box {
-    box-shadow: 0 0 15px hsla(199, 89%, 48%, 0.5), 0 0 30px hsla(199, 89%, 48%, 0.3);
+    box-shadow: 
+      0 0 15px hsla(199,89%,48%,0.5),
+      0 0 30px hsla(199,89%,48%,0.3);
   }
 
   .border-classified {
     border: 3px solid hsl(var(--primary));
-    box-shadow: inset 0 0 0 2px hsl(var(--background)),
-      0 0 20px hsla(355, 85%, 55%, 0.3);
+    box-shadow:
+      inset 0 0 0 2px hsl(var(--background)),
+      0 0 20px hsla(355,85%,55%,0.3);
   }
 
+  /* === CLASSIFICATION BAR (BLUE EDITION) === */
   .classification-bar {
     background: repeating-linear-gradient(
       45deg,
       hsl(var(--primary)),
       hsl(var(--primary)) 10px,
-      hsl(var(--secondary)) 10px,
-      hsl(var(--secondary)) 20px,
+      hsl(215,70%,55%) 10px,
+      hsl(215,70%,55%) 20px,
       hsl(var(--accent)) 20px,
       hsl(var(--accent)) 30px
     );
@@ -178,28 +218,23 @@
   }
 
   @keyframes christmas-shimmer {
-    0% {
-      filter: brightness(1) hue-rotate(0deg);
-    }
-    50% {
-      filter: brightness(1.2) hue-rotate(5deg);
-    }
-    100% {
-      filter: brightness(1) hue-rotate(0deg);
-    }
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+    100% { filter: brightness(1); }
   }
 
   .text-balance {
     text-wrap: balance;
   }
 
+  /* === SCAN LINE EFFECT === */
   .scan-line {
     position: relative;
     overflow: hidden;
   }
 
   .scan-line::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: -100%;
@@ -215,31 +250,22 @@
   }
 
   @keyframes scan {
-    0% {
-      left: -100%;
-    }
-    100% {
-      left: 100%;
-    }
+    0% { left: -100%; }
+    100% { left: 100%; }
   }
 
-  .flicker {
-    animation: flicker 0.5s infinite;
-  }
+  /* === FLICKER === */
+  .flicker { animation: flicker 0.5s infinite; }
 
   @keyframes flicker {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.95;
-    }
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.95; }
   }
 
   .glow-red {
-    box-shadow: 0 0 20px hsla(var(--primary), 0.5),
-      0 0 40px hsla(var(--primary), 0.3);
+    box-shadow:
+      0 0 20px hsla(var(--primary),0.5),
+      0 0 40px hsla(var(--primary),0.3);
   }
 
   .pulse-glow {
@@ -247,115 +273,79 @@
   }
 
   @keyframes pulse-glow {
-    0%,
-    100% {
-      box-shadow: 0 0 10px hsla(var(--primary), 0.3);
+    0%,100% {
+      box-shadow: 
+        0 0 10px hsla(var(--primary),0.3);
     }
     50% {
-      box-shadow: 0 0 20px hsla(var(--primary), 0.6),
-        0 0 30px hsla(var(--primary), 0.4);
+      box-shadow:
+        0 0 20px hsla(var(--primary),0.6),
+        0 0 30px hsla(var(--primary),0.4);
     }
   }
 
+  /* === FADE IN === */
   @keyframes fade-in {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
-  .animate-fade-in {
-    animation: fade-in 0.8s ease-out;
-  }
+  .animate-fade-in { animation: fade-in 0.8s ease-out; }
+  .animate-fade-in-delay { animation: fade-in 0.8s ease-out 0.3s both; }
 
-  .animate-fade-in-delay {
-    animation: fade-in 0.8s ease-out 0.3s both;
-  }
+  /* === GLITCH === */
+  .glitch { position: relative; }
 
-  .glitch {
-    position: relative;
-  }
-
-  .glitch::before,
-  .glitch::after {
+  .glitch::before, .glitch::after {
     content: attr(data-text);
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
   }
 
   .glitch::before {
     animation: glitch-1 2s infinite;
-    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    clip-path: polygon(0 0,100% 0,100% 45%,0 45%);
     text-shadow: -2px 0 hsl(var(--primary));
   }
 
   .glitch::after {
     animation: glitch-2 2s infinite;
-    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    clip-path: polygon(0 55%,100% 55%,100% 100%,0 100%);
     text-shadow: 2px 0 hsl(var(--success));
   }
 
   @keyframes glitch-1 {
-    0%,
-    90%,
-    100% {
-      transform: translate(0);
-    }
-    92% {
-      transform: translate(-2px, -2px);
-    }
-    94% {
-      transform: translate(2px, 2px);
-    }
-    96% {
-      transform: translate(-2px, 2px);
-    }
+    0%,90%,100% { transform: translate(0); }
+    92% { transform: translate(-2px,-2px); }
+    94% { transform: translate(2px,2px); }
+    96% { transform: translate(-2px,2px); }
   }
 
   @keyframes glitch-2 {
-    0%,
-    90%,
-    100% {
-      transform: translate(0);
-    }
-    92% {
-      transform: translate(2px, 2px);
-    }
-    94% {
-      transform: translate(-2px, -2px);
-    }
-    96% {
-      transform: translate(2px, -2px);
-    }
+    0%,90%,100% { transform: translate(0); }
+    92% { transform: translate(2px,2px); }
+    94% { transform: translate(-2px,-2px); }
+    96% { transform: translate(2px,-2px); }
   }
 
-  .matrix-bg {
-    position: relative;
-    overflow: hidden;
-  }
+  /* === MATRIX BACKGROUND (BLUE VERSION) === */
+  .matrix-bg { position: relative; overflow: hidden; }
 
   .matrix-bg::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background: repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      hsla(var(--primary), 0.03) 2px,
-      hsla(var(--primary), 0.03) 4px
+      hsla(215,75%,60%,0.03) 2px,
+      hsla(215,75%,60%,0.03) 4px
     );
     pointer-events: none;
   }
 
-  /* Christmas-themed animations */
+  /* === SNOWFALL === */
   .snowfall {
     position: fixed;
     inset: 0;
@@ -366,39 +356,29 @@
   .snowflake {
     position: absolute;
     top: -10px;
-    color: hsl(0, 0%, 95%);
+    color: white;
+    opacity: 0.9;
     font-size: 1em;
     animation: snowfall-animation linear infinite;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+    text-shadow: 0 0 8px rgba(255,255,255,0.9);
   }
 
   @keyframes snowfall-animation {
-    0% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(100vh) rotate(360deg);
-      opacity: 0.3;
-    }
+    0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
   }
 
+  /* === BLUE CHRISTMAS LIGHTS === */
   .christmas-lights {
     animation: twinkle 2s ease-in-out infinite;
   }
 
   @keyframes twinkle {
-    0%,
-    100% {
-      opacity: 1;
-      text-shadow: 0 0 10px currentColor;
-    }
-    50% {
-      opacity: 0.4;
-      text-shadow: 0 0 5px currentColor;
-    }
+    0%,100% { opacity: 1; filter: drop-shadow(0 0 10px currentColor); }
+    50%     { opacity: 0.4; filter: drop-shadow(0 0 5px currentColor); }
   }
 
+  /* === BLUE SHIMMER === */
   .gold-shimmer {
     background: var(--gradient-gold);
     background-size: 200% 200%;
@@ -406,65 +386,59 @@
   }
 
   @keyframes shimmer {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 
+  /* === FESTIVE BLUE GLOW === */
   .festive-glow {
     animation: festive-pulse 2s ease-in-out infinite;
   }
 
   @keyframes festive-pulse {
-    0%,
-    100% {
-      box-shadow: 0 0 10px hsla(var(--primary), 0.3),
-        0 0 20px hsla(var(--secondary), 0.2),
-        0 0 30px hsla(var(--accent), 0.1);
+    0%,100% {
+      box-shadow:
+        0 0 10px hsla(215,70%,60%,0.3),
+        0 0 20px hsla(215,60%,55%,0.2),
+        0 0 30px hsla(195,100%,72%,0.2);
     }
     50% {
-      box-shadow: 0 0 20px hsla(var(--primary), 0.5),
-        0 0 30px hsla(var(--secondary), 0.3),
-        0 0 40px hsla(var(--accent), 0.2);
+      box-shadow:
+        0 0 20px hsla(215,75%,70%,0.5),
+        0 0 30px hsla(215,60%,55%,0.35),
+        0 0 40px hsla(195,100%,75%,0.25);
     }
   }
 
+  /* === ORNAMENT SPIN === */
   .ornament-spin {
     animation: ornament-rotate 20s linear infinite;
   }
 
   @keyframes ornament-rotate {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
   }
 
+  /* === BLUE CANDY STRIPE (NO RED/WHITE VERSION) === */
   .candy-cane-stripe {
     background: repeating-linear-gradient(
       45deg,
-      hsl(var(--primary)),
-      hsl(var(--primary)) 10px,
-      hsl(0, 0%, 95%) 10px,
-      hsl(0, 0%, 95%) 20px
+      hsl(215,70%,60%),
+      hsl(215,70%,60%) 10px,
+      hsl(215,35%,75%) 10px,
+      hsl(215,35%,75%) 20px
     );
   }
 
+  /* === BLUE HOLLY BORDER === */
   .holly-border {
     border-image: linear-gradient(
-        45deg,
-        hsl(var(--primary)),
-        hsl(var(--secondary)),
-        hsl(var(--accent))
-      )
-      1;
+      45deg,
+      hsl(var(--primary)),
+      hsl(215,65%,50%),
+      hsl(195,100%,67%)
+    ) 1;
   }
 }
