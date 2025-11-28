@@ -257,11 +257,8 @@ const Index = () => {
                 <div className="space-y-4 mb-8 text-[#f0f5ff]/90">
                   <p className="text-lg">
                     <strong className="text-[#8abaff] flicker-soft">NOTICE:</strong>{" "}
-                    You are accessing a restricted SCP Foundation training
-                    environment. This Capture The Flag (CTF) platform is
-                    designed to test and enhance the cybersecurity capabilities
-                    of Foundation personnel under simulated anomalous
-                    conditions.
+                    Deep down the facility at Site-81, a massive explosion shattered the reinforced containment wing, sending shockwaves through the ice-coated sublevels. Emergency red-and-green holiday lockdown lights flickered wildly, casting festive but unsettling colors across the frost-cracked walls. It had been the annual “Secure Contain Protect Winter Protocol Week,” a rare moment when staff decorated terminals with holographic snowflakes and synthetic pine scent diffusers—until everything went catastrophically wrong.Moments before the blast, researchers were studying SCP-XMAS-239, a crystalline anomaly resembling a floating ornament that emitted harmonic frequencies capable of rewriting electronic systems. When containment failed, the anomaly fractured into thousands of shimmering fragments, each scattering across the database, corrupting files, unlocking challenge nodes, and activating dormant SCP simulations.
+Now, the Foundation has initiated CTF-81: Containment Task Force, calling all personnel to track the anomalies, decode corrupted logs, and restore order before the “festive breach event” evolves into a full-scale reality distortion.
                   </p>
                   <p>
                     Unauthorized access to this portal constitutes a direct
