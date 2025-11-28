@@ -32,19 +32,52 @@ export default function Rules() {
 
   return (
     <div
-      className="min-h-screen flex flex-col relative overflow-hidden"
-      style={{
-        backgroundImage: "url('/images/r.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-      }}
+      className="
+        min-h-screen flex flex-col relative overflow-hidden 
+        bg-[#02040a] festive-glow
+      "
     >
-      {/* Flickering blue ambient overlay */}
+      {/* ❄️ GLOBAL SNOWFALL LAYER */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none snowfall">
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={`snow-${i}`}
+            className="snowflake"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDuration: `${6 + Math.random() * 5}s`,
+              animationDelay: `${Math.random() * 4}s`,
+              fontSize: `${0.4 + Math.random() * 1.1}rem`,
+            }}
+          >
+            ❄
+          </div>
+        ))}
+      </div>
+
+      {/* ✨ TWINKLING PARTICLES */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {Array.from({ length: 30 }).map((_, i) => (
+          <div
+            key={`twinkle-${i}`}
+            className="christmas-lights absolute rounded-full"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: "4px",
+              height: "4px",
+              backgroundColor: "white",
+              opacity: 0.7,
+              animationDelay: `${Math.random()}s`,
+            }}
+          ></div>
+        ))}
+      </div>
+
+      {/* 🔵 AMBIENT GLOW OVERLAY */}
       <div className="absolute inset-0 bg-[#010b1a]/80 backdrop-blur-sm animate-[ambient_6s_infinite]"></div>
 
-      {/* Glowing random light blobs */}
+      {/* GLOWING BLUR BLOBS */}
       {blobs.map((blob) => (
         <div
           key={blob.id}
@@ -74,7 +107,15 @@ export default function Rules() {
             </p>
           </div>
 
-          <Card className="border border-[#3d6cff]/40 bg-[#0a1530]/60 backdrop-blur-xl shadow-[0_0_30px_rgba(0,60,255,0.15)] hover:shadow-[0_0_40px_rgba(0,90,255,0.25)] transition-all duration-500">
+          {/* IMPORTANT NOTICE */}
+          <Card className="
+            border border-[#3d6cff]/40 
+            bg-[#0a1530]/60 backdrop-blur-xl 
+            shadow-[0_0_30px_rgba(0,60,255,0.15)] 
+            hover:shadow-[0_0_40px_rgba(0,90,255,0.25)] 
+            transition-all duration-500
+            candy-cane-stripe
+          ">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
                 <AlertCircle className="h-5 w-5" />
@@ -88,7 +129,14 @@ export default function Rules() {
             </CardContent>
           </Card>
 
-          <Card className="border border-[#3358ff]/30 bg-[#081226]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
+          {/* SCORING RULES */}
+          <Card className="
+            border border-[#3358ff]/30 
+            bg-[#081226]/70 backdrop-blur-md 
+            shadow-[0_0_20px_rgba(0,60,255,0.1)] 
+            hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] 
+            transition-all duration-500
+          ">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#62a0ff]">
                 <Trophy className="h-5 w-5" />
@@ -117,7 +165,14 @@ export default function Rules() {
             </CardContent>
           </Card>
 
-          <Card className="border border-[#2f5aff]/30 bg-[#0b1935]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
+          {/* SUBMISSION RULES */}
+          <Card className="
+            border border-[#2f5aff]/30 
+            bg-[#0b1935]/70 backdrop-blur-md 
+            shadow-[0_0_20px_rgba(0,60,255,0.1)] 
+            hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] 
+            transition-all duration-500
+          ">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
                 <Flag className="h-5 w-5" />
@@ -129,7 +184,7 @@ export default function Rules() {
                 <li className="flex gap-3">
                   <span className="text-[#4eaaff]">•</span>
                   <span>
-                    Flags must match the format described in each challenge, typically in the format{" "}
+                    Flags must match the format described in each challenge, typically{" "}
                     <code className="font-mono bg-[#112249]/70 px-1 py-0.5 rounded text-[#b8d4ff]">
                       scpctf{"{...}"}
                     </code>.
@@ -151,7 +206,14 @@ export default function Rules() {
             </CardContent>
           </Card>
 
-          <Card className="border border-[#3c4fff]/30 bg-[#08162d]/70 backdrop-blur-md shadow-[0_0_20px_rgba(0,60,255,0.1)] hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] transition-all duration-500">
+          {/* PROHIBITED ACTIVITIES */}
+          <Card className="
+            border border-[#3c4fff]/30 
+            bg-[#08162d]/70 backdrop-blur-md 
+            shadow-[0_0_20px_rgba(0,60,255,0.1)] 
+            hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] 
+            transition-all duration-500
+          ">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#ff5c5c]">
                 <Ban className="h-5 w-5" />
@@ -166,7 +228,7 @@ export default function Rules() {
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#ff5c5c]">✕</span>
-                  <span><strong>No flag sharing</strong> or collaboration beyond what is allowed by event rules.</span>
+                  <span><strong>No flag sharing</strong> or collaboration outside allowed rules.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-[#ff5c5c]">✕</span>
@@ -181,24 +243,12 @@ export default function Rules() {
       {/* FLAG: scpctf{Rul3s_4r3_m3ant_t0_b3_br0k3n} */}
       <style>{`
         @keyframes blink {
-          0%, 100% {
-            opacity: 0;
-            transform: scale(0.8);
-          }
-          50% {
-            opacity: 0.3;
-            transform: scale(1.2);
-          }
+          0%, 100% { opacity: 0; transform: scale(0.8); }
+          50% { opacity: 0.3; transform: scale(1.2); }
         }
         @keyframes ambient {
-          0%, 100% {
-            opacity: 0.95;
-            filter: brightness(0.9);
-          }
-          50% {
-            opacity: 0.85;
-            filter: brightness(1.05);
-          }
+          0%, 100% { opacity: 0.95; filter: brightness(0.9); }
+          50% { opacity: 0.85; filter: brightness(1.05); }
         }
       `}</style>
     </div>
