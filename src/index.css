@@ -47,7 +47,7 @@
     --input: 140 20% 15%;
     --ring: 45 100% 50%;
 
-    --radius: 0.25rem;  /* Slightly softer for festive feel */
+    --radius: 0.25rem;
 
     /* Christmas Gradients */
     --gradient-hero: linear-gradient(180deg, hsl(140, 30%, 10%), hsl(140, 35%, 8%));
@@ -56,14 +56,13 @@
     --gradient-gold: linear-gradient(135deg, hsl(45, 100%, 50%), hsl(35, 100%, 45%));
     --gradient-festive: linear-gradient(90deg, hsl(355, 85%, 55%), hsl(145, 65%, 35%), hsl(45, 100%, 50%));
 
-    /* Christmas Shadows - Festive glows */
+    /* Shadows */
     --shadow-document: 0 4px 20px hsla(355, 85%, 55%, 0.15), 0 0 40px hsla(145, 65%, 35%, 0.1);
     --shadow-stamp: inset 0 0 0 2px hsl(355, 85%, 55%);
     --shadow-redacted: 0 0 10px hsl(355, 85%, 55%);
     --shadow-gold: 0 0 20px hsla(45, 100%, 50%, 0.4), 0 0 40px hsla(45, 100%, 50%, 0.2);
     --shadow-christmas: 0 0 30px hsla(355, 85%, 55%, 0.3), 0 0 60px hsla(145, 65%, 35%, 0.2);
 
-    /* Animations */
     --transition-smooth: all 0.3s ease;
     --transition-fast: all 0.15s ease;
   }
@@ -80,7 +79,9 @@
     line-height: 1.6;
   }
 
-  code, pre, .mono {
+  code,
+  pre,
+  .mono {
     font-family: 'Roboto Mono', 'Courier New', monospace;
   }
 
@@ -89,7 +90,12 @@
     letter-spacing: 0.05em;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-bold tracking-wide;
     font-family: 'Courier Prime', monospace;
   }
@@ -128,27 +134,33 @@
   }
 
   @keyframes redacted-flicker {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.8; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
   }
 
   .text-scp-red {
     color: hsl(var(--primary));
     font-weight: 700;
-    text-shadow: 0 0 20px hsl(var(--primary) / 0.5);
+    text-shadow: 0 0 20px hsla(355, 85%, 55%, 0.5);
   }
 
   .glow-blue {
-    text-shadow: 0 0 10px hsla(199 89% 48% / 0.6), 0 0 20px hsla(199 89% 48% / 0.4);
+    text-shadow: 0 0 10px hsla(199, 89%, 48%, 0.6), 0 0 20px hsla(199, 89%, 48%, 0.4);
   }
 
   .glow-blue-box {
-    box-shadow: 0 0 15px hsla(199 89% 48% / 0.5), 0 0 30px hsla(199 89% 48% / 0.3);
+    box-shadow: 0 0 15px hsla(199, 89%, 48%, 0.5), 0 0 30px hsla(199, 89%, 48%, 0.3);
   }
 
   .border-classified {
     border: 3px solid hsl(var(--primary));
-    box-shadow: inset 0 0 0 2px hsl(var(--background)), 0 0 20px hsl(var(--primary) / 0.3);
+    box-shadow: inset 0 0 0 2px hsl(var(--background)),
+      0 0 20px hsla(355, 85%, 55%, 0.3);
   }
 
   .classification-bar {
@@ -166,9 +178,15 @@
   }
 
   @keyframes christmas-shimmer {
-    0% { filter: brightness(1) hue-rotate(0deg); }
-    50% { filter: brightness(1.2) hue-rotate(5deg); }
-    100% { filter: brightness(1) hue-rotate(0deg); }
+    0% {
+      filter: brightness(1) hue-rotate(0deg);
+    }
+    50% {
+      filter: brightness(1.2) hue-rotate(5deg);
+    }
+    100% {
+      filter: brightness(1) hue-rotate(0deg);
+    }
   }
 
   .text-balance {
@@ -187,13 +205,22 @@
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.3), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      hsla(var(--primary), 0.3),
+      transparent
+    );
     animation: scan 3s ease-in-out infinite;
   }
 
   @keyframes scan {
-    0% { left: -100%; }
-    100% { left: 100%; }
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
   }
 
   .flicker {
@@ -201,12 +228,18 @@
   }
 
   @keyframes flicker {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.95; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.95;
+    }
   }
 
   .glow-red {
-    box-shadow: 0 0 20px hsl(var(--primary) / 0.5), 0 0 40px hsl(var(--primary) / 0.3);
+    box-shadow: 0 0 20px hsla(var(--primary), 0.5),
+      0 0 40px hsla(var(--primary), 0.3);
   }
 
   .pulse-glow {
@@ -214,11 +247,13 @@
   }
 
   @keyframes pulse-glow {
-    0%, 100% {
-      box-shadow: 0 0 10px hsl(var(--primary) / 0.3);
+    0%,
+    100% {
+      box-shadow: 0 0 10px hsla(var(--primary), 0.3);
     }
     50% {
-      box-shadow: 0 0 20px hsl(var(--primary) / 0.6), 0 0 30px hsl(var(--primary) / 0.4);
+      box-shadow: 0 0 20px hsla(var(--primary), 0.6),
+        0 0 30px hsla(var(--primary), 0.4);
     }
   }
 
@@ -268,17 +303,37 @@
   }
 
   @keyframes glitch-1 {
-    0%, 90%, 100% { transform: translate(0); }
-    92% { transform: translate(-2px, -2px); }
-    94% { transform: translate(2px, 2px); }
-    96% { transform: translate(-2px, 2px); }
+    0%,
+    90%,
+    100% {
+      transform: translate(0);
+    }
+    92% {
+      transform: translate(-2px, -2px);
+    }
+    94% {
+      transform: translate(2px, 2px);
+    }
+    96% {
+      transform: translate(-2px, 2px);
+    }
   }
 
   @keyframes glitch-2 {
-    0%, 90%, 100% { transform: translate(0); }
-    92% { transform: translate(2px, 2px); }
-    94% { transform: translate(-2px, -2px); }
-    96% { transform: translate(2px, -2px); }
+    0%,
+    90%,
+    100% {
+      transform: translate(0);
+    }
+    92% {
+      transform: translate(2px, 2px);
+    }
+    94% {
+      transform: translate(-2px, -2px);
+    }
+    96% {
+      transform: translate(2px, -2px);
+    }
   }
 
   .matrix-bg {
@@ -289,16 +344,13 @@
   .matrix-bg::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: repeating-linear-gradient(
       0deg,
       transparent,
       transparent 2px,
-      hsl(var(--primary) / 0.03) 2px,
-      hsl(var(--primary) / 0.03) 4px
+      hsla(var(--primary), 0.03) 2px,
+      hsla(var(--primary), 0.03) 4px
     );
     pointer-events: none;
   }
@@ -306,10 +358,7 @@
   /* Christmas-themed animations */
   .snowfall {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     pointer-events: none;
     z-index: 9999;
   }
@@ -339,8 +388,15 @@
   }
 
   @keyframes twinkle {
-    0%, 100% { opacity: 1; text-shadow: 0 0 10px currentColor; }
-    50% { opacity: 0.4; text-shadow: 0 0 5px currentColor; }
+    0%,
+    100% {
+      opacity: 1;
+      text-shadow: 0 0 10px currentColor;
+    }
+    50% {
+      opacity: 0.4;
+      text-shadow: 0 0 5px currentColor;
+    }
   }
 
   .gold-shimmer {
@@ -350,9 +406,15 @@
   }
 
   @keyframes shimmer {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
   }
 
   .festive-glow {
@@ -360,17 +422,16 @@
   }
 
   @keyframes festive-pulse {
-    0%, 100% {
-      box-shadow: 
-        0 0 10px hsl(var(--primary) / 0.3),
-        0 0 20px hsl(var(--secondary) / 0.2),
-        0 0 30px hsl(var(--accent) / 0.1);
+    0%,
+    100% {
+      box-shadow: 0 0 10px hsla(var(--primary), 0.3),
+        0 0 20px hsla(var(--secondary), 0.2),
+        0 0 30px hsla(var(--accent), 0.1);
     }
     50% {
-      box-shadow: 
-        0 0 20px hsl(var(--primary) / 0.5),
-        0 0 30px hsl(var(--secondary) / 0.3),
-        0 0 40px hsl(var(--accent) / 0.2);
+      box-shadow: 0 0 20px hsla(var(--primary), 0.5),
+        0 0 30px hsla(var(--secondary), 0.3),
+        0 0 40px hsla(var(--accent), 0.2);
     }
   }
 
@@ -379,8 +440,12 @@
   }
 
   @keyframes ornament-rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .candy-cane-stripe {
@@ -395,10 +460,11 @@
 
   .holly-border {
     border-image: linear-gradient(
-      45deg,
-      hsl(var(--primary)),
-      hsl(var(--secondary)),
-      hsl(var(--accent))
-    ) 1;
+        45deg,
+        hsl(var(--primary)),
+        hsl(var(--secondary)),
+        hsl(var(--accent))
+      )
+      1;
   }
 }
