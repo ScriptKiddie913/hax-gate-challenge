@@ -76,40 +76,45 @@ export const Navbar = () => {
         backdrop-blur-xl
         shadow-[0_0_40px_rgba(0,80,255,0.25)]
         relative
+        festive-glow
       "
     >
 
-      {/* 🎄 CSS Animated Christmas Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-
-        {/* Falling Snowflakes */}
-        {Array.from({ length: 50 }).map((_, i) => (
+      {/* ❄️ Global Snowfall Layer */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none snowfall">
+        {Array.from({ length: 40 }).map((_, i) => (
           <div
-            key={`snow-${i}`}
+            key={`snowflake-${i}`}
             className="snowflake"
             style={{
               left: `${Math.random() * 100}%`,
-              animationDuration: `${3 + Math.random() * 4}s`,
+              animationDuration: `${5 + Math.random() * 6}s`,
               animationDelay: `${Math.random() * 5}s`,
-              opacity: 0.3 + Math.random() * 0.5,
+              fontSize: `${0.4 + Math.random() * 1.2}rem`,
             }}
-          ></div>
+          >
+            ❄
+          </div>
         ))}
+      </div>
 
-        {/* Twinkle Stars */}
-        {Array.from({ length: 30 }).map((_, i) => (
+      {/* ✨ Soft Twinkling Light Particles */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {Array.from({ length: 25 }).map((_, i) => (
           <div
-            key={`star-${i}`}
-            className="twinkle-star"
+            key={`twinkle-${i}`}
+            className="christmas-lights absolute rounded-full"
             style={{
-              left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animationDuration: `${1 + Math.random() * 2}s`,
-              animationDelay: `${Math.random() * 3}s`,
+              left: `${Math.random() * 100}%`,
+              width: "4px",
+              height: "4px",
+              backgroundColor: "white",
+              opacity: 0.7,
+              animationDelay: `${Math.random()}s`,
             }}
           ></div>
         ))}
-
       </div>
 
       {/* Christmas lights garland */}
@@ -119,7 +124,7 @@ export const Navbar = () => {
             <div
               key={i}
               className={`
-                w-2 h-2 rounded-full 
+                w-2 h-2 rounded-full christmas-lights
                 ${
                   i % 3 === 0
                     ? "bg-red-400"
@@ -127,31 +132,30 @@ export const Navbar = () => {
                     ? "bg-green-400"
                     : "bg-yellow-300"
                 }
-                shadow-[0_0_8px_currentColor]
+                shadow-[0_0_12px_currentColor]
               `}
             ></div>
           ))}
         </div>
       </div>
 
-      {/* Candy cane border */}
+      {/* 🎄 Candy Cane Animated Border */}
       <div
-        className="absolute bottom-0 left-0 w-full h-1"
+        className="absolute bottom-0 left-0 w-full h-1 candy-cane-stripe"
         style={{
-          backgroundImage:
-            "repeating-linear-gradient(45deg, #ff0000 0 10px, #ffffff 10px 20px)",
+          animation: "jingle 3s ease-in-out infinite",
         }}
       ></div>
 
       <div className="container mx-auto px-4 h-20 flex items-center justify-between relative">
-        <Link to="/" className="flex items-center gap-3 group">
+        <Link to="/" className="flex items-center gap-3 group jingle">
           <div
             className="
               w-12 h-12 border-4
               bg-[#0a0e1a]/80
               border-[#2b4aff]
               shadow-[0_0_20px_rgba(80,130,255,0.45)]
-              rounded-md flex items-center justify-center
+              rounded-md flex items-center justify-center ornament-spin
             "
           >
             <Shield className="h-7 w-7 text-[#9fc3ff] group-hover:text-[#cde0ff] transition-all" />
@@ -177,6 +181,7 @@ export const Navbar = () => {
                     gap-2 font-mono text-[#d6e2ff]
                     hover:text-white
                     hover:bg-[#1c2a55]/60
+                    present-shake
                   "
                 >
                   <FileText className="h-4 w-4" />
@@ -253,6 +258,7 @@ export const Navbar = () => {
                       gap-2 text-red-400 font-mono
                       hover:text-red-300
                       hover:bg-[#381212]/60
+                      glow-red
                     "
                   >
                     <Shield className="h-4 w-4" />
@@ -302,6 +308,7 @@ export const Navbar = () => {
                     text-xs font-mono
                     bg-green-600/20 text-green-300
                     border-green-500
+                    pulse-glow
                   "
                 >
                   AUTHORIZED
@@ -321,6 +328,7 @@ export const Navbar = () => {
                   bg-[#0a0e1a]/60
                   text-[#d6e2ff]
                   hover:bg-[#1b294f]
+                  present-shake
                 "
               >
                 <LogOut className="h-4 w-4" />
@@ -336,6 +344,7 @@ export const Navbar = () => {
                   hover:bg-[#4d6aff]/90
                   shadow-[0_0_20px_rgba(80,130,255,0.4)]
                   text-white
+                  festive-glow
                 "
               >
                 REQUEST ACCESS
@@ -347,4 +356,5 @@ export const Navbar = () => {
     </nav>
   );
 };
+
 
