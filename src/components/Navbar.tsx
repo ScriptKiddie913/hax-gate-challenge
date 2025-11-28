@@ -104,8 +104,6 @@ export const Navbar = () => {
       <div
         className="absolute inset-0 pointer-events-none overflow-hidden"
         style={{
-          backgroundImage:
-            "url('https://i.imgur.com/1JfVKcn.png')",
           opacity: 0.2,
         }}
       ></div>
