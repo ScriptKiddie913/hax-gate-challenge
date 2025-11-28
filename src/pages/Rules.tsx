@@ -37,17 +37,18 @@ export default function Rules() {
         bg-[#02040a] festive-glow
       "
     >
-      {/* ❄️ GLOBAL SNOWFALL LAYER */}
+
+      {/* ❄ GLOBAL SNOWFALL */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none snowfall">
-        {Array.from({ length: 50 }).map((_, i) => (
+        {Array.from({ length: 60 }).map((_, i) => (
           <div
             key={`snow-${i}`}
             className="snowflake"
             style={{
               left: `${Math.random() * 100}%`,
-              animationDuration: `${6 + Math.random() * 5}s`,
+              animationDuration: `${6 + Math.random() * 4}s`,
               animationDelay: `${Math.random() * 4}s`,
-              fontSize: `${0.4 + Math.random() * 1.1}rem`,
+              fontSize: `${0.4 + Math.random() * 1.2}rem`,
             }}
           >
             ❄
@@ -55,27 +56,27 @@ export default function Rules() {
         ))}
       </div>
 
-      {/* ✨ TWINKLING PARTICLES */}
+      {/* ✨ TWINKLE PARTICLES */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 30 }).map((_, i) => (
+        {Array.from({ length: 35 }).map((_, i) => (
           <div
-            key={`twinkle-${i}`}
-            className="christmas-lights absolute rounded-full"
+            key={`tw-${i}`}
+            className="absolute rounded-full christmas-lights"
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              width: "4px",
-              height: "4px",
-              backgroundColor: "white",
-              opacity: 0.7,
+              width: "5px",
+              height: "5px",
+              backgroundColor: ["#ffffff", "#a8c8ff", "#d0e6ff"][Math.floor(Math.random() * 3)],
+              opacity: 0.75,
               animationDelay: `${Math.random()}s`,
             }}
           ></div>
         ))}
       </div>
 
-      {/* 🔵 AMBIENT GLOW OVERLAY */}
-      <div className="absolute inset-0 bg-[#010b1a]/80 backdrop-blur-sm animate-[ambient_6s_infinite]"></div>
+      {/* DARK BLUE HOLIDAY OVERLAY */}
+      <div className="absolute inset-0 bg-[#010b1a]/80 backdrop-blur-[3px] animate-[ambient_6s_infinite]"></div>
 
       {/* GLOWING BLUR BLOBS */}
       {blobs.map((blob) => (
@@ -94,160 +95,200 @@ export default function Rules() {
 
       <Navbar />
 
+      {/* MAIN CONTENT */}
       <main className="flex-1 container mx-auto px-4 py-12 relative z-10">
-        <div className="max-w-4xl mx-auto space-y-8 text-[#cdd9ff]">
+        <div className="max-w-4xl mx-auto space-y-10 text-[#d5e1ff]">
+
+          {/* HEADER */}
           <div className="text-center mb-12 animate-fade-in">
-            <h1 className="text-5xl font-extrabold mb-4 text-[#9fc5ff] tracking-wide">
-              <span className="text-gradient-cyan drop-shadow-[0_0_10px_#005eff]">
-                Rules & Guidelines
-              </span>
+            <h1 className="text-5xl font-extrabold mb-4 text-[#b7d4ff] drop-shadow-[0_0_15px_#3a7bff] tracking-wide">
+              Rules & Guidelines
             </h1>
-            <p className="text-lg text-[#aebeff] font-light">
-              Please read and follow these rules to ensure fair play and a smooth experience for everyone.
+            <p className="text-lg text-[#c5d3ff]/90 font-light">
+              Please read these carefully to ensure fair play and a great event for everyone.
             </p>
           </div>
 
           {/* IMPORTANT NOTICE */}
-          <Card className="
-            border border-[#3d6cff]/40 
-            bg-[#0a1530]/60 backdrop-blur-xl 
-            shadow-[0_0_30px_rgba(0,60,255,0.15)] 
-            hover:shadow-[0_0_40px_rgba(0,90,255,0.25)] 
-            transition-all duration-500
-            candy-cane-stripe
-          ">
+          <Card
+            className="
+              border border-[#6ea0ff]/40 
+              bg-[#0a1327]/85 
+              backdrop-blur-xl
+              shadow-[0_0_35px_rgba(100,150,255,0.35)]
+              hover:shadow-[0_0_45px_rgba(150,200,255,0.45)]
+              transition-all duration-500
+              rounded-xl
+            "
+          >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
+              <CardTitle className="flex items-center gap-2 text-[#9ec7ff]">
                 <AlertCircle className="h-5 w-5" />
                 Important Notice
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-[#d9e3ff] leading-relaxed">
-                All participants must follow these rules. Violation may result in disqualification or a permanent ban from the platform. Report any suspicious activity immediately to the moderators or event admins.
+              <p className="text-[#e3ebff] leading-relaxed">
+                All participants must follow these rules. Violations may result in disqualification or
+                permanent suspension. If you notice suspicious activity,
+                notify moderators or event administrators immediately.
               </p>
             </CardContent>
           </Card>
 
           {/* SCORING RULES */}
-          <Card className="
-            border border-[#3358ff]/30 
-            bg-[#081226]/70 backdrop-blur-md 
-            shadow-[0_0_20px_rgba(0,60,255,0.1)] 
-            hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] 
-            transition-all duration-500
-          ">
+          <Card
+            className="
+              border border-[#608cff]/35 
+              bg-[#0a1530]/85 
+              backdrop-blur-xl
+              shadow-[0_0_28px_rgba(80,130,255,0.25)]
+              hover:shadow-[0_0_38px_rgba(120,160,255,0.35)]
+              transition-all duration-500
+              rounded-xl
+            "
+          >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#62a0ff]">
+              <CardTitle className="flex items-center gap-2 text-[#90b8ff]">
                 <Trophy className="h-5 w-5" />
                 Scoring Rules
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 list-none text-[#d0dbff]">
+              <ul className="space-y-3 list-none text-[#d8e4ff]">
                 <li className="flex gap-3">
-                  <span className="text-[#4eaaff]">•</span>
-                  <span>Each challenge is worth a specific number of points based on its difficulty level.</span>
+                  <span className="text-[#8bb8ff]">•</span>
+                  <span>
+                    Each challenge has a score based on difficulty.
+                  </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#4eaaff]">•</span>
-                  <span>Points are awarded only for the <strong>first correct submission</strong> per user per challenge.</span>
+                  <span className="text-[#8bb8ff]">•</span>
+                  <span>
+                    Only the <strong>first correct submission</strong> gives points.
+                  </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#4eaaff]">•</span>
-                  <span>Once you solve a challenge, it becomes <strong>locked</strong> — no further submissions are accepted.</span>
+                  <span className="text-[#8bb8ff]">•</span>
+                  <span>
+                    After solving a challenge, it becomes <strong>locked</strong>.
+                  </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#4eaaff]">•</span>
-                  <span>Scoreboard ranks are determined by total points, with ties broken by the earliest correct submission timestamp.</span>
+                  <span className="text-[#8bb8ff]">•</span>
+                  <span>
+                    Ties are broken by earliest submission time.
+                  </span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
           {/* SUBMISSION RULES */}
-          <Card className="
-            border border-[#2f5aff]/30 
-            bg-[#0b1935]/70 backdrop-blur-md 
-            shadow-[0_0_20px_rgba(0,60,255,0.1)] 
-            hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] 
-            transition-all duration-500
-          ">
+          <Card
+            className="
+              border border-[#5c82ff]/35 
+              bg-[#0b1935]/85 
+              backdrop-blur-xl
+              shadow-[0_0_25px_rgba(70,110,255,0.25)]
+              hover:shadow-[0_0_35px_rgba(110,150,255,0.35)]
+              transition-all duration-500
+              rounded-xl
+            "
+          >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#4eaaff]">
+              <CardTitle className="flex items-center gap-2 text-[#8bbaff]">
                 <Flag className="h-5 w-5" />
                 Submission Rules
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 list-none text-[#d0dbff]">
+              <ul className="space-y-3 list-none text-[#d5e2ff]">
                 <li className="flex gap-3">
-                  <span className="text-[#4eaaff]">•</span>
+                  <span className="text-[#8bbaff]">•</span>
                   <span>
-                    Flags must match the format described in each challenge, typically{" "}
-                    <code className="font-mono bg-[#112249]/70 px-1 py-0.5 rounded text-[#b8d4ff]">
+                    Flags must match the exact format specified, usually{" "}
+                    <code className="font-mono bg-[#13224a]/70 px-1 py-0.5 rounded text-[#cfe0ff]">
                       scpctf{"{...}"}
                     </code>.
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#4eaaff]">•</span>
-                  <span>You can attempt unlimited submissions until correct.</span>
+                  <span className="text-[#8bbaff]">•</span>
+                  <span>You may attempt submissions until correct.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#4eaaff]">•</span>
-                  <span>Rate limiting is enforced to prevent brute-force attempts.</span>
+                  <span className="text-[#8bbaff]">•</span>
+                  <span>Rate limiting is enforced to prevent brute forcing.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#4eaaff]">•</span>
-                  <span>Do not share flags or write-ups during the active event period.</span>
+                  <span className="text-[#8bbaff]">•</span>
+                  <span>Sharing flags or hints during the event is prohibited.</span>
                 </li>
               </ul>
             </CardContent>
           </Card>
 
           {/* PROHIBITED ACTIVITIES */}
-          <Card className="
-            border border-[#3c4fff]/30 
-            bg-[#08162d]/70 backdrop-blur-md 
-            shadow-[0_0_20px_rgba(0,60,255,0.1)] 
-            hover:shadow-[0_0_25px_rgba(0,90,255,0.2)] 
-            transition-all duration-500
-          ">
+          <Card
+            className="
+              border border-[#728cff]/30 
+              bg-[#0a162d]/85 
+              backdrop-blur-xl
+              shadow-[0_0_25px_rgba(60,100,255,0.25)]
+              hover:shadow-[0_0_35px_rgba(90,130,255,0.35)]
+              transition-all duration-500
+              rounded-xl
+            "
+          >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#ff5c5c]">
+              <CardTitle className="flex items-center gap-2 text-[#ff6c6c]">
                 <Ban className="h-5 w-5" />
                 Prohibited Activities
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 list-none text-[#d0dbff]">
+              <ul className="space-y-3 list-none text-[#e7ebff]">
                 <li className="flex gap-3">
-                  <span className="text-[#ff5c5c]">✕</span>
-                  <span><strong>No attacks on the platform</strong> — only target designated challenge environments.</span>
+                  <span className="text-[#ff6c6c]">✕</span>
+                  <span>
+                    <strong>No attacking the platform</strong> — only designated challenge servers.
+                  </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#ff5c5c]">✕</span>
-                  <span><strong>No flag sharing</strong> or collaboration outside allowed rules.</span>
+                  <span className="text-[#ff6c6c]">✕</span>
+                  <span>
+                    <strong>No flag sharing</strong> or unauthorized collaboration.
+                  </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#ff5c5c]">✕</span>
-                  <span><strong>No DDoS, brute-forcing, or service abuse</strong> — violations result in immediate suspension.</span>
+                  <span className="text-[#ff6c6c]">✕</span>
+                  <span>
+                    <strong>No DDoS, brute forcing, or exploiting the scoring system.</strong>
+                  </span>
                 </li>
               </ul>
             </CardContent>
           </Card>
+
         </div>
       </main>
 
-      {/* FLAG: scpctf{Rul3s_4r3_m3ant_t0_b3_br0k3n} */}
+      {/* ANIMATIONS */}
       <style>{`
         @keyframes blink {
-          0%, 100% { opacity: 0; transform: scale(0.8); }
-          50% { opacity: 0.3; transform: scale(1.2); }
+          0%, 100% {
+            opacity: 0.1;
+            transform: scale(0.85);
+          }
+          50% {
+            opacity: 0.35;
+            transform: scale(1.1);
+          }
         }
+
         @keyframes ambient {
-          0%, 100% { opacity: 0.95; filter: brightness(0.9); }
+          0%, 100% { opacity: 0.95; filter: brightness(0.85); }
           50% { opacity: 0.85; filter: brightness(1.05); }
         }
       `}</style>
