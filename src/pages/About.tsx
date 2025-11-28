@@ -14,7 +14,6 @@ export default function About() {
   >([]);
 
   useEffect(() => {
-    // Generate calm floating fireflies
     const generated = Array.from({ length: 25 }).map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
@@ -68,7 +67,7 @@ export default function About() {
               width: "4px",
               height: "4px",
               backgroundColor: "white",
-              opacity: 0.7,
+              opacity: 0.75,
               animationDelay: `${Math.random()}s`,
             }}
           ></div>
@@ -79,9 +78,9 @@ export default function About() {
       <div className="absolute inset-0 bg-[#030b1d]/70 backdrop-blur-[3px]"></div>
 
       {/* 🌈 HOLOGRAPHIC SHIMMER LAYER */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_60%,rgba(90,150,255,0.2),transparent_70%)] animate-[softblink_5s_infinite_ease-in-out]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_60%,rgba(90,150,255,0.25),transparent_70%)] animate-[softblink_5s_infinite_ease-in-out]"></div>
 
-      {/* 🟦 GLOWING FLOATING FIREFLIES */}
+      {/* 🟦 FLOATING GLOW FIREFLIES */}
       {fireflies.map((f) => (
         <div
           key={f.id}
@@ -101,7 +100,7 @@ export default function About() {
       <Navbar />
 
       <main className="flex-1 container mx-auto px-4 py-8 relative z-10">
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto space-y-10">
 
           {/* 🎄 TITLE SECTION */}
           <div className="text-center mb-12">
@@ -111,85 +110,110 @@ export default function About() {
                 SecureContainProtect CTF
               </span>
             </h1>
-            <p className="text-lg text-[#a8bfff]/95">
-              A platform for cybersecurity enthusiasts to test and improve their hacking skills
+            <p className="text-lg text-[#a8bfff]/95 max-w-2xl mx-auto">
+              A platform for cybersecurity enthusiasts to test, learn, and enhance their hacking skills through real-world simulations.
             </p>
           </div>
 
-          {/* 🎯 OUR MISSION */}
-          <Card className="
-            border border-[#3d6cff]/30 
-            bg-[#081226]/50 backdrop-blur-2xl 
-            shadow-[0_0_35px_rgba(70,120,255,0.25)] 
-            hover:shadow-[0_0_45px_rgba(100,160,255,0.3)]
-            transition-all duration-500
-            candy-cane-stripe
-          ">
+          {/* 🎯 OUR MISSION — REWORKED FOR HIGH VISIBILITY */}
+          <Card
+            className="
+              relative
+              border border-[#6fa7ff]/60
+              bg-[#071020]/90
+              backdrop-blur-xl
+              shadow-[0_0_40px_rgba(100,150,255,0.35)]
+              hover:shadow-[0_0_55px_rgba(120,180,255,0.45)]
+              transition-all duration-500
+              candy-cane-stripe
+            "
+            style={{
+              boxShadow:
+                "inset 0 0 25px rgba(140,180,255,0.20), 0 0 50px rgba(100,150,255,0.35)",
+            }}
+          >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
-                <Target className="h-5 w-5 text-[#b0d1ff]" />
+              <CardTitle className="flex items-center gap-2 text-[#b7d4ff]">
+                <Target className="h-5 w-5 text-[#c9e1ff]" />
                 Our Mission
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 text-[#d9e3ff]/90 leading-relaxed">
+
+            <CardContent className="space-y-4 text-[#e3ecff]/95 leading-relaxed">
               <p>
-                SecureContainProtect CTF is a cybersecurity challenge
-                platform designed to provide hands-on experience with
-                real-world hacking scenarios in a safe, legal environment.
+                SecureContainProtect CTF provides a safe and legal environment to explore cybersecurity,
+                solve digital puzzles, exploit systems ethically, and learn offensive security techniques
+                through realistic simulations.
               </p>
+
               <p>
-                Whether you're a beginner or an experienced hacker,
-                SCP-CTF offers challenges in web exploitation,
-                cryptography, reverse engineering, forensics, OSINT, and more.
+                We aim to make cybersecurity education accessible, engaging, and challenging — whether you're
+                taking your first steps into ethical hacking or sharpening your professional skills.
               </p>
+
+              <p>
+                Our challenges range from beginner-friendly to expert-tier, covering categories such as:
+              </p>
+
+              <ul className="list-disc ml-6 space-y-1 text-[#d0dcff]/90">
+                <li>Web Exploitation</li>
+                <li>Cryptography</li>
+                <li>Reverse Engineering</li>
+                <li>Forensics & OSINT</li>
+                <li>Binary Exploitation</li>
+                <li>Steganography & more</li>
+              </ul>
             </CardContent>
           </Card>
 
           {/* 🚩 HOW IT WORKS */}
-          <Card className="
-            border border-[#3b6eff]/25 
-            bg-[#0a1530]/55 backdrop-blur-2xl 
-            shadow-[0_0_30px_rgba(60,100,255,0.25)] 
-            hover:shadow-[0_0_40px_rgba(90,140,255,0.3)]
-            transition-all duration-500
-          ">
+          <Card
+            className="
+              border border-[#3b6eff]/25 
+              bg-[#0a1530]/55 backdrop-blur-2xl 
+              shadow-[0_0_30px_rgba(60,100,255,0.25)] 
+              hover:shadow-[0_0_40px_rgba(90,140,255,0.3)]
+              transition-all duration-500
+            "
+          >
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#a2caff]">
                 <Flag className="h-5 w-5 text-[#b5d4ff]" />
                 How It Works
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4 text-[#d0dbff]/95">
+
+            <CardContent className="space-y-5 text-[#d0dbff]/95">
               <div className="space-y-3">
                 {[
                   {
                     step: "1",
                     title: "Create an Account",
-                    desc: "Register with your email and pick your CTF username.",
+                    desc: "Register with your email and select a unique username.",
                   },
                   {
                     step: "2",
                     title: "Verify Your Email",
-                    desc: "Verify to unlock full access to challenges.",
+                    desc: "Verify your account to unlock the full platform.",
                   },
                   {
                     step: "3",
                     title: "Solve Challenges",
-                    desc: "Find flags by analyzing files, exploiting systems, or decoding data.",
+                    desc: "Analyze, exploit, reverse-engineer, and hunt flags.",
                   },
                   {
                     step: "4",
-                    title: "Earn Points",
-                    desc: "Correct flag submission grants points and locks the challenge.",
+                    title: "Submit Flags",
+                    desc: "Earn points instantly when your submission matches the required format.",
                   },
                   {
                     step: "5",
-                    title: "Compete",
-                    desc: "Watch your rank rise on the live scoreboard.",
+                    title: "Compete Globally",
+                    desc: "Climb the scoreboard and compare your performance with others.",
                   },
                 ].map(({ step, title, desc }) => (
-                  <div key={step} className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#8abaff]/15 border border-[#a2caff]/40 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-[0_0_12px_rgba(130,180,255,0.4)]">
+                  <div key={step} className="flex gap-4">
+                    <div className="w-10 h-10 rounded-full bg-[#8abaff]/20 border border-[#a2caff]/40 flex items-center justify-center flex-shrink-0 shadow-[0_0_12px_rgba(130,180,255,0.35)]">
                       <span className="text-[#c8dcff] font-bold">{step}</span>
                     </div>
                     <div>
@@ -203,26 +227,30 @@ export default function About() {
           </Card>
 
           {/* 👥 COMMUNITY */}
-          <Card className="
-            border border-[#3c4fff]/25 
-            bg-[#08162d]/55 backdrop-blur-2xl 
-            shadow-[0_0_25px_rgba(0,60,255,0.2)] 
-            hover:shadow-[0_0_40px_rgba(80,130,255,0.3)]
-            transition-all duration-500
-          ">
+          <Card
+            className="
+              border border-[#3c4fff]/25 
+              bg-[#08162d]/55 backdrop-blur-2xl 
+              shadow-[0_0_25px_rgba(0,60,255,0.2)] 
+              hover:shadow-[0_0_40px_rgba(80,130,255,0.3)]
+              transition-all duration-500
+            "
+          >
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#8abaff]">
                 <Users className="h-5 w-5 text-[#b2d1ff]" />
                 Community & Support
               </CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-4 text-[#d9e3ff]/95 leading-relaxed">
               <p>
-                Join our cybersecurity community. Share knowledge,
-                collaborate, and learn with others.
+                Join thousands of cybersecurity learners and professionals.  
+                Collaborate, share knowledge, and grow together.
               </p>
+
               <p>
-                Need help? Contact us on:
+                Need help? Reach us on:{" "}
                 <a
                   href="https://discord.gg/g8FnU4vGJv"
                   target="_blank"
@@ -235,27 +263,31 @@ export default function About() {
             </CardContent>
           </Card>
 
-          {/* 🛡️ LEGAL */}
-          <Card className="
-            border border-[#2d4fff]/25 
-            bg-[#0b1530]/55 backdrop-blur-2xl 
-            shadow-[0_0_25px_rgba(0,60,255,0.2)] 
-            hover:shadow-[0_0_40px_rgba(0,90,255,0.3)]
-            transition-all duration-500
-          ">
+          {/* 🛡️ LEGAL & ETHICS */}
+          <Card
+            className="
+              border border-[#2d4fff]/25 
+              bg-[#0b1530]/55 backdrop-blur-2xl 
+              shadow-[0_0_25px_rgba(0,60,255,0.2)] 
+              hover:shadow-[0_0_40px_rgba(0,90,255,0.3)]
+              transition-all duration-500
+            "
+          >
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
                 <Shield className="h-5 w-5 text-[#b5d4ff]" />
                 Legal & Ethics
               </CardTitle>
             </CardHeader>
+
             <CardContent className="space-y-4 text-[#d0dbff]/95 leading-relaxed">
               <p>
-                All challenges are intended for legal, ethical cybersecurity learning.
-                Misuse of these skills outside controlled environments is strictly prohibited.
+                All challenges are simulated and designed for ethical training only.  
+                Unauthorized access to real systems is illegal.
               </p>
               <p className="text-sm text-[#a8bfff]/85">
-                By using this platform, you agree to abide by all laws and guidelines.
+                By participating, you agree to follow cybersecurity laws, responsible disclosure principles,  
+                and act ethically at all times.
               </p>
             </CardContent>
           </Card>
@@ -265,8 +297,8 @@ export default function About() {
       {/* 🔧 LOCAL ANIMATIONS */}
       <style>{`
         @keyframes softblink {
-          0%, 100% { opacity: 0.4; filter: brightness(0.9); }
-          50% { opacity: 0.9; filter: brightness(1.15); }
+          0%, 100% { opacity: 0.45; filter: brightness(0.9); }
+          50% { opacity: 0.9; filter: brightness(1.18); }
         }
 
         @keyframes float {
@@ -280,3 +312,4 @@ export default function About() {
     </div>
   );
 }
+
