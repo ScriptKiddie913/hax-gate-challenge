@@ -34,21 +34,29 @@ export default function Rules() {
     <div
       className="
         min-h-screen flex flex-col relative overflow-hidden 
-        bg-[#02040a] festive-glow
+        text-[#d8e4ff]
+        festive-glow
       "
+      style={{
+        backgroundImage: "url('/images/r.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
+      }}
     >
 
-      {/* ❄ GLOBAL SNOWFALL */}
+      {/* ❄️ GLOBAL SNOWFALL — Match About Page */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none snowfall">
-        {Array.from({ length: 60 }).map((_, i) => (
+        {Array.from({ length: 50 }).map((_, i) => (
           <div
             key={`snow-${i}`}
             className="snowflake"
             style={{
               left: `${Math.random() * 100}%`,
-              animationDuration: `${6 + Math.random() * 4}s`,
+              animationDuration: `${6 + Math.random() * 5}s`,
               animationDelay: `${Math.random() * 4}s`,
-              fontSize: `${0.4 + Math.random() * 1.2}rem`,
+              fontSize: `${0.4 + Math.random() * 1.1}rem`,
             }}
           >
             ❄
@@ -56,29 +64,29 @@ export default function Rules() {
         ))}
       </div>
 
-      {/* ✨ TWINKLE PARTICLES */}
+      {/* ✨ TWINKLING CHRISTMAS LIGHT PARTICLES */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 35 }).map((_, i) => (
+        {Array.from({ length: 30 }).map((_, i) => (
           <div
-            key={`tw-${i}`}
-            className="absolute rounded-full christmas-lights"
+            key={`twinkle-${i}`}
+            className="christmas-lights absolute rounded-full"
             style={{
               top: `${Math.random() * 100}%`,
               left: `${Math.random() * 100}%`,
-              width: "5px",
-              height: "5px",
-              backgroundColor: ["#ffffff", "#a8c8ff", "#d0e6ff"][Math.floor(Math.random() * 3)],
-              opacity: 0.75,
+              width: "4px",
+              height: "4px",
+              backgroundColor: "white",
+              opacity: 0.7,
               animationDelay: `${Math.random()}s`,
             }}
           ></div>
         ))}
       </div>
 
-      {/* DARK BLUE HOLIDAY OVERLAY */}
-      <div className="absolute inset-0 bg-[#010b1a]/80 backdrop-blur-[3px] animate-[ambient_6s_infinite]"></div>
+      {/* 🔵 DARKENING BLUE OVERLAY — DO NOT REMOVE */}
+      <div className="absolute inset-0 bg-[#010b1a]/80 backdrop-blur-md animate-[ambient_6s_infinite]"></div>
 
-      {/* GLOWING BLUR BLOBS */}
+      {/* 🌈 HOLOGRAPHIC BLUR BLOBS */}
       {blobs.map((blob) => (
         <div
           key={blob.id}
@@ -95,43 +103,42 @@ export default function Rules() {
 
       <Navbar />
 
-      {/* MAIN CONTENT */}
       <main className="flex-1 container mx-auto px-4 py-12 relative z-10">
-        <div className="max-w-4xl mx-auto space-y-10 text-[#d5e1ff]">
+        <div className="max-w-4xl mx-auto space-y-10 text-[#d9e6ff]">
 
-          {/* HEADER */}
+          {/* TITLE */}
           <div className="text-center mb-12 animate-fade-in">
-            <h1 className="text-5xl font-extrabold mb-4 text-[#b7d4ff] drop-shadow-[0_0_15px_#3a7bff] tracking-wide">
-              Rules & Guidelines
+            <h1 className="text-5xl font-extrabold mb-4 drop-shadow-[0_0_15px_rgba(90,150,255,0.6)]">
+              <span className="text-[#bcd9ff] drop-shadow-[0_0_12px_#6aa7ff]">
+                Rules & Guidelines
+              </span>
             </h1>
-            <p className="text-lg text-[#c5d3ff]/90 font-light">
-              Please read these carefully to ensure fair play and a great event for everyone.
+            <p className="text-lg text-[#b4c8ff]/95">
+              Please read carefully to ensure a fair and enjoyable experience for all participants.
             </p>
           </div>
 
           {/* IMPORTANT NOTICE */}
           <Card
             className="
-              border border-[#6ea0ff]/40 
-              bg-[#0a1327]/85 
+              border border-[#4d7cff]/40 
+              bg-[#071327]/85 
               backdrop-blur-xl
-              shadow-[0_0_35px_rgba(100,150,255,0.35)]
-              hover:shadow-[0_0_45px_rgba(150,200,255,0.45)]
+              shadow-[0_0_35px_rgba(70,120,255,0.35)]
+              hover:shadow-[0_0_45px_rgba(120,160,255,0.45)]
               transition-all duration-500
-              rounded-xl
             "
           >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#9ec7ff]">
+              <CardTitle className="flex items-center gap-2 text-[#82baff]">
                 <AlertCircle className="h-5 w-5" />
                 Important Notice
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-[#e3ebff] leading-relaxed">
-                All participants must follow these rules. Violations may result in disqualification or
-                permanent suspension. If you notice suspicious activity,
-                notify moderators or event administrators immediately.
+              <p className="leading-relaxed text-[#dce6ff]/95">
+                All participants must follow these rules. Any form of rule violation may result in suspension,
+                disqualification, or permanent bans depending on severity.
               </p>
             </CardContent>
           </Card>
@@ -139,46 +146,37 @@ export default function Rules() {
           {/* SCORING RULES */}
           <Card
             className="
-              border border-[#608cff]/35 
-              bg-[#0a1530]/85 
+              border border-[#3d6cff]/30 
+              bg-[#08142e]/85 
               backdrop-blur-xl
-              shadow-[0_0_28px_rgba(80,130,255,0.25)]
-              hover:shadow-[0_0_38px_rgba(120,160,255,0.35)]
+              shadow-[0_0_30px_rgba(0,60,255,0.25)] 
+              hover:shadow-[0_0_40px_rgba(0,90,255,0.4)]
               transition-all duration-500
-              rounded-xl
             "
           >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#90b8ff]">
+              <CardTitle className="flex items-center gap-2 text-[#82b7ff]">
                 <Trophy className="h-5 w-5" />
                 Scoring Rules
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 list-none text-[#d8e4ff]">
+              <ul className="space-y-3 text-[#d8e4ff] leading-relaxed">
                 <li className="flex gap-3">
-                  <span className="text-[#8bb8ff]">•</span>
-                  <span>
-                    Each challenge has a score based on difficulty.
-                  </span>
+                  <span className="text-[#6fbaff]">•</span>
+                  <span>Each challenge gives points based on difficulty.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#8bb8ff]">•</span>
-                  <span>
-                    Only the <strong>first correct submission</strong> gives points.
-                  </span>
+                  <span className="text-[#6fbaff]">•</span>
+                  <span>First correct submission locks the challenge for you.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#8bb8ff]">•</span>
-                  <span>
-                    After solving a challenge, it becomes <strong>locked</strong>.
-                  </span>
+                  <span className="text-[#6fbaff]">•</span>
+                  <span>Scoreboard positions are based on total points.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#8bb8ff]">•</span>
-                  <span>
-                    Ties are broken by earliest submission time.
-                  </span>
+                  <span className="text-[#6fbaff]">•</span>
+                  <span>Early submissions win tie-breakers.</span>
                 </li>
               </ul>
             </CardContent>
@@ -187,43 +185,42 @@ export default function Rules() {
           {/* SUBMISSION RULES */}
           <Card
             className="
-              border border-[#5c82ff]/35 
-              bg-[#0b1935]/85 
+              border border-[#3b6eff]/30 
+              bg-[#0b1937]/85 
               backdrop-blur-xl
-              shadow-[0_0_25px_rgba(70,110,255,0.25)]
-              hover:shadow-[0_0_35px_rgba(110,150,255,0.35)]
+              shadow-[0_0_25px_rgba(0,60,255,0.25)] 
+              hover:shadow-[0_0_35px_rgba(0,90,255,0.35)]
               transition-all duration-500
-              rounded-xl
             "
           >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#8bbaff]">
+              <CardTitle className="flex items-center gap-2 text-[#94c2ff]">
                 <Flag className="h-5 w-5" />
                 Submission Rules
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 list-none text-[#d5e2ff]">
+              <ul className="space-y-3 text-[#d7e4ff] leading-relaxed">
                 <li className="flex gap-3">
-                  <span className="text-[#8bbaff]">•</span>
+                  <span className="text-[#6fbaff]">•</span>
                   <span>
-                    Flags must match the exact format specified, usually{" "}
-                    <code className="font-mono bg-[#13224a]/70 px-1 py-0.5 rounded text-[#cfe0ff]">
+                    Flags must match the exact expected format, usually{" "}
+                    <code className="font-mono bg-[#112249]/70 px-1 py-0.5 rounded text-[#cfe0ff]">
                       scpctf{"{...}"}
                     </code>.
                   </span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#8bbaff]">•</span>
-                  <span>You may attempt submissions until correct.</span>
+                  <span className="text-[#6fbaff]">•</span>
+                  <span>Unlimited attempts allowed until correct.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#8bbaff]">•</span>
-                  <span>Rate limiting is enforced to prevent brute forcing.</span>
+                  <span className="text-[#6fbaff]">•</span>
+                  <span>Rate-limits apply to prevent brute forcing.</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#8bbaff]">•</span>
-                  <span>Sharing flags or hints during the event is prohibited.</span>
+                  <span className="text-[#6fbaff]">•</span>
+                  <span>Do not share flags or solutions publicly.</span>
                 </li>
               </ul>
             </CardContent>
@@ -232,40 +229,33 @@ export default function Rules() {
           {/* PROHIBITED ACTIVITIES */}
           <Card
             className="
-              border border-[#728cff]/30 
-              bg-[#0a162d]/85 
+              border border-[#4a5cff]/30 
+              bg-[#08162e]/85 
               backdrop-blur-xl
-              shadow-[0_0_25px_rgba(60,100,255,0.25)]
-              hover:shadow-[0_0_35px_rgba(90,130,255,0.35)]
+              shadow-[0_0_25px_rgba(0,60,255,0.2)] 
+              hover:shadow-[0_0_35px_rgba(0,90,255,0.35)]
               transition-all duration-500
-              rounded-xl
             "
           >
             <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#ff6c6c]">
+              <CardTitle className="flex items-center gap-2 text-[#ff7a7a]">
                 <Ban className="h-5 w-5" />
                 Prohibited Activities
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="space-y-3 list-none text-[#e7ebff]">
+              <ul className="space-y-3 text-[#e3eaff] leading-relaxed">
                 <li className="flex gap-3">
-                  <span className="text-[#ff6c6c]">✕</span>
-                  <span>
-                    <strong>No attacking the platform</strong> — only designated challenge servers.
-                  </span>
+                  <span className="text-[#ff7a7a]">✕</span>
+                  <span><strong>No attacking the platform infrastructure.</strong></span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#ff6c6c]">✕</span>
-                  <span>
-                    <strong>No flag sharing</strong> or unauthorized collaboration.
-                  </span>
+                  <span className="text-[#ff7a7a]">✕</span>
+                  <span><strong>No sharing of flags or challenge answers.</strong></span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="text-[#ff6c6c]">✕</span>
-                  <span>
-                    <strong>No DDoS, brute forcing, or exploiting the scoring system.</strong>
-                  </span>
+                  <span className="text-[#ff7a7a]">✕</span>
+                  <span><strong>No DDoS, brute-force, or automated exploitation.</strong></span>
                 </li>
               </ul>
             </CardContent>
@@ -274,21 +264,14 @@ export default function Rules() {
         </div>
       </main>
 
-      {/* ANIMATIONS */}
+      {/* LOCAL ANIMATIONS */}
       <style>{`
         @keyframes blink {
-          0%, 100% {
-            opacity: 0.1;
-            transform: scale(0.85);
-          }
-          50% {
-            opacity: 0.35;
-            transform: scale(1.1);
-          }
+          0%, 100% { opacity: 0; transform: scale(0.8); }
+          50% { opacity: 0.3; transform: scale(1.2); }
         }
-
         @keyframes ambient {
-          0%, 100% { opacity: 0.95; filter: brightness(0.85); }
+          0%, 100% { opacity: 0.95; filter: brightness(0.9); }
           50% { opacity: 0.85; filter: brightness(1.05); }
         }
       `}</style>
