@@ -13,6 +13,10 @@ export default function About() {
     { id: number; top: string; left: string; delay: string; size: string }[]
   >([]);
 
+  const [snowflakes, setSnowflakes] = useState<
+    { id: number; left: string; delay: string; size: string; duration: string }[]
+  >([]);
+
   useEffect(() => {
     // Generate more visible calm fireflies
     const generated = Array.from({ length: 25 }).map((_, i) => ({
@@ -23,6 +27,16 @@ export default function About() {
       size: `${3 + Math.random() * 4}px`,
     }));
     setFireflies(generated);
+
+    // Generate snowfall flakes
+    const snowGen = Array.from({ length: 45 }).map((_, i) => ({
+      id: i,
+      left: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 8}s`,
+      size: `${8 + Math.random() * 10}px`,
+      duration: `${6 + Math.random() * 6}s`,
+    }));
+    setSnowflakes(snowGen);
   }, []);
 
   return (
@@ -40,10 +54,38 @@ export default function About() {
       {/* Deepened blue ambient overlay */}
       <div className="absolute inset-0 bg-[#030b1d]/70 backdrop-blur-[3px]"></div>
 
-      {/* Pulsing holographic gradient shimmer */}
+      {/* SCP holographic gradient shimmer */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_60%,rgba(90,150,255,0.2),transparent_70%)] animate-[softblink_5s_infinite_ease-in-out]"></div>
 
-      {/* Glowing floating fireflies */}
+      {/* Christmas soft golden glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(255,230,150,0.22),transparent_70%)] pointer-events-none"></div>
+
+      {/* Christmas falling snowflakes */}
+      {snowflakes.map((s) => (
+        <div
+          key={s.id}
+          className="snowflake absolute text-white opacity-90 pointer-events-none select-none"
+          style={{
+            left: s.left,
+            fontSize: s.size,
+            animation: `snowfall ${s.duration} linear infinite`,
+            animationDelay: s.delay,
+            textShadow: "0 0 8px rgba(255,255,255,0.8)",
+          }}
+        >
+          ❄
+        </div>
+      ))}
+
+      {/* Christmas hanging ornaments */}
+      <div className="absolute top-0 left-0 w-full flex justify-center gap-6 pointer-events-none z-20 mt-4">
+        <div className="text-[#ffdf7f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,200,120,0.6)]">🔔</div>
+        <div className="text-[#ff9f9f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,150,150,0.6)]">🎄</div>
+        <div className="text-[#a0d8ff] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(150,200,255,0.6)]">⭐</div>
+        <div className="text-[#ffd27f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,225,150,0.6)]">🔔</div>
+      </div>
+
+      {/* Floating fireflies */}
       {fireflies.map((f) => (
         <div
           key={f.id}
@@ -213,6 +255,16 @@ export default function About() {
           50% { transform: translateY(-8px) translateX(-4px) scale(0.95); opacity: 0.5; }
           75% { transform: translateY(8px) translateX(5px) scale(1.05); opacity: 0.8; }
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.6; }
+        }
+
+        @keyframes snowfall {
+          0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+          100% { transform: translateY(110vh) rotate(360deg); opacity: 0.4; }
+        }
+
+        @keyframes ornament-rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
         }
       `}</style>
     </div>
