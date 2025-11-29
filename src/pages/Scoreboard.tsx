@@ -30,6 +30,22 @@ export default function Scoreboard() {
     { id: number; top: string; left: string; delay: string; size: string }[]
   >([]);
 
+  // Santa sleigh state (randomized speed/time each cycle)
+  const [sleighDuration, setSleighDuration] = useState<number>(() => {
+    // random between 18s and 46s initially (randomized speed sometimes fast sometimes slow)
+    return Math.floor(Math.random() * (46 - 18 + 1)) + 18;
+  });
+  const [sleighDelay, setSleighDelay] = useState<number>(() => {
+    return Math.floor(Math.random() * 10); // initial random delay
+  });
+  const [sleighTopOffset, setSleighTopOffset] = useState<number>(() => {
+    // random vertical position between 6% and 28% of viewport height to make it feel distant
+    return Math.floor(Math.random() * (28 - 6 + 1)) + 6;
+  });
+  const [sleighDirection, setSleighDirection] = useState<"ltr" | "rtl">(() => {
+    return Math.random() > 0.5 ? "ltr" : "rtl";
+  });
+
   const CHART_COLORS = [
     '#fbbf24', // gold/yellow
     '#a855f7', // purple
@@ -45,7 +61,7 @@ export default function Scoreboard() {
     checkCtfStatus();
     loadScoreboard();
     loadScoreProgression();
-    
+
     // Generate fireflies
     const generated = Array.from({ length: 30 }).map((_, i) => ({
       id: i,
@@ -55,7 +71,7 @@ export default function Scoreboard() {
       size: `${3 + Math.random() * 4}px`,
     }));
     setFireflies(generated);
-    
+
     // Set up real-time subscription for live scoreboard updates
     const channel = supabase
       .channel('scoreboard-changes')
@@ -73,9 +89,30 @@ export default function Scoreboard() {
       )
       .subscribe();
 
+    // Set up randomized sleigh cycle refresher: after each duration + random pause, change duration/delay/position/direction
+    let sleighTimeout: NodeJS.Timeout;
+    const scheduleNextSleigh = () => {
+      const nextDuration = Math.floor(Math.random() * (46 - 18 + 1)) + 18; // 18-46s
+      const nextDelay = Math.floor(Math.random() * 10); // 0-9s
+      const nextTop = Math.floor(Math.random() * (28 - 6 + 1)) + 6; // 6-28%
+      const nextDir = Math.random() > 0.5 ? "ltr" : "rtl";
+      // schedule update slightly before current animation ends to create variation
+      sleighTimeout = setTimeout(() => {
+        setSleighDuration(nextDuration);
+        setSleighDelay(nextDelay);
+        setSleighTopOffset(nextTop);
+        setSleighDirection(nextDir as "ltr" | "rtl");
+        // schedule again for the next cycle using the new duration + small pause
+        scheduleNextSleigh();
+      }, (sleighDuration + Math.floor(Math.random() * 8)) * 1000);
+    };
+    scheduleNextSleigh();
+
     return () => {
       supabase.removeChannel(channel);
+      if (sleighTimeout) clearTimeout(sleighTimeout);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkCtfStatus = async () => {
@@ -243,6 +280,67 @@ export default function Scoreboard() {
 
       {/* Pulsing gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(90,150,255,0.15),transparent_70%)] animate-[pulse_8s_infinite_ease-in-out]"></div>
+
+      {/* Crystal Snowfall: mixed large + small crystals (shimmering icy flakes) */}
+      <div aria-hidden className="absolute inset-0 pointer-events-none z-40">
+        <div className="crystal-layer large"></div>
+        <div className="crystal-layer medium"></div>
+        <div className="crystal-layer small"></div>
+        <div className="crystal-layer sparkle"></div>
+      </div>
+
+      {/* Santa sleigh (small, randomized speed, shimmering trail) */}
+      <div
+        aria-hidden
+        className={`santa-container ${sleighDirection === "rtl" ? "rtl" : "ltr"}`}
+        style={{
+          top: `${sleighTopOffset}vh`,
+          animationDuration: `${sleighDuration}s`,
+          animationDelay: `${sleighDelay}s`,
+        }}
+      >
+        <div className="santa-sleigh" style={{ width: 180 }}>
+          {/* Shimmering trail behind sleigh */}
+          <div className="sleigh-trail" />
+          {/* Santa + reindeer SVG simplified silhouette (kept small) */}
+          <svg
+            viewBox="0 0 640 256"
+            xmlns="http://www.w3.org/2000/svg"
+            className="santa-svg"
+            aria-hidden
+            width="180"
+            height="72"
+          >
+            {/* A stylized small sleigh + reindeer group — silhouette with some detail for trail glow */}
+            <g fill="none" stroke="none">
+              {/* Reindeer silhouettes */}
+              <g transform="translate(0,0)" fill="#f8f2e8" opacity="0.95">
+                <path d="M72 28c-2 0-4 3-4 6 0 4 2 7 4 7 3 0 5-3 5-7 0-3-2-6-5-6z" />
+                <path d="M90 20c-6 0-12 6-12 12v8c0 8 8 14 16 14 9 0 16-6 16-14v-8c0-6-6-12-12-12h-8z" />
+                {/* tiny legs/antlers simplified */}
+                <path d="M96 18c4-2 10-6 14-6 2 0 4 2 4 4 0 4-6 8-10 10-6 2-20 6-20 6" opacity="0.9" />
+              </g>
+
+              {/* Sleigh */}
+              <g transform="translate(180,36) scale(0.9)" fill="#ff6b6b">
+                <rect x="0" y="0" rx="10" ry="10" width="120" height="28" />
+                <path d="M0 24 q18 12 40 12 h32 q20 0 40 -12 v-4 h-112 z" fill="#9f2b2b" opacity="0.9"/>
+              </g>
+
+              {/* Santa hat/figure */}
+              <g transform="translate(150,10) scale(0.45)" fill="#fff">
+                <circle cx="36" cy="36" r="20" fill="#fff" />
+                <path d="M12 12 q36 -18 60 0 q-8 2 -24 2 q-24 0 -36 -2 z" fill="#e53e3e" />
+              </g>
+
+              {/* subtle highlights */}
+              <g transform="translate(0,0)" opacity="0.35" fill="#ffffff">
+                <ellipse cx="320" cy="40" rx="150" ry="12" />
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
 
       {/* Fireflies */}
       {fireflies.map((f) => (
@@ -480,7 +578,7 @@ export default function Scoreboard() {
         )}
       </main>
 
-      {/* Animations */}
+      {/* Animations and Crystal + Santa styles */}
       <style>{`
         @keyframes float {
           0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
@@ -488,6 +586,205 @@ export default function Scoreboard() {
           50% { transform: translateY(-8px) translateX(-4px) scale(0.95); opacity: 0.4; }
           75% { transform: translateY(8px) translateX(5px) scale(1.05); opacity: 0.8; }
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
+        }
+
+        /* ===== Crystal snowfall layers ===== */
+        .crystal-layer {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+
+        /* large crystal shards — foreground with shimmer */
+        .crystal-layer.large {
+          background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.96) 1.6px, rgba(255,255,255,0) 1.6px);
+          background-size: 22px 22px;
+          opacity: 0.14;
+          filter: blur(0.5px) saturate(1.15);
+          animation: crystal-large 36s linear infinite;
+          mix-blend-mode: screen;
+        }
+
+        /* medium crystals */
+        .crystal-layer.medium {
+          background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.92) 1.2px, rgba(255,255,255,0) 1.2px);
+          background-size: 14px 14px;
+          opacity: 0.10;
+          animation: crystal-medium 46s linear infinite;
+          filter: blur(0.35px) saturate(1.05);
+          mix-blend-mode: screen;
+        }
+
+        /* small glitter crystals forming delicate snow */
+        .crystal-layer.small {
+          background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.86) 0.9px, rgba(255,255,255,0) 0.9px);
+          background-size: 8px 8px;
+          opacity: 0.06;
+          animation: crystal-small 28s linear infinite;
+          filter: blur(0.15px);
+          mix-blend-mode: screen;
+        }
+
+        /* sparkles layer (tiny shimmering crystals with twinkle) */
+        .crystal-layer.sparkle {
+          background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,1) 0.6px, rgba(255,255,255,0) 0.6px);
+          background-size: 4px 4px;
+          opacity: 0.045;
+          animation: crystal-sparkle 12s linear infinite;
+          filter: drop-shadow(0 0 6px rgba(180,220,255,0.12));
+          mix-blend-mode: screen;
+        }
+
+        @keyframes crystal-large {
+          0% { background-position: 0 -10vh; transform: translateY(-5%) translateX(0); }
+          25% { transform: translateY(20%) translateX(28px); }
+          50% { background-position: 400px 50vh; transform: translateY(55%) translateX(-38px); }
+          75% { transform: translateY(80%) translateX(22px); }
+          100% { background-position: 800px 140vh; transform: translateY(140%) translateX(0); }
+        }
+        @keyframes crystal-medium {
+          0% { background-position: 0 -8vh; transform: translateY(-3%) translateX(0); }
+          50% { transform: translateY(70%) translateX(50px); }
+          100% { background-position: 900px 120vh; transform: translateY(140%) translateX(-20px); }
+        }
+        @keyframes crystal-small {
+          0% { background-position: 0 0; transform: translateY(-2%) translateX(0); }
+          100% { background-position: 1200px 160vh; transform: translateY(160%) translateX(-40px); }
+        }
+        @keyframes crystal-sparkle {
+          0% { opacity: 0.02; transform: translateY(0) scale(0.9) }
+          20% { opacity: 0.16; transform: translateY(20%) scale(1.05) }
+          40% { opacity: 0.04; transform: translateY(40%) scale(0.95) }
+          60% { opacity: 0.18; transform: translateY(60%) scale(1.1) }
+          80% { opacity: 0.03; transform: translateY(80%) scale(0.9) }
+          100% { opacity: 0.06; transform: translateY(120%) scale(1) }
+        }
+
+        /* ===== Santa sleigh animation ===== */
+        .santa-container {
+          position: absolute;
+          left: -220px;
+          z-index: 48;
+          pointer-events: none;
+          will-change: transform;
+          transform: translate3d(0, 0, 0);
+        }
+
+        /* When rtl, start on right and move left */
+        .santa-container.rtl {
+          left: auto;
+          right: -220px;
+        }
+
+        /* slide left-to-right */
+        .santa-container.ltr {
+          animation-name: sleigh-fly-ltr;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          animation-fill-mode: forwards;
+        }
+
+        /* slide right-to-left */
+        .santa-container.rtl {
+          animation-name: sleigh-fly-rtl;
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          animation-fill-mode: forwards;
+        }
+
+        /* Using CSS variables from inline style for duration/delay */
+        .santa-container.ltr,
+        .santa-container.rtl {
+          animation-duration: var(--dummy, 30s);
+          animation-delay: var(--dummy-delay, 0s);
+        }
+
+        /* Define the keyframes but actual duration is set inline via style attribute on container */
+        @keyframes sleigh-fly-ltr {
+          0% { transform: translateX(-8vw) translateY(0) rotate(0deg); opacity: 0; }
+          5% { opacity: 1; }
+          50% { transform: translateX(110vw) translateY(6vh) rotate(0.5deg); opacity: 1; }
+          95% { opacity: 1; }
+          100% { transform: translateX(125vw) translateY(12vh) rotate(1deg); opacity: 0; }
+        }
+        @keyframes sleigh-fly-rtl {
+          0% { transform: translateX(8vw) translateY(0) rotate(0deg); opacity: 0; }
+          5% { opacity: 1; }
+          50% { transform: translateX(-110vw) translateY(6vh) rotate(-0.5deg); opacity: 1; }
+          95% { opacity: 1; }
+          100% { transform: translateX(-125vw) translateY(12vh) rotate(-1deg); opacity: 0; }
+        }
+
+        /* Sleigh visual styles */
+        .santa-sleigh {
+          position: relative;
+          display: inline-block;
+          transform-origin: center center;
+          filter: drop-shadow(0 6px 10px rgba(0,0,0,0.45));
+        }
+        .santa-svg {
+          display: block;
+          transform-origin: center center;
+        }
+
+        /* Trail */
+        .sleigh-trail {
+          position: absolute;
+          left: -40px;
+          top: 18px;
+          width: 260px;
+          height: 24px;
+          border-radius: 999px;
+          background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(160,220,255,0.06), rgba(255,255,255,0.08));
+          filter: blur(6px) saturate(1.2);
+          opacity: 0.85;
+          transform-origin: left center;
+          pointer-events: none;
+          mix-blend-mode: screen;
+          /* animated shimmer along trail */
+          background-size: 200% 100%;
+          animation: trail-shimmer 3.6s linear infinite;
+        }
+        @keyframes trail-shimmer {
+          0% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
+          50% { background-position: 100% 50%; opacity: 1; transform: scaleX(1.05) translateY(-3px) }
+          100% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
+        }
+
+        /* make trail more magical by adding small sparkles via pseudo-elements */
+        .sleigh-trail::before,
+        .sleigh-trail::after {
+          content: '';
+          position: absolute;
+          right: 8px;
+          top: -6px;
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          background: radial-gradient(circle at 30% 30%, rgba(255,255,255,1), rgba(255,255,255,0.1));
+          filter: blur(2px);
+          opacity: 0.9;
+          transform: translateX(0) translateY(0);
+        }
+        .sleigh-trail::after {
+          right: 60px;
+          top: 2px;
+          width: 10px;
+          height: 10px;
+          opacity: 0.7;
+        }
+
+        /* responsive tweak so small sleigh doesn't obstruct content on tiny screens */
+        @media (max-width: 640px) {
+          .santa-sleigh { width: 120px !important; }
+          .sleigh-trail { display: none; }
+        }
+
+        /* ===== accessibility: reduce motion support ===== */
+        @media (prefers-reduced-motion: reduce) {
+          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, .crystal-layer.sparkle {
+            animation: none !important;
+          }
         }
       `}</style>
     </div>
