@@ -23,6 +23,10 @@ import scpCreature from "@/assets/scp-creature.png";
  * - Original logic (fireflies, timestamps, images, buttons) preserved exactly
  *
  * Full file, no shortening, no removal, no "buff".
+ *
+ * User request changes:
+ * - Removed the REQUEST CLEARANCE button entirely (no authentication logic present)
+ * - Snowfall made heavier, slower, and with larger flakes (full-page Christmas snowfall)
  */
 
 const Index = () => {
@@ -30,9 +34,6 @@ const Index = () => {
   const [fireflies, setFireflies] = useState<
     { id: number; top: string; left: string; delay: string; size: string }[]
   >([]);
-
-  // NEW: LOGIN STATUS CHECK (ONLY CHANGE)
-  const isLoggedIn = !!localStorage.getItem("sb-access-token");
 
   // small state for decorative bell hint (not user-affecting)
   const [showBellHint, setShowBellHint] = useState(true);
@@ -60,11 +61,13 @@ const Index = () => {
           Layered decorative elements (Snow + Stars + Lights + Trees + Ornaments + Bells)
           =================================================================== */}
 
-      {/* Multi-layer Snowfall canvases (CSS-driven) */}
+      {/* Full-page Christmas Snowfall — heavier, slower, larger flakes */}
       <div aria-hidden className="absolute inset-0 pointer-events-none z-40">
-        <div className="snow-layer small"></div>
-        <div className="snow-layer medium"></div>
+        {/* We use multiple overlapping layers with varied sizes and densities to create a rich snowfall */}
+        <div className="snow-layer xlarge"></div>
         <div className="snow-layer large"></div>
+        <div className="snow-layer medium"></div>
+        <div className="snow-layer small"></div>
       </div>
 
       {/* Subtle star field (neon frost) */}
@@ -83,18 +86,14 @@ const Index = () => {
         ))}
       </div>
 
-      {/* String lights across top */}
+      {/* String lights across top (soft mix of warm & cool bulbs) */}
       <div aria-hidden className="absolute top-4 left-0 right-0 flex justify-center z-50 pointer-events-none">
         <div className="w-[92%] max-w-[1200px] flex items-center justify-between px-6">
           {Array.from({ length: 24 }).map((_, i) => (
             <div
               key={`light-${i}`}
               className={`w-2 h-2 rounded-full shadow-[0_0_8px_currentColor] animate-light-flicker ${
-                i % 3 === 0
-                  ? "bg-[#ffb86b]"
-                  : i % 3 === 1
-                  ? "bg-[#8be58b]"
-                  : "bg-[#9fd8ff]"
+                i % 3 === 0 ? "bg-[#ffb86b]" : i % 3 === 1 ? "bg-[#8be58b]" : "bg-[#9fd8ff]"
               }`}
               style={{ opacity: 0.95 }}
             />
@@ -102,7 +101,7 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Distant tree silhouettes */}
+      {/* Distant tree silhouettes along bottom edges (left + right) */}
       <div aria-hidden className="absolute bottom-0 left-0 right-0 z-20 pointer-events-none">
         <div className="container mx-auto px-4 relative">
           <div className="absolute -bottom-8 left-4 w-40 h-40 tree-silhouette transform -scale-x-100" />
@@ -111,7 +110,7 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Hanging ornaments */}
+      {/* Hanging ornaments (decorative) */}
       <div aria-hidden className="absolute top-[90px] left-6 z-45 pointer-events-none">
         <div className="flex flex-col gap-6">
           <div className="ornament ornament-red"></div>
@@ -125,7 +124,7 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Decorative bell */}
+      {/* Decorative bell with subtle hint (disappears after 12s) */}
       {showBellHint && (
         <div aria-hidden className="absolute top-24 right-6 z-50 pointer-events-none">
           <div className="bell-wrapper animate-bell-sway">
@@ -136,24 +135,17 @@ const Index = () => {
                   <stop offset="1" stopColor="#ff9a2e" />
                 </linearGradient>
               </defs>
-              <path
-                d="M12 2c1.657 0 3 1.571 3 3.5V8c0 1.657 1 3 1 3h-8c0 0 1-1.343 1-3V5.5C9 3.571 10.343 2 12 2z"
-                fill="url(#bellGrad)"
-              />
-              <path
-                d="M7 14h10l-1 3H8l-1-3z"
-                fill="#2b2b2b"
-                opacity="0.14"
-              />
+              <path d="M12 2c1.657 0 3 1.571 3 3.5V8c0 1.657 1 3 1 3h-8c0 0 1-1.343 1-3V5.5C9 3.571 10.343 2 12 2z" fill="url(#bellGrad)" />
+              <path d="M7 14h10l-1 3H8l-1-3z" fill="#2b2b2b" opacity="0.14" />
             </svg>
-            <div className="bell-hint text-xs text-[#ffd27a] font-mono mt-1 text-right opacity-90">
-              System Chime
-            </div>
+            <div className="bell-hint text-xs text-[#ffd27a] font-mono mt-1 text-right opacity-90">System Chime</div>
           </div>
         </div>
       )}
 
-      {/* Original fireflies */}
+      {/* ===================================================================
+          Original fireflies (kept intact)
+          =================================================================== */}
       {fireflies.map((f) => (
         <div
           key={f.id}
@@ -163,24 +155,29 @@ const Index = () => {
             left: f.left,
             width: f.size,
             height: f.size,
-            boxShadow:
-              "0 0 15px rgba(160,200,255,0.7), 0 0 25px rgba(120,160,255,0.5)",
+            boxShadow: "0 0 15px rgba(160,200,255,0.7), 0 0 25px rgba(120,160,255,0.5)",
             animationDelay: f.delay,
           }}
         />
       ))}
 
-      {/* Navbar */}
+      {/* ===================================================================
+          Navbar (imported) - remains as component
+          =================================================================== */}
       <div className="relative z-50">
         <Navbar />
       </div>
 
-      {/* Main content */}
+      {/* ===================================================================
+          Main content area (hero, features, security notice) — original layout preserved
+          =================================================================== */}
       <main className="flex-1 relative z-10">
+        {/* subtle gradient overlay for contrast */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#040915]/50 via-[#050b18]/40 to-[#08132c]/70 z-0 pointer-events-none"></div>
 
-        {/* Hero */}
+        {/* Hero Section */}
         <section className="py-16 px-4 relative overflow-hidden">
+          {/* Facility background image preserved */}
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70 animate-fade-in-slow"
             style={{
@@ -189,22 +186,24 @@ const Index = () => {
             }}
           />
 
+          {/* Frost + warm top overlay for combined themes */}
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#04122b]/60 to-[#071326]/80 pointer-events-none backdrop-blur-[2px]"></div>
 
+          {/* warm-gold shimmer ribbon near header */}
           <div className="absolute left-6 right-6 top-12 pointer-events-none z-20">
-            <div
-              className="gold-shimmer h-1 rounded-full opacity-30"
-              style={{ maxWidth: 900, margin: "0 auto" }}
-            />
+            <div className="gold-shimmer h-1 rounded-full opacity-30" style={{ maxWidth: 900, margin: "0 auto" }} />
           </div>
 
           <div className="container mx-auto relative z-10 text-center">
+            {/* Enhanced SCPHeader holographic aesthetic with frost + ornaments */}
             <div className="relative mx-auto mb-10 max-w-3xl p-[1px] rounded-xl bg-gradient-to-r from-[#2a68ff]/40 via-[#4d9aff]/30 to-[#2a68ff]/40 shadow-[0_0_35px_rgba(70,130,255,0.25)]">
               <div className="rounded-xl bg-[#081226]/40 backdrop-blur-2xl border border-[#4b6fff]/30 shadow-[inset_0_0_25px_rgba(70,130,255,0.2)] relative overflow-hidden">
                 <div className="p-8 relative overflow-hidden">
+                  {/* holographic frost overlay */}
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(80,130,255,0.08),transparent_60%)] animate-[pulseGlow_6s_infinite_ease-in-out]" />
                   <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(70,120,255,0.06)_0%,transparent_30%,rgba(70,120,255,0.06)_60%,transparent_100%)] opacity-60 animate-[scanLine_9s_linear_infinite]" />
 
+                  {/* warm ornament accent top-left (small) */}
                   <div className="absolute -left-6 -top-6 w-12 h-12 rounded-full gold-shimmer opacity-90 transform rotate-12" />
 
                   <div className="relative z-10 flex flex-col items-center gap-3">
@@ -226,21 +225,21 @@ const Index = () => {
               </div>
             </div>
 
+            {/* Main card area */}
             <div className="max-w-5xl mx-auto mt-12 animate-fade-in-soft">
               <div className="p-4 md:p-8 backdrop-blur-xl bg-[#081226]/40 border border-[#3d6cff]/20 rounded-xl shadow-[0_0_25px_rgba(60,120,255,0.25)] relative overflow-hidden">
+                {/* small frost pattern top-right */}
                 <div className="absolute top-4 right-4 w-16 h-16 frost-ring opacity-40" />
 
                 <div className="text-center mb-8 animate-fade-in-slow">
                   <div className="inline-flex items-center justify-center w-24 h-24 border-4 border-[#8abaff]/30 bg-[#0b193a]/30 mb-6 rounded-full shadow-[0_0_30px_rgba(138,186,255,0.25)] relative">
                     <Shield className="h-16 w-16 text-[#9fc3ff] animate-pulse-slow" />
                     <div className="absolute inset-0 border-4 border-[#8abaff]/40 animate-ping-slow opacity-5 rounded-full" />
+                    {/* hanging ornament overlap */}
                     <div className="absolute -bottom-3 -right-3 w-6 h-6 rounded-full bg-gradient-to-br from-[#ffd27a] to-[#ff9a2e] shadow-[0_0_10px_rgba(255,180,100,0.18)] ornament-spin" />
                   </div>
 
-                  <h2
-                    className="text-5xl font-bold mb-4 text-[#b5ceff] tracking-widest glitch"
-                    data-text="SECURE. CONTAIN. PROTECT."
-                  >
+                  <h2 className="text-5xl font-bold mb-4 text-[#b5ceff] tracking-widest glitch" data-text="SECURE. CONTAIN. PROTECT.">
                     SECURE. CONTAIN. PROTECT.
                   </h2>
 
@@ -265,14 +264,12 @@ const Index = () => {
                   <p className="text-lg">
                     <strong className="text-[#8abaff] flicker-soft">NOTICE:</strong>{" "}
                     Deep down the facility at Site-81, a massive explosion shattered the reinforced containment wing, sending shockwaves through the ice-coated sublevels. Emergency red-and-green holiday lockdown lights flickered wildly, casting festive but unsettling colors across the frost-cracked walls. It had been the annual “Secure Contain Protect Winter Protocol Week,” a rare moment when staff decorated terminals with holographic snowflakes and synthetic pine scent diffusers—until everything went catastrophically wrong.Moments before the blast, researchers were studying SCP-XMAS-239, a crystalline anomaly resembling a floating ornament that emitted harmonic frequencies capable of rewriting electronic systems. When containment failed, the anomaly fractured into thousands of shimmering fragments, each scattering across the database, corrupting files, unlocking challenge nodes, and activating dormant SCP simulations.
-                    Now, the Foundation has initiated CTF-81: Containment Task Force, calling all personnel to track the anomalies, decode corrupted logs, and restore order before the “festive breach event” evolves into a full-scale reality distortion.
+Now, the Foundation has initiated CTF-81: Containment Task Force, calling all personnel to track the anomalies, decode corrupted logs, and restore order before the “festive breach event” evolves into a full-scale reality distortion.
                   </p>
                   <p>
                     Unauthorized access to this portal constitutes a direct
                     violation of{" "}
-                    <span className="text-[#a8c8ff]">
-                      Containment Directive 88-GAMMA
-                    </span>
+                    <span className="text-[#a8c8ff]">Containment Directive 88-GAMMA</span>
                     . All activities are logged and monitored by the Foundation
                     Cybersecurity Command (FCC).
                   </p>
@@ -303,17 +300,7 @@ const Index = () => {
                 </div>
 
                 <div className="flex gap-4 justify-center animate-fade-in-delay">
-                  <Button
-                    size="lg"
-                    className="gap-2 bg-[#1c44a5]/70 hover:bg-[#2859d1]/80 text-white font-mono shadow-[0_0_25px_rgba(60,120,255,0.4)] hover:shadow-[0_0_35px_rgba(80,140,255,0.5)] rounded-lg transition-all duration-300 backdrop-blur-sm"
-
-                    // NEW LOGIC (ONLY CHANGE)
-                    onClick={() => navigate(isLoggedIn ? "/home" : "/auth")}
-                  >
-                    REQUEST CLEARANCE
-                    <ArrowRight className="h-5 w-5" />
-                  </Button>
-
+                  {/* REQUEST CLEARANCE button removed as per user request */}
                   <Button
                     size="lg"
                     variant="outline"
@@ -357,6 +344,7 @@ const Index = () => {
                     key={i}
                     className="border border-[#2a4aff]/20 bg-[#0a1433]/30 backdrop-blur-xl p-6 text-center hover:border-[#7fb3ff]/40 hover:scale-[1.03] transition-all duration-500 group rounded-xl shadow-[0_0_15px_rgba(40,90,255,0.1)] relative overflow-hidden"
                   >
+                    {/* decorative small star */}
                     <div className="absolute -top-4 right-6 w-6 h-6 frost-star opacity-60" />
 
                     <div className="inline-flex items-center justify-center w-16 h-16 border-2 border-[#8abaff]/20 bg-[#0b193a]/40 mb-4 group-hover:border-[#b2d1ff] rounded-full relative shadow-[0_0_15px_rgba(100,140,220,0.25)]">
@@ -438,9 +426,7 @@ const Index = () => {
       <footer className="border-t border-[#3d6cff]/20 py-6 px-4 bg-[#060b15]/60 backdrop-blur-md z-10 relative">
         <div className="container mx-auto text-center text-sm text-[#cbd8ff]">
           <div className="classification-bar mb-4 max-w-md mx-auto opacity-50"></div>
-          <p className="font-mono">
-            © 2025 SCP Foundation CTF Division. All Rights Reserved.
-          </p>
+          <p className="font-mono">© 2025 SCP Foundation CTF Division. All Rights Reserved.</p>
           <p className="mt-2">
             Secure Communications:{" "}
             <a
@@ -453,58 +439,85 @@ const Index = () => {
             </a>
           </p>
           <p className="mt-2 text-xs uppercase tracking-wider font-mono text-[#bcd0ff]">
-            CLEARANCE LEVEL <span className="redacted text-[8px]">████</span>{" "}
-            REQUIRED | UNAUTHORIZED ACCESS PROHIBITED
+            CLEARANCE LEVEL <span className="redacted text-[8px]">████</span> REQUIRED | UNAUTHORIZED ACCESS PROHIBITED
           </p>
-          <p className="mt-2 font-mono text-[10px] text-[#bcd0ff]">
-            Foundation Node: SCPNET-12B | Encrypted Link Verified | Hash
-            Integrity: VALID
-          </p>
+          <p className="mt-2 font-mono text-[10px] text-[#bcd0ff]">Foundation Node: SCPNET-12B | Encrypted Link Verified | Hash Integrity: VALID</p>
         </div>
       </footer>
 
-      {/* STYLES — unchanged */}
+      {/* ===================================================================
+          Styles and keyframes (kept inline to ensure component is self-contained)
+          Snowfall upgraded: heavier, slower, larger flakes across full page
+          =================================================================== */}
       <style>{`
-        /* ===== Snow layers ===== */
+        /* ===== Snow layers (expanded for denser, slower, larger flakes) ===== */
         .snow-layer {
           position: absolute;
           inset: 0;
           pointer-events: none;
           z-index: 40;
-        }
-        .snow-layer.small {
-          background-image: radial-gradient(white 1px, rgba(255,255,255,0) 1px);
-          background-size: 6px 6px;
-          opacity: 0.06;
-          animation: snow-small 26s linear infinite;
-        }
-        .snow-layer.medium {
-          background-image: radial-gradient(white 1.2px, rgba(255,255,255,0) 1.2px);
-          background-size: 12px 12px;
-          opacity: 0.04;
-          animation: snow-medium 18s linear infinite;
-        }
-        .snow-layer.large {
-          background-image: radial-gradient(white 1.6px, rgba(255,255,255,0) 1.6px);
-          background-size: 22px 22px;
-          opacity: 0.02;
-          animation: snow-large 12s linear infinite;
+          background-repeat: repeat;
+          will-change: transform;
         }
 
-        @keyframes snow-small {
-          0% { background-position: 0 -10vh; transform: translateY(-10%); }
-          100% { background-position: 400px 100vh; transform: translateY(100%); }
+        /* Extra large - big drifting flakes (foreground) */
+        .snow-layer.xlarge {
+          background-image: radial-gradient(circle, rgba(255,255,255,0.95) 2px, rgba(255,255,255,0) 2px);
+          background-size: 18px 18px;
+          opacity: 0.14;
+          animation: snow-xlarge 40s linear infinite;
+          transform: translateZ(0);
+          filter: blur(0.6px);
         }
-        @keyframes snow-medium {
-          0% { background-position: 0 -5vh; transform: translateY(-5%); }
-          100% { background-position: 600px 110vh; transform: translateY(120%); }
+
+        /* Large - prominent flakes */
+        .snow-layer.large {
+          background-image: radial-gradient(circle, rgba(255,255,255,0.9) 1.8px, rgba(255,255,255,0) 1.8px);
+          background-size: 12px 12px;
+          opacity: 0.10;
+          animation: snow-large 36s linear infinite;
+          filter: blur(0.4px);
+        }
+
+        /* Medium - mid-layer flakes */
+        .snow-layer.medium {
+          background-image: radial-gradient(circle, rgba(255,255,255,0.85) 1.3px, rgba(255,255,255,0) 1.3px);
+          background-size: 9px 9px;
+          opacity: 0.07;
+          animation: snow-medium 30s linear infinite;
+        }
+
+        /* Small - fine misting snow in the background */
+        .snow-layer.small {
+          background-image: radial-gradient(circle, rgba(255,255,255,0.78) 0.9px, rgba(255,255,255,0) 0.9px);
+          background-size: 6px 6px;
+          opacity: 0.045;
+          animation: snow-small 24s linear infinite;
+        }
+
+        /* Slight horizontal drift applied to each layer for natural movement */
+        @keyframes snow-xlarge {
+          0% { background-position: 0 -10vh; transform: translateY(-5%) translateX(0); }
+          25% { transform: translateY(20%) translateX(20px); }
+          50% { background-position: 400px 50vh; transform: translateY(55%) translateX(-10px); }
+          75% { transform: translateY(80%) translateX(12px); }
+          100% { background-position: 800px 140vh; transform: translateY(140%) translateX(0); }
         }
         @keyframes snow-large {
-          0% { background-position: 0 0; transform: translateY(0%); }
-          100% { background-position: 900px 120vh; transform: translateY(140%); }
+          0% { background-position: 0 -5vh; transform: translateY(0%) translateX(0); }
+          50% { background-position: 600px 60vh; transform: translateY(60%) translateX(18px); }
+          100% { background-position: 1200px 140vh; transform: translateY(140%) translateX(0); }
+        }
+        @keyframes snow-medium {
+          0% { background-position: 0 0; transform: translateY(0%) translateX(0); }
+          100% { background-position: 900px 120vh; transform: translateY(120%) translateX(40px); }
+        }
+        @keyframes snow-small {
+          0% { background-position: 0 0; transform: translateY(-5%) translateX(0); }
+          100% { background-position: 1200px 160vh; transform: translateY(160%) translateX(-30px); }
         }
 
-        /* ===== Frost stars ===== */
+        /* ===== Frost stars (neon twinkle) ===== */
         .frost-star {
           position: absolute;
           width: 6px;
@@ -524,7 +537,7 @@ const Index = () => {
 
         /* ===== Light flicker ===== */
         @keyframes light-flicker {
-          0% { transform: translateY(0) scale(1); opacity: 0.95; }
+          0% { transform: translateY(0) scale(1); opacity: 0.95; filter: drop-shadow(0 0 6px rgba(255,255,255,0.06)); }
           50% { transform: translateY(-1.5px) scale(1.05); opacity: 1; }
           100% { transform: translateY(0) scale(1); opacity: 0.95; }
         }
@@ -538,6 +551,7 @@ const Index = () => {
           border-radius: 8px;
           opacity: 0.6;
           box-shadow: inset 0 -12px 24px rgba(0,0,0,0.6);
+          /* decorative pseudo-tree using CSS triangles */
         }
         .tree-silhouette::before {
           content: '';
@@ -584,7 +598,7 @@ const Index = () => {
         }
         .animate-bell-sway { animation: bell-sway 3s ease-in-out infinite; }
 
-        /* ===== Frost ring ===== */
+        /* ===== Holographic & Frost effects ===== */
         .frost-ring {
           border-radius: 8px;
           background: radial-gradient(circle at 30% 20%, rgba(159,216,255,0.06), transparent 30%);
@@ -594,7 +608,6 @@ const Index = () => {
           transform: rotate(12deg);
         }
 
-        /* ===== Gold shimmer ===== */
         .gold-shimmer {
           background: linear-gradient(135deg, rgba(255,210,122,0.28), rgba(255,154,46,0.18));
           background-size: 200% 200%;
@@ -607,7 +620,7 @@ const Index = () => {
           100% { background-position: 0% 50% }
         }
 
-        /* ===== Pulse, scanline, float ===== */
+        /* ===== Floating, scanline & pulse (existing) ===== */
         @keyframes pulseGlow {
           0%, 100% { opacity: 0.4; }
           50% { opacity: 0.8; }
@@ -624,7 +637,11 @@ const Index = () => {
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.4; }
         }
 
-        /* ===== Fade-in ===== */
+        .animate-[pulseGlow_6s_infinite_ease-in-out] { animation: pulseGlow 6s infinite ease-in-out; }
+        .animate-[scanLine_9s_linear_infinite] { animation: scanLine 9s linear infinite; }
+        .animate-[float_12s_infinite_ease-in-out] { animation: float 12s infinite ease-in-out; }
+
+        /* ===== Small helpers (fades, pings) ===== */
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(6px); }
           to { opacity: 1; transform: translateY(0); }
@@ -633,7 +650,6 @@ const Index = () => {
         .animate-fade-in-soft { animation: fadeIn 0.9s ease-in-out both; }
         .animate-fade-in-delay { animation: fadeIn 1.4s ease-in-out both; }
 
-        /* ===== Ping slow ===== */
         @keyframes ping-slow {
           0% { box-shadow: 0 0 0 rgba(80,130,255,0.06); }
           50% { box-shadow: 0 0 20px rgba(80,130,255,0.06); }
@@ -641,7 +657,6 @@ const Index = () => {
         }
         .animate-ping-slow { animation: ping-slow 4.8s infinite ease-in-out; }
 
-        /* ===== Pulse slow ===== */
         @keyframes pulse-slow {
           0% { opacity: 0.6; transform: scale(1); }
           50% { opacity: 1; transform: scale(1.03); }
@@ -649,14 +664,14 @@ const Index = () => {
         }
         .animate-pulse-slow { animation: pulse-slow 3.4s infinite ease-in-out; }
 
-        /* Ornament spin */
+        /* ===== Ornament spin ===== */
         @keyframes ornament-rotate {
           from { transform: rotate(0deg) }
           to { transform: rotate(360deg) }
         }
         .ornament-spin { animation: ornament-rotate 20s linear infinite; }
 
-        /* ===== reduce motion ===== */
+        /* ===== accessibility: reduce motion support ===== */
         @media (prefers-reduced-motion: reduce) {
           .snow-layer, .frost-star, .animate-light-flicker, .animate-bell-sway, .animate-ping-slow, .animate-pulse-slow, .ornament-spin, .ornament { animation: none !important; }
         }
