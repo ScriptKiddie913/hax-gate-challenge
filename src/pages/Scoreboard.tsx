@@ -264,18 +264,52 @@ export default function Scoreboard() {
   };
 
   /* ------------------------ Scoreboard Loader ------------------------ */
-  const loadScoreboard = async () => {
-    try {
-      const { data, error } = await supabase.rpc("get_scoreboard");
-      if (error) throw error;
-      setScores(data || []);
-    } catch (error: any) {
-      toast.error("Error loading scoreboard");
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+const loadScoreboard = async () => {
+  try {
+    // 1️⃣ Get scoreboard data (people with submissions)
+    const { data: sb, error: sbError } = await supabase.rpc("get_scoreboard");
+    if (sbError) throw sbError;
+
+    // 2️⃣ Get ALL registered users (except admin)
+    const { data: users, error: userError } = await supabase
+      .from("profiles")
+      .select("id, username, role")
+      .neq("role", "admin"); // filter admin out
+
+    if (userError) throw userError;
+
+    // Convert scoreboard into a map for fast merge
+    const scoreMap: any = {};
+    (sb || []).forEach((u: any) => {
+      scoreMap[u.user_id] = u;
+    });
+
+    // 3️⃣ Merge: all users must appear in scoreboard
+    const merged = users.map((u) => {
+      if (scoreMap[u.id]) return scoreMap[u.id];
+
+      // User has no submissions → return zero score entry
+      return {
+        user_id: u.id,
+        username: u.username,
+        total_points: 0,
+        solved_count: 0,
+        last_submission: null
+      };
+    });
+
+    // 4️⃣ Sort by points DESC
+    merged.sort((a, b) => b.total_points - a.total_points);
+
+    setScores(merged);
+  } catch (error: any) {
+    toast.error("Error loading scoreboard");
+    console.error(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   /* ------------------------- Rank Icon ------------------------- */
   const getRankIcon = (rank: number) => {
