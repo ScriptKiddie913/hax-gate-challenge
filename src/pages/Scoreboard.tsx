@@ -1,17 +1,48 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trophy, Medal, Award, Flag, TrendingUp } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle
+} from "@/components/ui/card";
+import {
+  Trophy,
+  Medal,
+  Award,
+  Flag,
+  TrendingUp,
+  Snowflake,
+  Bell
+} from "lucide-react";
 import { toast } from "sonner";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from "recharts";
 
+/**
+ * Full rewritten Scoreboard component
+ * - Preserves every original behavior and logic
+ * - Adds a new "Global Player Points Graph" + "All Participants" list
+ * - Keeps all animations, sleigh/fireflies, realtime supabase subscription
+ * - No shortening or removal of original features
+ */
+
+/* ----------------------------- Types ----------------------------- */
 interface ScoreEntry {
   user_id: string;
   username: string;
   total_points: number;
   solved_count: number;
-  last_submission: string;
+  last_submission: string | null;
 }
 
 interface ScoreProgression {
@@ -19,6 +50,7 @@ interface ScoreProgression {
   [key: string]: number | string;
 }
 
+/* --------------------------- Component --------------------------- */
 export default function Scoreboard() {
   const [scores, setScores] = useState<ScoreEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,20 +58,21 @@ export default function Scoreboard() {
   const [topUsers, setTopUsers] = useState<string[]>([]);
   const [ctfActive, setCtfActive] = useState(false);
   const [ctfLoading, setCtfLoading] = useState(true);
+
   const [fireflies, setFireflies] = useState<
     { id: number; top: string; left: string; delay: string; size: string }[]
   >([]);
 
   // Santa sleigh state (randomized speed/time each cycle)
   const [sleighDuration, setSleighDuration] = useState<number>(() => {
-    // random between 18s and 46s initially (randomized speed sometimes fast sometimes slow)
+    // random between 18s and 46s initially
     return Math.floor(Math.random() * (46 - 18 + 1)) + 18;
   });
   const [sleighDelay, setSleighDelay] = useState<number>(() => {
     return Math.floor(Math.random() * 10); // initial random delay
   });
   const [sleighTopOffset, setSleighTopOffset] = useState<number>(() => {
-    // random vertical position between 6% and 28% of viewport height to make it feel distant
+    // random vertical position between 6% and 28% of viewport height
     return Math.floor(Math.random() * (28 - 6 + 1)) + 6;
   });
   const [sleighDirection, setSleighDirection] = useState<"ltr" | "rtl">(() => {
@@ -47,14 +80,14 @@ export default function Scoreboard() {
   });
 
   const CHART_COLORS = [
-    '#fbbf24', // gold/yellow
-    '#a855f7', // purple
-    '#3b82f6', // blue
-    '#06b6d4', // cyan
-    '#f97316', // orange
-    '#10b981', // green
-    '#ec4899', // pink
-    '#ef4444', // red
+    "#fbbf24", // gold/yellow
+    "#a855f7", // purple
+    "#3b82f6", // blue
+    "#06b6d4", // cyan
+    "#f97316", // orange
+    "#10b981", // green
+    "#ec4899", // pink
+    "#ef4444" // red
   ];
 
   useEffect(() => {
@@ -68,19 +101,19 @@ export default function Scoreboard() {
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
       delay: `${Math.random() * 6}s`,
-      size: `${3 + Math.random() * 4}px`,
+      size: `${3 + Math.random() * 4}px`
     }));
     setFireflies(generated);
 
     // Set up real-time subscription for live scoreboard updates
     const channel = supabase
-      .channel('scoreboard-changes')
+      .channel("scoreboard-changes")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'submissions'
+          event: "*",
+          schema: "public",
+          table: "submissions"
         },
         () => {
           loadScoreboard();
@@ -89,7 +122,7 @@ export default function Scoreboard() {
       )
       .subscribe();
 
-    // Set up randomized sleigh cycle refresher: after each duration + random pause, change duration/delay/position/direction
+    // Set up randomized sleigh cycle refresher
     let sleighTimeout: NodeJS.Timeout;
     const scheduleNextSleigh = () => {
       const nextDuration = Math.floor(Math.random() * (46 - 18 + 1)) + 18; // 18-46s
@@ -115,12 +148,13 @@ export default function Scoreboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /* ------------------------ CTF Status Check ------------------------ */
   const checkCtfStatus = async () => {
     try {
       const { data, error } = await supabase
-        .from('ctf_settings')
-        .select('start_time, end_time, is_active')
-        .eq('is_active', true)
+        .from("ctf_settings")
+        .select("start_time, end_time, is_active")
+        .eq("is_active", true)
         .single();
 
       if (error) throw error;
@@ -132,18 +166,19 @@ export default function Scoreboard() {
         setCtfActive(now >= start && now <= end && data.is_active);
       }
     } catch (error: any) {
-      console.error('Error checking CTF status:', error);
+      console.error("Error checking CTF status:", error);
     } finally {
       setCtfLoading(false);
     }
   };
 
+  /* --------------------- Score Progression Loader --------------------- */
   const loadScoreProgression = async () => {
     try {
       // Get top 8 users
-      const { data: topScores } = await supabase.rpc('get_scoreboard');
-      const topUserIds = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.user_id);
-      const topUsernames = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.username);
+      const { data: topScores } = await supabase.rpc("get_scoreboard");
+      const topUserIds = (topScores || []).slice(0, 8).map((s: any) => s.user_id);
+      const topUsernames = (topScores || []).slice(0, 8).map((s: any) => s.username);
       setTopUsers(topUsernames);
 
       if (topUserIds.length === 0) {
@@ -153,11 +188,11 @@ export default function Scoreboard() {
 
       // Get all correct submissions for top users
       const { data: submissions, error } = await supabase
-        .from('submissions')
-        .select('user_id, created_at, challenge_id, challenges(points)')
-        .in('user_id', topUserIds)
-        .eq('result', 'CORRECT')
-        .order('created_at', { ascending: true });
+        .from("submissions")
+        .select("user_id, created_at, challenge_id, challenges(points)")
+        .in("user_id", topUserIds)
+        .eq("result", "CORRECT")
+        .order("created_at", { ascending: true });
 
       if (error) throw error;
 
@@ -165,17 +200,18 @@ export default function Scoreboard() {
       const userScores: { [key: string]: number } = {};
       const timePoints: { [key: string]: any } = {};
 
-      topUserIds.forEach(uid => {
+      topUserIds.forEach((uid) => {
         userScores[uid] = 0;
       });
 
       // Add initial point at time 0
-      const startTime = submissions && submissions.length > 0 
-        ? new Date(submissions[0].created_at).getTime() 
-        : Date.now();
-      
+      const startTime =
+        submissions && submissions.length > 0
+          ? new Date(submissions[0].created_at).getTime()
+          : Date.now();
+
       const initialPoint: any = { timestamp: new Date(startTime).toLocaleTimeString() };
-      topUsernames.forEach(username => {
+      topUsernames.forEach((username) => {
         initialPoint[username] = 0;
       });
       timePoints[startTime] = initialPoint;
@@ -193,20 +229,25 @@ export default function Scoreboard() {
         const time = new Date(sub.created_at).getTime();
         if (!timePoints[time]) {
           // Copy previous scores
-          const prevScores = Object.keys(timePoints).length > 0
-            ? timePoints[Math.max(...Object.keys(timePoints).map(Number))]
-            : initialPoint;
-          timePoints[time] = { 
+          const prevScores =
+            Object.keys(timePoints).length > 0
+              ? timePoints[Math.max(...Object.keys(timePoints).map(Number))]
+              : initialPoint;
+          timePoints[time] = {
             timestamp: new Date(time).toLocaleTimeString(),
-            ...Object.fromEntries(topUsernames.map(u => [u, prevScores[u] || 0]))
+            ...Object.fromEntries(topUsernames.map((u) => [u, prevScores[u] || 0]))
           };
         }
         timePoints[time][username] = userScores[userId];
 
         // Forward fill scores for all users at this timestamp
-        topUsernames.forEach(u => {
+        topUsernames.forEach((u) => {
           if (timePoints[time][u] === undefined) {
-            const prevTime = Math.max(...Object.keys(timePoints).map(Number).filter(t => t < time));
+            const prevTime = Math.max(
+              ...Object.keys(timePoints)
+                .map(Number)
+                .filter((t) => t < time)
+            );
             timePoints[time][u] = prevTime ? timePoints[prevTime][u] : 0;
           }
         });
@@ -214,19 +255,18 @@ export default function Scoreboard() {
 
       const progression = Object.keys(timePoints)
         .sort((a, b) => Number(a) - Number(b))
-        .map(time => timePoints[Number(time)]);
+        .map((time) => timePoints[Number(time)]);
 
       setProgressionData(progression);
     } catch (error: any) {
-      console.error('Error loading progression:', error);
+      console.error("Error loading progression:", error);
     }
   };
 
+  /* ------------------------ Scoreboard Loader ------------------------ */
   const loadScoreboard = async () => {
     try {
-      const { data, error } = await supabase
-        .rpc('get_scoreboard');
-
+      const { data, error } = await supabase.rpc("get_scoreboard");
       if (error) throw error;
       setScores(data || []);
     } catch (error: any) {
@@ -237,6 +277,7 @@ export default function Scoreboard() {
     }
   };
 
+  /* ------------------------- Rank Icon ------------------------- */
   const getRankIcon = (rank: number) => {
     switch (rank) {
       case 1:
@@ -250,6 +291,7 @@ export default function Scoreboard() {
     }
   };
 
+  /* ----------------------- Loading / CTF UI ----------------------- */
   if (loading || ctfLoading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -261,18 +303,20 @@ export default function Scoreboard() {
     );
   }
 
+  /* -------------------------- Derived -------------------------- */
   const topThree = scores.slice(0, 3);
   const restOfScores = scores.slice(3);
 
+  /* --------------------------- Render --------------------------- */
   return (
-    <div 
+    <div
       className="min-h-screen flex flex-col relative overflow-hidden"
       style={{
         backgroundImage: "url('/images/s.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
+        backgroundAttachment: "fixed"
       }}
     >
       {/* Blue ambient overlay */}
@@ -296,7 +340,7 @@ export default function Scoreboard() {
         style={{
           top: `${sleighTopOffset}vh`,
           animationDuration: `${sleighDuration}s`,
-          animationDelay: `${sleighDelay}s`,
+          animationDelay: `${sleighDelay}s`
         }}
       >
         <div className="santa-sleigh" style={{ width: 180 }}>
@@ -324,7 +368,7 @@ export default function Scoreboard() {
               {/* Sleigh */}
               <g transform="translate(180,36) scale(0.9)" fill="#ff6b6b">
                 <rect x="0" y="0" rx="10" ry="10" width="120" height="28" />
-                <path d="M0 24 q18 12 40 12 h32 q20 0 40 -12 v-4 h-112 z" fill="#9f2b2b" opacity="0.9"/>
+                <path d="M0 24 q18 12 40 12 h32 q20 0 40 -12 v-4 h-112 z" fill="#9f2b2b" opacity="0.9" />
               </g>
 
               {/* Santa hat/figure */}
@@ -353,13 +397,13 @@ export default function Scoreboard() {
             width: f.size,
             height: f.size,
             boxShadow: "0 0 10px rgba(160,200,255,0.6), 0 0 20px rgba(120,160,255,0.4)",
-            animationDelay: f.delay,
+            animationDelay: f.delay
           }}
         ></div>
       ))}
 
       <Navbar />
-      
+
       <main className="flex-1 container mx-auto px-4 py-8 relative z-10">
         <div className="mb-8 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 border-2 border-primary/20 mb-4 animate-pulse">
@@ -386,27 +430,30 @@ export default function Scoreboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {topThree.map((entry, index) => {
                   const rank = index + 1;
-                  const bgGradient = rank === 1 
-                    ? 'from-yellow-500/20 to-yellow-600/20 border-yellow-500/40'
-                    : rank === 2
-                    ? 'from-gray-400/20 to-gray-500/20 border-gray-400/40'
-                    : 'from-amber-600/20 to-amber-700/20 border-amber-600/40';
-                  
+                  const bgGradient =
+                    rank === 1
+                      ? "from-yellow-500/20 to-yellow-600/20 border-yellow-500/40"
+                      : rank === 2
+                      ? "from-gray-400/20 to-gray-500/20 border-gray-400/40"
+                      : "from-amber-600/20 to-amber-700/20 border-amber-600/40";
+
                   return (
                     <Card key={entry.user_id} className={`border bg-gradient-to-br ${bgGradient} backdrop-blur-xl shadow-xl`}>
                       <CardContent className="p-6 text-center">
-                        <div className="mb-3">
-                          {getRankIcon(rank)}
-                        </div>
+                        <div className="mb-3">{getRankIcon(rank)}</div>
                         <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
-                          {rank === 1 ? '1st' : rank === 2 ? '2nd' : '3rd'} Place
+                          {rank === 1 ? "1st" : rank === 2 ? "2nd" : "3rd"} Place
                         </p>
                         <h3 className="font-mono font-bold text-2xl mb-2">{entry.username}</h3>
                         <div className="flex items-center justify-center gap-2 text-muted-foreground mb-3">
                           <Flag className="h-4 w-4" />
                           <span className="text-sm">{entry.solved_count} solved</span>
                         </div>
-                        <div className={`text-4xl font-mono font-bold ${rank === 1 ? 'text-yellow-400' : rank === 2 ? 'text-gray-400' : 'text-amber-600'}`}>
+                        <div
+                          className={`text-4xl font-mono font-bold ${
+                            rank === 1 ? "text-yellow-400" : rank === 2 ? "text-gray-400" : "text-amber-600"
+                          }`}
+                        >
                           {entry.total_points}
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">POINTS</p>
@@ -416,85 +463,96 @@ export default function Scoreboard() {
                 })}
               </div>
             )}
-
             {/* Score Progression Chart */}
             {progressionData.length > 0 ? (
               <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
-            <CardHeader className="border-b border-border/50">
-              <CardTitle className="flex items-center gap-3 text-xl">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <TrendingUp className="h-6 w-6 text-primary" />
-                </div>
-                Score Progression
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6 pb-8">
-              <ResponsiveContainer width="100%" height={450}>
-                <LineChart 
-                  data={progressionData}
-                  margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
-                >
-                  <CartesianGrid 
-                    strokeDasharray="3 3" 
-                    stroke="rgba(100, 116, 139, 0.2)" 
-                    vertical={false}
-                  />
-                  <XAxis 
-                    dataKey="timestamp" 
-                    stroke="rgba(148, 163, 184, 0.6)"
-                    tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
-                    tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
-                  />
-                  <YAxis 
-                    stroke="rgba(148, 163, 184, 0.6)"
-                    tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
-                    tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                      border: '1px solid rgba(100, 116, 139, 0.3)',
-                      borderRadius: '8px',
-                      color: 'rgba(226, 232, 240, 0.95)',
-                      backdropFilter: 'blur(8px)'
-                    }}
-                    itemStyle={{
-                      color: 'rgba(226, 232, 240, 0.95)'
-                    }}
-                  />
-                  <Legend 
-                    wrapperStyle={{
-                      paddingTop: '25px',
-                      fontSize: '13px',
-                      fontFamily: 'monospace'
-                    }}
-                    iconType="line"
-                  />
-                  {topUsers.map((username, index) => (
-                    <Line
-                      key={username}
-                      type="monotone"
-                      dataKey={username}
-                      stroke={CHART_COLORS[index % CHART_COLORS.length]}
-                      strokeWidth={3}
-                      dot={{ 
-                        r: 4, 
-                        fill: CHART_COLORS[index % CHART_COLORS.length],
-                        strokeWidth: 2,
-                        stroke: '#0f1729'
-                      }}
-                      activeDot={{ 
-                        r: 6, 
-                        strokeWidth: 2,
-                        fill: CHART_COLORS[index % CHART_COLORS.length]
-                      }}
-                      animationDuration={1000}
-                    />
-                  ))}
-                </LineChart>
-              </ResponsiveContainer>
-              </CardContent>
-            </Card>
+                <CardHeader className="border-b border-border/50">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <TrendingUp className="h-6 w-6 text-primary" />
+                    </div>
+                    Score Progression
+                  </CardTitle>
+                </CardHeader>
+
+                <CardContent className="pt-6 pb-8">
+                  <ResponsiveContainer width="100%" height={450}>
+                    <LineChart
+                      data={progressionData}
+                      margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="rgba(100, 116, 139, 0.2)"
+                        vertical={false}
+                      />
+
+                      <XAxis
+                        dataKey="timestamp"
+                        stroke="rgba(148, 163, 184, 0.6)"
+                        tick={{
+                          fill: "rgba(148, 163, 184, 0.8)",
+                          fontSize: 11
+                        }}
+                        tickLine={{ stroke: "rgba(100, 116, 139, 0.3)" }}
+                      />
+
+                      <YAxis
+                        stroke="rgba(148, 163, 184, 0.6)"
+                        tick={{
+                          fill: "rgba(148, 163, 184, 0.8)",
+                          fontSize: 11
+                        }}
+                        tickLine={{ stroke: "rgba(100, 116, 139, 0.3)" }}
+                      />
+
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(15, 23, 42, 0.95)",
+                          border: "1px solid rgba(100, 116, 139, 0.3)",
+                          borderRadius: "8px",
+                          color: "rgba(226, 232, 240, 0.95)",
+                          backdropFilter: "blur(8px)"
+                        }}
+                        itemStyle={{
+                          color: "rgba(226, 232, 240, 0.95)"
+                        }}
+                      />
+
+                      <Legend
+                        wrapperStyle={{
+                          paddingTop: "25px",
+                          fontSize: "13px",
+                          fontFamily: "monospace"
+                        }}
+                        iconType="line"
+                      />
+
+                      {topUsers.map((username, index) => (
+                        <Line
+                          key={username}
+                          type="monotone"
+                          dataKey={username}
+                          stroke={CHART_COLORS[index % CHART_COLORS.length]}
+                          strokeWidth={3}
+                          dot={{
+                            r: 4,
+                            fill: CHART_COLORS[index % CHART_COLORS.length],
+                            strokeWidth: 2,
+                            stroke: "#0f1729"
+                          }}
+                          activeDot={{
+                            r: 6,
+                            strokeWidth: 2,
+                            fill: CHART_COLORS[index % CHART_COLORS.length]
+                          }}
+                          animationDuration={1000}
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
             ) : (
               <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
                 <CardHeader className="border-b border-border/50">
@@ -507,29 +565,149 @@ export default function Scoreboard() {
                 </CardHeader>
                 <CardContent className="py-16 text-center">
                   <TrendingUp className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                  <p className="text-muted-foreground">No submissions yet. Be the first to solve a challenge!</p>
+                  <p className="text-muted-foreground">
+                    No submissions yet. Be the first to solve a challenge!
+                  </p>
                 </CardContent>
               </Card>
             )}
 
+            {/* -------------------------------------------------------- */}
+            {/* === GLOBAL PLAYER GRAPH (ADDED FULL-FEATURE BLOCK) === */}
+            {/* -------------------------------------------------------- */}
+
+            {scores.length > 0 && (
+              <Card className="border-border bg-[#0c1120]/95 backdrop-blur-xl shadow-2xl mb-8">
+                <CardHeader className="border-b border-border/50">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <Snowflake className="h-6 w-6 text-primary" />
+                    </div>
+                    Global Player Points Graph
+                  </CardTitle>
+                </CardHeader>
+
+                <CardContent className="pt-6 pb-8">
+                  <ResponsiveContainer width="100%" height={420}>
+                    <LineChart
+                      data={scores.map((s) => ({
+                        username: s.username,
+                        points: s.total_points
+                      }))}
+                      margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        stroke="rgba(100, 116, 139, 0.2)"
+                        vertical={false}
+                      />
+
+                      <XAxis
+                        dataKey="username"
+                        stroke="rgba(148, 163, 184, 0.6)"
+                        tick={{
+                          fill: "rgba(148, 163, 184, 0.8)",
+                          fontSize: 11
+                        }}
+                        tickLine={{ stroke: "rgba(100, 116, 139, 0.3)" }}
+                      />
+
+                      <YAxis
+                        stroke="rgba(148, 163, 184, 0.6)"
+                        tick={{
+                          fill: "rgba(148, 163, 184, 0.8)",
+                          fontSize: 11
+                        }}
+                        tickLine={{ stroke: "rgba(100, 116, 139, 0.3)" }}
+                      />
+
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(15, 23, 42, 0.95)",
+                          border: "1px solid rgba(100, 116, 139, 0.3)",
+                          borderRadius: "8px",
+                          color: "rgba(226, 232, 240, 0.95)",
+                          backdropFilter: "blur(8px)"
+                        }}
+                        itemStyle={{
+                          color: "rgba(226, 232, 240, 0.95)"
+                        }}
+                      />
+
+                      <Line
+                        type="monotone"
+                        dataKey="points"
+                        stroke="#38bdf8"
+                        strokeWidth={3}
+                        dot={{
+                          r: 5,
+                          fill: "#38bdf8",
+                          stroke: "#0f1729",
+                          strokeWidth: 2
+                        }}
+                        activeDot={{
+                          r: 7,
+                          strokeWidth: 2,
+                          fill: "#38bdf8"
+                        }}
+                        animationDuration={1200}
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+
+                  {/* LIST OF ALL PLAYERS BELOW THE GRAPH */}
+                  <div className="mt-8">
+                    <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+                      <Bell className="h-5 w-5 text-yellow-300" />
+                      All Participants
+                    </h3>
+
+                    <ul className="space-y-2">
+                      {scores.map((entry) => (
+                        <li
+                          key={entry.user_id}
+                          className="flex justify-between py-2 px-4 rounded-lg bg-secondary/40 border border-border hover:border-primary/30 transition-all"
+                        >
+                          <div className="flex items-center gap-3">
+                            <Snowflake className="h-4 w-4 text-blue-300" />
+                            <span className="font-mono">{entry.username}</span>
+                          </div>
+                          <span className="font-mono text-primary">
+                            {entry.total_points} pts
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* -------------------------------------------------------- */}
+            {/* END — GLOBAL PLAYER GRAPH ADDITION                       */}
+            {/* -------------------------------------------------------- */}
+
             <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
-          <CardHeader className="border-b border-border/50">
-            <CardTitle className="flex items-center gap-3 text-xl">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Trophy className="h-6 w-6 text-primary" />
-              </div>
-              Top Performers
-              <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground font-normal">
-                <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-                Live
-              </div>
-            </CardTitle>
-          </CardHeader>
+              <CardHeader className="border-b border-border/50">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Trophy className="h-6 w-6 text-primary" />
+                  </div>
+                  Top Performers
+                  <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground font-normal">
+                    <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+                    Live
+                  </div>
+                </CardTitle>
+              </CardHeader>
+
               <CardContent>
                 {restOfScores.length === 0 && topThree.length === 0 ? (
                   <div className="text-center py-12">
                     <Flag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">No submissions yet. Be the first!</p>
+                    <p className="text-muted-foreground">
+                      No submissions yet. Be the first!
+                    </p>
                   </div>
                 ) : (
                   <div className="space-y-2">
@@ -542,18 +720,25 @@ export default function Scoreboard() {
                         >
                           <div className="flex items-center gap-4 flex-1">
                             <div className="w-14 flex items-center justify-center">
-                              <span className="text-muted-foreground font-mono">#{actualRank}</span>
+                              <span className="text-muted-foreground font-mono">
+                                #{actualRank}
+                              </span>
                             </div>
+
                             <div className="flex-1">
-                              <p className="font-mono font-bold text-lg">{entry.username}</p>
+                              <p className="font-mono font-bold text-lg">
+                                {entry.username}
+                              </p>
                               <div className="flex items-center gap-2 mt-1">
                                 <Flag className="h-3 w-3 text-muted-foreground" />
                                 <p className="text-sm text-muted-foreground">
-                                  {entry.solved_count} challenge{entry.solved_count !== 1 ? 's' : ''} solved
+                                  {entry.solved_count} challenge
+                                  {entry.solved_count !== 1 ? "s" : ""} solved
                                 </p>
                               </div>
                             </div>
                           </div>
+
                           <div className="text-right">
                             <p className="font-mono font-bold text-2xl text-primary">
                               {entry.total_points}
@@ -562,9 +747,9 @@ export default function Scoreboard() {
                               POINTS
                             </p>
                             <p className="text-xs text-muted-foreground mt-1">
-                              {entry.last_submission 
+                              {entry.last_submission
                                 ? new Date(entry.last_submission).toLocaleString()
-                                : 'No submissions'}
+                                : "No submissions"}
                             </p>
                           </div>
                         </div>
@@ -577,7 +762,6 @@ export default function Scoreboard() {
           </>
         )}
       </main>
-
       {/* Animations and Crystal + Santa styles */}
       <style>{`
         @keyframes float {
@@ -699,7 +883,6 @@ export default function Scoreboard() {
           animation-delay: var(--dummy-delay, 0s);
         }
 
-        /* Define the keyframes but actual duration is set inline via style attribute on container */
         @keyframes sleigh-fly-ltr {
           0% { transform: translateX(-8vw) translateY(0) rotate(0deg); opacity: 0; }
           5% { opacity: 1; }
@@ -707,6 +890,7 @@ export default function Scoreboard() {
           95% { opacity: 1; }
           100% { transform: translateX(125vw) translateY(12vh) rotate(1deg); opacity: 0; }
         }
+
         @keyframes sleigh-fly-rtl {
           0% { transform: translateX(8vw) translateY(0) rotate(0deg); opacity: 0; }
           5% { opacity: 1; }
@@ -741,7 +925,7 @@ export default function Scoreboard() {
           transform-origin: left center;
           pointer-events: none;
           mix-blend-mode: screen;
-          /* animated shimmer along trail */
+          /* animated shimmer */
           background-size: 200% 100%;
           animation: trail-shimmer 3.6s linear infinite;
         }
@@ -751,7 +935,6 @@ export default function Scoreboard() {
           100% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
         }
 
-        /* make trail more magical by adding small sparkles via pseudo-elements */
         .sleigh-trail::before,
         .sleigh-trail::after {
           content: '';
@@ -764,7 +947,6 @@ export default function Scoreboard() {
           background: radial-gradient(circle at 30% 30%, rgba(255,255,255,1), rgba(255,255,255,0.1));
           filter: blur(2px);
           opacity: 0.9;
-          transform: translateX(0) translateY(0);
         }
         .sleigh-trail::after {
           right: 60px;
@@ -774,15 +956,22 @@ export default function Scoreboard() {
           opacity: 0.7;
         }
 
-        /* responsive tweak so small sleigh doesn't obstruct content on tiny screens */
+        /* responsive tweak */
         @media (max-width: 640px) {
           .santa-sleigh { width: 120px !important; }
           .sleigh-trail { display: none; }
         }
 
-        /* ===== accessibility: reduce motion support ===== */
+        /* accessibility reduce motion */
         @media (prefers-reduced-motion: reduce) {
-          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, .crystal-layer.sparkle {
+          .crystal-layer,
+          .santa-container,
+          .sleigh-trail,
+          .santa-sleigh,
+          .crystal-layer.large,
+          .crystal-layer.medium,
+          .crystal-layer.small,
+          .crystal-layer.sparkle {
             animation: none !important;
           }
         }
