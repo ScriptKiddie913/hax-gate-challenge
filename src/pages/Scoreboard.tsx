@@ -30,16 +30,13 @@ export default function Scoreboard() {
     { id: number; top: string; left: string; delay: string; size: string }[]
   >([]);
 
-  // Santa sleigh state (randomized speed/time each cycle)
   const [sleighDuration, setSleighDuration] = useState<number>(() => {
-    // random between 18s and 46s initially (randomized speed sometimes fast sometimes slow)
     return Math.floor(Math.random() * (46 - 18 + 1)) + 18;
   });
   const [sleighDelay, setSleighDelay] = useState<number>(() => {
-    return Math.floor(Math.random() * 10); // initial random delay
+    return Math.floor(Math.random() * 10);
   });
   const [sleighTopOffset, setSleighTopOffset] = useState<number>(() => {
-    // random vertical position between 6% and 28% of viewport height to make it feel distant
     return Math.floor(Math.random() * (28 - 6 + 1)) + 6;
   });
   const [sleighDirection, setSleighDirection] = useState<"ltr" | "rtl">(() => {
@@ -47,14 +44,14 @@ export default function Scoreboard() {
   });
 
   const CHART_COLORS = [
-    '#fbbf24', // gold/yellow
-    '#a855f7', // purple
-    '#3b82f6', // blue
-    '#06b6d4', // cyan
-    '#f97316', // orange
-    '#10b981', // green
-    '#ec4899', // pink
-    '#ef4444', // red
+    '#fbbf24',
+    '#a855f7',
+    '#3b82f6',
+    '#06b6d4',
+    '#f97316',
+    '#10b981',
+    '#ec4899',
+    '#ef4444',
   ];
 
   useEffect(() => {
@@ -62,7 +59,6 @@ export default function Scoreboard() {
     loadScoreboard();
     loadScoreProgression();
 
-    // Generate fireflies
     const generated = Array.from({ length: 30 }).map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
@@ -72,7 +68,6 @@ export default function Scoreboard() {
     }));
     setFireflies(generated);
 
-    // Set up real-time subscription for live scoreboard updates
     const channel = supabase
       .channel('scoreboard-changes')
       .on(
@@ -89,20 +84,17 @@ export default function Scoreboard() {
       )
       .subscribe();
 
-    // Set up randomized sleigh cycle refresher: after each duration + random pause, change duration/delay/position/direction
     let sleighTimeout: NodeJS.Timeout;
     const scheduleNextSleigh = () => {
-      const nextDuration = Math.floor(Math.random() * (46 - 18 + 1)) + 18; // 18-46s
-      const nextDelay = Math.floor(Math.random() * 10); // 0-9s
-      const nextTop = Math.floor(Math.random() * (28 - 6 + 1)) + 6; // 6-28%
+      const nextDuration = Math.floor(Math.random() * (46 - 18 + 1)) + 18;
+      const nextDelay = Math.floor(Math.random() * 10);
+      const nextTop = Math.floor(Math.random() * (28 - 6 + 1)) + 6;
       const nextDir = Math.random() > 0.5 ? "ltr" : "rtl";
-      // schedule update slightly before current animation ends to create variation
       sleighTimeout = setTimeout(() => {
         setSleighDuration(nextDuration);
         setSleighDelay(nextDelay);
         setSleighTopOffset(nextTop);
         setSleighDirection(nextDir as "ltr" | "rtl");
-        // schedule again for the next cycle using the new duration + small pause
         scheduleNextSleigh();
       }, (sleighDuration + Math.floor(Math.random() * 8)) * 1000);
     };
@@ -112,7 +104,6 @@ export default function Scoreboard() {
       supabase.removeChannel(channel);
       if (sleighTimeout) clearTimeout(sleighTimeout);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const checkCtfStatus = async () => {
@@ -140,7 +131,6 @@ export default function Scoreboard() {
 
   const loadScoreProgression = async () => {
     try {
-      // Get top 8 users
       const { data: topScores } = await supabase.rpc('get_scoreboard');
       const topUserIds = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.user_id);
       const topUsernames = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.username);
@@ -151,7 +141,6 @@ export default function Scoreboard() {
         return;
       }
 
-      // Get all correct submissions for top users
       const { data: submissions, error } = await supabase
         .from('submissions')
         .select('user_id, created_at, challenge_id, challenges(points)')
@@ -161,7 +150,6 @@ export default function Scoreboard() {
 
       if (error) throw error;
 
-      // Build progression data
       const userScores: { [key: string]: number } = {};
       const timePoints: { [key: string]: any } = {};
 
@@ -169,7 +157,6 @@ export default function Scoreboard() {
         userScores[uid] = 0;
       });
 
-      // Add initial point at time 0
       const startTime = submissions && submissions.length > 0 
         ? new Date(submissions[0].created_at).getTime() 
         : Date.now();
@@ -180,7 +167,6 @@ export default function Scoreboard() {
       });
       timePoints[startTime] = initialPoint;
 
-      // Process each submission
       submissions?.forEach((sub: any) => {
         const userId = sub.user_id;
         const userIndex = topUserIds.indexOf(userId);
@@ -192,7 +178,6 @@ export default function Scoreboard() {
 
         const time = new Date(sub.created_at).getTime();
         if (!timePoints[time]) {
-          // Copy previous scores
           const prevScores = Object.keys(timePoints).length > 0
             ? timePoints[Math.max(...Object.keys(timePoints).map(Number))]
             : initialPoint;
@@ -203,7 +188,6 @@ export default function Scoreboard() {
         }
         timePoints[time][username] = userScores[userId];
 
-        // Forward fill scores for all users at this timestamp
         topUsernames.forEach(u => {
           if (timePoints[time][u] === undefined) {
             const prevTime = Math.max(...Object.keys(timePoints).map(Number).filter(t => t < time));
@@ -275,13 +259,10 @@ export default function Scoreboard() {
         backgroundAttachment: "fixed",
       }}
     >
-      {/* Blue ambient overlay */}
       <div className="absolute inset-0 bg-[#030b1d]/75 backdrop-blur-[2px]"></div>
 
-      {/* Pulsing gradient */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(90,150,255,0.15),transparent_70%)] animate-[pulse_8s_infinite_ease-in-out]"></div>
 
-      {/* Crystal Snowfall: mixed large + small crystals (shimmering icy flakes) */}
       <div aria-hidden className="absolute inset-0 pointer-events-none z-40">
         <div className="crystal-layer large"></div>
         <div className="crystal-layer medium"></div>
@@ -289,7 +270,6 @@ export default function Scoreboard() {
         <div className="crystal-layer sparkle"></div>
       </div>
 
-      {/* Santa sleigh (small, randomized speed, shimmering trail) */}
       <div
         aria-hidden
         className={`santa-container ${sleighDirection === "rtl" ? "rtl" : "ltr"}`}
@@ -300,9 +280,7 @@ export default function Scoreboard() {
         }}
       >
         <div className="santa-sleigh" style={{ width: 180 }}>
-          {/* Shimmering trail behind sleigh */}
           <div className="sleigh-trail" />
-          {/* Santa + reindeer SVG simplified silhouette (kept small) */}
           <svg
             viewBox="0 0 640 256"
             xmlns="http://www.w3.org/2000/svg"
@@ -311,29 +289,20 @@ export default function Scoreboard() {
             width="180"
             height="72"
           >
-            {/* A stylized small sleigh + reindeer group — silhouette with some detail for trail glow */}
             <g fill="none" stroke="none">
-              {/* Reindeer silhouettes */}
               <g transform="translate(0,0)" fill="#f8f2e8" opacity="0.95">
                 <path d="M72 28c-2 0-4 3-4 6 0 4 2 7 4 7 3 0 5-3 5-7 0-3-2-6-5-6z" />
                 <path d="M90 20c-6 0-12 6-12 12v8c0 8 8 14 16 14 9 0 16-6 16-14v-8c0-6-6-12-12-12h-8z" />
-                {/* tiny legs/antlers simplified */}
                 <path d="M96 18c4-2 10-6 14-6 2 0 4 2 4 4 0 4-6 8-10 10-6 2-20 6-20 6" opacity="0.9" />
               </g>
-
-              {/* Sleigh */}
               <g transform="translate(180,36) scale(0.9)" fill="#ff6b6b">
                 <rect x="0" y="0" rx="10" ry="10" width="120" height="28" />
                 <path d="M0 24 q18 12 40 12 h32 q20 0 40 -12 v-4 h-112 z" fill="#9f2b2b" opacity="0.9"/>
               </g>
-
-              {/* Santa hat/figure */}
               <g transform="translate(150,10) scale(0.45)" fill="#fff">
                 <circle cx="36" cy="36" r="20" fill="#fff" />
                 <path d="M12 12 q36 -18 60 0 q-8 2 -24 2 q-24 0 -36 -2 z" fill="#e53e3e" />
               </g>
-
-              {/* subtle highlights */}
               <g transform="translate(0,0)" opacity="0.35" fill="#ffffff">
                 <ellipse cx="320" cy="40" rx="150" ry="12" />
               </g>
@@ -342,7 +311,6 @@ export default function Scoreboard() {
         </div>
       </div>
 
-      {/* Fireflies */}
       {fireflies.map((f) => (
         <div
           key={f.id}
@@ -381,7 +349,6 @@ export default function Scoreboard() {
           </Card>
         ) : (
           <>
-            {/* Top 3 Podium */}
             {topThree.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 {topThree.map((entry, index) => {
@@ -417,84 +384,83 @@ export default function Scoreboard() {
               </div>
             )}
 
-            {/* Score Progression Chart */}
             {progressionData.length > 0 ? (
               <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
-            <CardHeader className="border-b border-border/50">
-              <CardTitle className="flex items-center gap-3 text-xl">
-                <div className="p-2 rounded-lg bg-primary/10">
-                  <TrendingUp className="h-6 w-6 text-primary" />
-                </div>
-                Score Progression
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-6 pb-8">
-              <ResponsiveContainer width="100%" height={450}>
-                <LineChart 
-                  data={progressionData}
-                  margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
-                >
-                  <CartesianGrid 
-                    strokeDasharray="3 3" 
-                    stroke="rgba(100, 116, 139, 0.2)" 
-                    vertical={false}
-                  />
-                  <XAxis 
-                    dataKey="timestamp" 
-                    stroke="rgba(148, 163, 184, 0.6)"
-                    tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
-                    tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
-                  />
-                  <YAxis 
-                    stroke="rgba(148, 163, 184, 0.6)"
-                    tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
-                    tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
-                  />
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                      border: '1px solid rgba(100, 116, 139, 0.3)',
-                      borderRadius: '8px',
-                      color: 'rgba(226, 232, 240, 0.95)',
-                      backdropFilter: 'blur(8px)'
-                    }}
-                    itemStyle={{
-                      color: 'rgba(226, 232, 240, 0.95)'
-                    }}
-                  />
-                  <Legend 
-                    wrapperStyle={{
-                      paddingTop: '25px',
-                      fontSize: '13px',
-                      fontFamily: 'monospace'
-                    }}
-                    iconType="line"
-                  />
-                  {topUsers.map((username, index) => (
-                    <Line
-                      key={username}
-                      type="monotone"
-                      dataKey={username}
-                      stroke={CHART_COLORS[index % CHART_COLORS.length]}
-                      strokeWidth={3}
-                      dot={{ 
-                        r: 4, 
-                        fill: CHART_COLORS[index % CHART_COLORS.length],
-                        strokeWidth: 2,
-                        stroke: '#0f1729'
-                      }}
-                      activeDot={{ 
-                        r: 6, 
-                        strokeWidth: 2,
-                        fill: CHART_COLORS[index % CHART_COLORS.length]
-                      }}
-                      animationDuration={1000}
-                    />
-                  ))}
-                </LineChart>
-              </ResponsiveContainer>
-              </CardContent>
-            </Card>
+                <CardHeader className="border-b border-border/50">
+                  <CardTitle className="flex items-center gap-3 text-xl">
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <TrendingUp className="h-6 w-6 text-primary" />
+                    </div>
+                    Score Progression
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-6 pb-8">
+                  <ResponsiveContainer width="100%" height={450}>
+                    <LineChart 
+                      data={progressionData}
+                      margin={{ top: 10, right: 30, left: 10, bottom: 10 }}
+                    >
+                      <CartesianGrid 
+                        strokeDasharray="3 3" 
+                        stroke="rgba(100, 116, 139, 0.2)" 
+                        vertical={false}
+                      />
+                      <XAxis 
+                        dataKey="timestamp" 
+                        stroke="rgba(148, 163, 184, 0.6)"
+                        tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
+                        tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
+                      />
+                      <YAxis 
+                        stroke="rgba(148, 163, 184, 0.6)"
+                        tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
+                        tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
+                      />
+                      <Tooltip 
+                        contentStyle={{
+                          backgroundColor: 'rgba(15, 23, 42, 0.95)',
+                          border: '1px solid rgba(100, 116, 139, 0.3)',
+                          borderRadius: '8px',
+                          color: 'rgba(226, 232, 240, 0.95)',
+                          backdropFilter: 'blur(8px)'
+                        }}
+                        itemStyle={{
+                          color: 'rgba(226, 232, 240, 0.95)'
+                        }}
+                      />
+                      <Legend 
+                        wrapperStyle={{
+                          paddingTop: '25px',
+                          fontSize: '13px',
+                          fontFamily: 'monospace'
+                        }}
+                        iconType="line"
+                      />
+                      {topUsers.map((username, index) => (
+                        <Line
+                          key={username}
+                          type="monotone"
+                          dataKey={username}
+                          stroke={CHART_COLORS[index % CHART_COLORS.length]}
+                          strokeWidth={3}
+                          dot={{ 
+                            r: 4, 
+                            fill: CHART_COLORS[index % CHART_COLORS.length],
+                            strokeWidth: 2,
+                            stroke: '#0f1729'
+                          }}
+                          activeDot={{ 
+                            r: 6, 
+                            strokeWidth: 2,
+                            fill: CHART_COLORS[index % CHART_COLORS.length]
+                          }}
+                          animationDuration={1000}
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
             ) : (
               <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
                 <CardHeader className="border-b border-border/50">
@@ -512,29 +478,34 @@ export default function Scoreboard() {
               </Card>
             )}
 
-            <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
-          <CardHeader className="border-b border-border/50">
-            <CardTitle className="flex items-center gap-3 text-xl">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Trophy className="h-6 w-6 text-primary" />
-              </div>
-              Top Performers
-              <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground font-normal">
-                <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-                Live
-              </div>
-            </CardTitle>
-          </CardHeader>
+            {/* ========================================================= */}
+            {/* === NEW SECTION: FULL LIST OF ALL PLAYERS UNDER GRAPH === */}
+            {/* ========================================================= */}
+
+            <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-10">
+              <CardHeader className="border-b border-border/50">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Trophy className="h-6 w-6 text-primary" />
+                  </div>
+                  All Players
+                  <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground font-normal">
+                    <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
+                    Live
+                  </div>
+                </CardTitle>
+              </CardHeader>
+
               <CardContent>
-                {restOfScores.length === 0 && topThree.length === 0 ? (
+                {scores.length === 0 ? (
                   <div className="text-center py-12">
                     <Flag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">No submissions yet. Be the first!</p>
+                    <p className="text-muted-foreground">No players yet.</p>
                   </div>
                 ) : (
-                  <div className="space-y-2">
-                    {restOfScores.map((entry, index) => {
-                      const actualRank = index + 4;
+                  <div className="space-y-3">
+                    {scores.map((entry, index) => {
+                      const actualRank = index + 1;
                       return (
                         <div
                           key={entry.user_id}
@@ -542,7 +513,7 @@ export default function Scoreboard() {
                         >
                           <div className="flex items-center gap-4 flex-1">
                             <div className="w-14 flex items-center justify-center">
-                              <span className="text-muted-foreground font-mono">#{actualRank}</span>
+                              {getRankIcon(actualRank)}
                             </div>
                             <div className="flex-1">
                               <p className="font-mono font-bold text-lg">{entry.username}</p>
@@ -554,6 +525,7 @@ export default function Scoreboard() {
                               </div>
                             </div>
                           </div>
+
                           <div className="text-right">
                             <p className="font-mono font-bold text-2xl text-primary">
                               {entry.total_points}
@@ -574,11 +546,14 @@ export default function Scoreboard() {
                 )}
               </CardContent>
             </Card>
+
+            {/* ========================================================= */}
+            {/* === END OF NEW SECTION ================================= */}
+            {/* ========================================================= */}
           </>
         )}
       </main>
 
-      {/* Animations and Crystal + Santa styles */}
       <style>{`
         @keyframes float {
           0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
@@ -588,14 +563,12 @@ export default function Scoreboard() {
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
         }
 
-        /* ===== Crystal snowfall layers ===== */
         .crystal-layer {
           position: absolute;
           inset: 0;
           pointer-events: none;
         }
 
-        /* large crystal shards — foreground with shimmer */
         .crystal-layer.large {
           background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.96) 1.6px, rgba(255,255,255,0) 1.6px);
           background-size: 22px 22px;
@@ -605,7 +578,6 @@ export default function Scoreboard() {
           mix-blend-mode: screen;
         }
 
-        /* medium crystals */
         .crystal-layer.medium {
           background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.92) 1.2px, rgba(255,255,255,0) 1.2px);
           background-size: 14px 14px;
@@ -615,7 +587,6 @@ export default function Scoreboard() {
           mix-blend-mode: screen;
         }
 
-        /* small glitter crystals forming delicate snow */
         .crystal-layer.small {
           background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.86) 0.9px, rgba(255,255,255,0) 0.9px);
           background-size: 8px 8px;
@@ -625,7 +596,6 @@ export default function Scoreboard() {
           mix-blend-mode: screen;
         }
 
-        /* sparkles layer (tiny shimmering crystals with twinkle) */
         .crystal-layer.sparkle {
           background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,1) 0.6px, rgba(255,255,255,0) 0.6px);
           background-size: 4px 4px;
@@ -660,7 +630,6 @@ export default function Scoreboard() {
           100% { opacity: 0.06; transform: translateY(120%) scale(1) }
         }
 
-        /* ===== Santa sleigh animation ===== */
         .santa-container {
           position: absolute;
           left: -220px;
@@ -670,13 +639,11 @@ export default function Scoreboard() {
           transform: translate3d(0, 0, 0);
         }
 
-        /* When rtl, start on right and move left */
         .santa-container.rtl {
           left: auto;
           right: -220px;
         }
 
-        /* slide left-to-right */
         .santa-container.ltr {
           animation-name: sleigh-fly-ltr;
           animation-timing-function: linear;
@@ -684,7 +651,6 @@ export default function Scoreboard() {
           animation-fill-mode: forwards;
         }
 
-        /* slide right-to-left */
         .santa-container.rtl {
           animation-name: sleigh-fly-rtl;
           animation-timing-function: linear;
@@ -692,14 +658,12 @@ export default function Scoreboard() {
           animation-fill-mode: forwards;
         }
 
-        /* Using CSS variables from inline style for duration/delay */
         .santa-container.ltr,
         .santa-container.rtl {
           animation-duration: var(--dummy, 30s);
           animation-delay: var(--dummy-delay, 0s);
         }
 
-        /* Define the keyframes but actual duration is set inline via style attribute on container */
         @keyframes sleigh-fly-ltr {
           0% { transform: translateX(-8vw) translateY(0) rotate(0deg); opacity: 0; }
           5% { opacity: 1; }
@@ -715,7 +679,6 @@ export default function Scoreboard() {
           100% { transform: translateX(-125vw) translateY(12vh) rotate(-1deg); opacity: 0; }
         }
 
-        /* Sleigh visual styles */
         .santa-sleigh {
           position: relative;
           display: inline-block;
@@ -727,7 +690,6 @@ export default function Scoreboard() {
           transform-origin: center center;
         }
 
-        /* Trail */
         .sleigh-trail {
           position: absolute;
           left: -40px;
@@ -741,7 +703,6 @@ export default function Scoreboard() {
           transform-origin: left center;
           pointer-events: none;
           mix-blend-mode: screen;
-          /* animated shimmer along trail */
           background-size: 200% 100%;
           animation: trail-shimmer 3.6s linear infinite;
         }
@@ -751,7 +712,6 @@ export default function Scoreboard() {
           100% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
         }
 
-        /* make trail more magical by adding small sparkles via pseudo-elements */
         .sleigh-trail::before,
         .sleigh-trail::after {
           content: '';
@@ -774,13 +734,11 @@ export default function Scoreboard() {
           opacity: 0.7;
         }
 
-        /* responsive tweak so small sleigh doesn't obstruct content on tiny screens */
         @media (max-width: 640px) {
           .santa-sleigh { width: 120px !important; }
           .sleigh-trail { display: none; }
         }
 
-        /* ===== accessibility: reduce motion support ===== */
         @media (prefers-reduced-motion: reduce) {
           .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, .crystal-layer.sparkle {
             animation: none !important;
