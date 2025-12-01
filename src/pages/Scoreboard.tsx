@@ -567,7 +567,7 @@ export default function Scoreboard() {
                 <Users className="h-6 w-6 text-primary" />
               </div>
               <span className="bg-gradient-to-r from-red-400 to-green-400 bg-clip-text text-transparent font-bold">
-                🎄 Christmas CTF Participants 🎄
+                🎄 SCP CTF Participants 🎄
               </span>
               <span className="ml-auto text-sm text-muted-foreground font-normal bg-gradient-to-r from-yellow-400/20 to-red-400/20 px-3 py-1 rounded-full border border-yellow-400/30">
                 ✨ {nonAdminUsers.length} Hackers ✨
