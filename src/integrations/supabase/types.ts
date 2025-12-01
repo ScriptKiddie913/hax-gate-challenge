@@ -323,6 +323,14 @@ export type Database = {
         Args: { p_challenge_id: string; p_flag: string }
         Returns: undefined
       }
+      get_all_participants: {
+        Args: never
+        Returns: {
+          created_at: string
+          user_id: string
+          username: string
+        }[]
+      }
       get_scoreboard: {
         Args: never
         Returns: {
