@@ -69,7 +69,7 @@ export default function Scoreboard() {
 
     const generated = Array.from({ length: 30 }). map((_, i) => ({
       id: i,
-      top: `${Math.random() * 100}%`,
+      top: `${Math. random() * 100}%`,
       left: `${Math.random() * 100}%`,
       delay: `${Math.random() * 6}s`,
       size: `${3 + Math.random() * 4}px`,
@@ -152,7 +152,7 @@ export default function Scoreboard() {
     try {
       const { data: topScores } = await supabase. rpc('get_scoreboard');
       const topUserIds = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.user_id);
-      const topUsernames = (topScores || []).slice(0, 8). map((s: ScoreEntry) => s.username);
+      const topUsernames = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.username);
       setTopUsers(topUsernames);
 
       if (topUserIds.length === 0) {
@@ -177,7 +177,7 @@ export default function Scoreboard() {
       });
 
       const startTime = submissions && submissions.length > 0 
-        ? new Date(submissions[0].created_at).getTime() 
+        ? new Date(submissions[0].created_at). getTime() 
         : Date.now();
       
       const initialPoint: any = { timestamp: new Date(startTime).toLocaleTimeString() };
@@ -196,20 +196,20 @@ export default function Scoreboard() {
         userScores[userId] += points;
 
         const time = new Date(sub.created_at).getTime();
-        if (! timePoints[time]) {
+        if (!timePoints[time]) {
           const prevScores = Object.keys(timePoints).length > 0
             ? timePoints[Math.max(...Object.keys(timePoints).map(Number))]
             : initialPoint;
           timePoints[time] = { 
             timestamp: new Date(time).toLocaleTimeString(),
-            ... Object.fromEntries(topUsernames.map(u => [u, prevScores[u] || 0]))
+            ...Object.fromEntries(topUsernames.map(u => [u, prevScores[u] || 0]))
           };
         }
         timePoints[time][username] = userScores[userId];
 
         topUsernames.forEach(u => {
           if (timePoints[time][u] === undefined) {
-            const prevTime = Math.max(...Object.keys(timePoints).map(Number). filter(t => t < time));
+            const prevTime = Math.max(...Object.keys(timePoints). map(Number). filter(t => t < time));
             timePoints[time][u] = prevTime ?  timePoints[prevTime][u] : 0;
           }
         });
@@ -369,7 +369,7 @@ export default function Scoreboard() {
           <p className="text-muted-foreground text-lg">Real-time rankings • Updates automatically</p>
         </div>
 
-        {! ctfActive ? (
+        {! ctfActive ?  (
           <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-8">
             <CardContent className="py-16 text-center">
               <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
@@ -398,7 +398,7 @@ export default function Scoreboard() {
                         <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
                           {rank === 1 ? '1st' : rank === 2 ? '2nd' : '3rd'} Place
                         </p>
-                        <h3 className="font-mono font-bold text-2xl mb-2">{entry. username}</h3>
+                        <h3 className="font-mono font-bold text-2xl mb-2">{entry.username}</h3>
                         <div className="flex items-center justify-center gap-2 text-muted-foreground mb-3">
                           <Flag className="h-4 w-4" />
                           <span className="text-sm">{entry.solved_count} solved</span>
@@ -442,8 +442,8 @@ export default function Scoreboard() {
                         tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
                       />
                       <YAxis 
-                        stroke="rgba(148, 163, 184, 0.6)"
-                        tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
+                        stroke="rgba(148, 163, 184, 0. 6)"
+                        tick={{ fill: 'rgba(148, 163, 184, 0. 8)', fontSize: 11 }}
                         tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
                       />
                       <Tooltip 
@@ -510,7 +510,7 @@ export default function Scoreboard() {
           </>
         )}
 
-        {/* All Registered Participants - Simple list format without registration time */}
+        {/* All Registered Participants - Vertical list format */}
         <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
           <CardHeader className="border-b border-border/50">
             <CardTitle className="flex items-center gap-3 text-xl">
@@ -531,17 +531,22 @@ export default function Scoreboard() {
                 <p className="text-muted-foreground">No participants registered yet. </p>
               </div>
             ) : (
-              <div className="mt-4">
-                <div className="flex flex-wrap gap-3">
-                  {allUsers.map((user, index) => (
-                    <div
-                      key={user.user_id}
-                      className="px-4 py-2 rounded-lg bg-secondary/40 border border-border hover:border-primary/30 transition-all duration-200 font-mono font-medium text-sm"
-                    >
-                      {user. username}
+              <div className="mt-4 space-y-2">
+                {allUsers.map((user, index) => (
+                  <div
+                    key={user. user_id}
+                    className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30 border border-border hover:border-primary/30 transition-all duration-200"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                      <span className="text-xs font-mono font-bold text-primary">
+                        {index + 1}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <p className="font-mono font-medium text-sm">
+                      {user.username}
+                    </p>
+                  </div>
+                ))}
               </div>
             )}
           </CardContent>
@@ -557,7 +562,7 @@ export default function Scoreboard() {
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
         }
 
-        . crystal-layer {
+        .crystal-layer {
           position: absolute;
           inset: 0;
           pointer-events: none;
@@ -567,7 +572,7 @@ export default function Scoreboard() {
           background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.96) 1. 6px, rgba(255,255,255,0) 1.6px);
           background-size: 22px 22px;
           opacity: 0.14;
-          filter: blur(0.5px) saturate(1.15);
+          filter: blur(0. 5px) saturate(1.15);
           animation: crystal-large 36s linear infinite;
           mix-blend-mode: screen;
         }
@@ -702,7 +707,7 @@ export default function Scoreboard() {
         }
         @keyframes trail-shimmer {
           0% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
-          50% { background-position: 100% 50%; opacity: 1; transform: scaleX(1. 05) translateY(-3px) }
+          50% { background-position: 100% 50%; opacity: 1; transform: scaleX(1.05) translateY(-3px) }
           100% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
         }
 
