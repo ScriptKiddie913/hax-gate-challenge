@@ -196,20 +196,20 @@ export default function Scoreboard() {
         userScores[userId] += points;
 
         const time = new Date(sub.created_at).getTime();
-        if (!timePoints[time]) {
+        if (! timePoints[time]) {
           const prevScores = Object.keys(timePoints).length > 0
             ? timePoints[Math.max(...Object.keys(timePoints).map(Number))]
             : initialPoint;
           timePoints[time] = { 
             timestamp: new Date(time).toLocaleTimeString(),
-            ...Object.fromEntries(topUsernames.map(u => [u, prevScores[u] || 0]))
+            ... Object.fromEntries(topUsernames.map(u => [u, prevScores[u] || 0]))
           };
         }
         timePoints[time][username] = userScores[userId];
 
         topUsernames.forEach(u => {
           if (timePoints[time][u] === undefined) {
-            const prevTime = Math.max(...Object.keys(timePoints). map(Number). filter(t => t < time));
+            const prevTime = Math.max(...Object.keys(timePoints).map(Number). filter(t => t < time));
             timePoints[time][u] = prevTime ?  timePoints[prevTime][u] : 0;
           }
         });
@@ -221,7 +221,7 @@ export default function Scoreboard() {
 
       setProgressionData(progression);
     } catch (error: any) {
-      console. error('Error loading progression:', error);
+      console.error('Error loading progression:', error);
     }
   };
 
@@ -369,7 +369,7 @@ export default function Scoreboard() {
           <p className="text-muted-foreground text-lg">Real-time rankings • Updates automatically</p>
         </div>
 
-        {! ctfActive ?  (
+        {! ctfActive ? (
           <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-8">
             <CardContent className="py-16 text-center">
               <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
@@ -398,7 +398,7 @@ export default function Scoreboard() {
                         <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
                           {rank === 1 ? '1st' : rank === 2 ? '2nd' : '3rd'} Place
                         </p>
-                        <h3 className="font-mono font-bold text-2xl mb-2">{entry.username}</h3>
+                        <h3 className="font-mono font-bold text-2xl mb-2">{entry. username}</h3>
                         <div className="flex items-center justify-center gap-2 text-muted-foreground mb-3">
                           <Flag className="h-4 w-4" />
                           <span className="text-sm">{entry.solved_count} solved</span>
@@ -510,7 +510,7 @@ export default function Scoreboard() {
           </>
         )}
 
-        {/* All Registered Participants - Now positioned below the scoreboard */}
+        {/* All Registered Participants - Simple list format without registration time */}
         <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
           <CardHeader className="border-b border-border/50">
             <CardTitle className="flex items-center gap-3 text-xl">
@@ -531,40 +531,17 @@ export default function Scoreboard() {
                 <p className="text-muted-foreground">No participants registered yet. </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
-                {allUsers.map((user) => {
-                  const scoreEntry = scores.find(s => s.user_id === user.user_id);
-                  const points = scoreEntry?.total_points || 0;
-                  const solves = scoreEntry?.solved_count || 0;
-                  const rank = scores.findIndex(s => s. user_id === user.user_id) + 1;
-                  
-                  return (
+              <div className="mt-4">
+                <div className="flex flex-wrap gap-3">
+                  {allUsers.map((user, index) => (
                     <div
                       key={user.user_id}
-                      className="flex items-center justify-between p-4 rounded-lg border bg-secondary/30 border-border hover:border-primary/30 transition-all duration-200"
+                      className="px-4 py-2 rounded-lg bg-secondary/40 border border-border hover:border-primary/30 transition-all duration-200 font-mono font-medium text-sm"
                     >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                          {rank > 0 ?  (
-                            <span className="text-xs font-mono font-bold text-primary">#{rank}</span>
-                          ) : (
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-mono font-bold text-sm">{user.username}</p>
-                          <p className="text-xs text-muted-foreground">
-                            Joined {new Date(user.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-mono font-bold text-primary">{points}</p>
-                        <p className="text-xs text-muted-foreground">{solves} solves</p>
-                      </div>
+                      {user. username}
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
               </div>
             )}
           </CardContent>
@@ -580,13 +557,13 @@ export default function Scoreboard() {
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
         }
 
-        .crystal-layer {
+        . crystal-layer {
           position: absolute;
           inset: 0;
           pointer-events: none;
         }
 
-        .crystal-layer. large {
+        .crystal-layer.large {
           background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.96) 1. 6px, rgba(255,255,255,0) 1.6px);
           background-size: 22px 22px;
           opacity: 0.14;
@@ -725,7 +702,7 @@ export default function Scoreboard() {
         }
         @keyframes trail-shimmer {
           0% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
-          50% { background-position: 100% 50%; opacity: 1; transform: scaleX(1.05) translateY(-3px) }
+          50% { background-position: 100% 50%; opacity: 1; transform: scaleX(1. 05) translateY(-3px) }
           100% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
         }
 
