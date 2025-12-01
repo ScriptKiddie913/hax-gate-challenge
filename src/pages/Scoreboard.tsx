@@ -48,7 +48,7 @@ export default function Scoreboard() {
     return Math.floor(Math. random() * (28 - 6 + 1)) + 6;
   });
   const [sleighDirection, setSleighDirection] = useState<"ltr" | "rtl">(() => {
-    return Math.random() > 0.5 ?  "ltr" : "rtl";
+    return Math. random() > 0.5 ? "ltr" : "rtl";
   });
 
   const CHART_COLORS = [
@@ -62,6 +62,12 @@ export default function Scoreboard() {
     '#ef4444',
   ];
 
+  // Function to filter out banned/hidden users
+  const filterHiddenUsers = <T extends { username: string }>(users: T[]): T[] => {
+    const bannedUsernames = ['disavowed913'];
+    return users.filter(user => !bannedUsernames.includes(user.username. toLowerCase()));
+  };
+
   useEffect(() => {
     checkCtfStatus();
     loadScoreboard();
@@ -71,8 +77,8 @@ export default function Scoreboard() {
     const generated = Array.from({ length: 30 }). map((_, i) => ({
       id: i,
       top: `${Math. random() * 100}%`,
-      left: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 6}s`,
+      left: `${Math. random() * 100}%`,
+      delay: `${Math. random() * 6}s`,
       size: `${3 + Math.random() * 4}px`,
     }));
     setFireflies(generated);
@@ -106,7 +112,7 @@ export default function Scoreboard() {
 
     let sleighTimeout: NodeJS.Timeout;
     const scheduleNextSleigh = () => {
-      const nextDuration = Math.floor(Math.random() * (46 - 18 + 1)) + 18;
+      const nextDuration = Math.floor(Math. random() * (46 - 18 + 1)) + 18;
       const nextDelay = Math.floor(Math.random() * 10);
       const nextTop = Math.floor(Math.random() * (28 - 6 + 1)) + 6;
       const nextDir = Math.random() > 0.5 ? "ltr" : "rtl";
@@ -152,8 +158,11 @@ export default function Scoreboard() {
   const loadScoreProgression = async () => {
     try {
       const { data: topScores } = await supabase. rpc('get_scoreboard');
-      const topUserIds = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.user_id);
-      const topUsernames = (topScores || []).slice(0, 8). map((s: ScoreEntry) => s.username);
+      
+      // Filter out banned users from progression data
+      const filteredTopScores = filterHiddenUsers(topScores || []);
+      const topUserIds = filteredTopScores.slice(0, 8).map((s: ScoreEntry) => s.user_id);
+      const topUsernames = filteredTopScores. slice(0, 8).map((s: ScoreEntry) => s.username);
       setTopUsers(topUsernames);
 
       if (topUserIds.length === 0) {
@@ -162,7 +171,7 @@ export default function Scoreboard() {
       }
 
       const { data: submissions, error } = await supabase
-        .from('submissions')
+        . from('submissions')
         .select('user_id, created_at, challenge_id, challenges(points)')
         .in('user_id', topUserIds)
         .eq('result', 'CORRECT')
@@ -177,7 +186,7 @@ export default function Scoreboard() {
         userScores[uid] = 0;
       });
 
-      const startTime = submissions && submissions. length > 0 
+      const startTime = submissions && submissions.length > 0 
         ? new Date(submissions[0].created_at).getTime() 
         : Date.now();
       
@@ -210,7 +219,7 @@ export default function Scoreboard() {
 
         topUsernames.forEach(u => {
           if (timePoints[time][u] === undefined) {
-            const prevTime = Math.max(...Object.keys(timePoints). map(Number). filter(t => t < time));
+            const prevTime = Math.max(...Object.keys(timePoints).map(Number). filter(t => t < time));
             timePoints[time][u] = prevTime ?  timePoints[prevTime][u] : 0;
           }
         });
@@ -232,10 +241,13 @@ export default function Scoreboard() {
         .rpc('get_scoreboard');
 
       if (error) throw error;
-      setScores(data || []);
+      
+      // Filter out banned users from scoreboard data
+      const filteredScores = filterHiddenUsers(data || []);
+      setScores(filteredScores);
     } catch (error: any) {
       toast.error("Error loading scoreboard");
-      console.error(error);
+      console. error(error);
     } finally {
       setLoading(false);
     }
@@ -251,23 +263,25 @@ export default function Scoreboard() {
 
       if (usersError) throw usersError;
 
-      // Filter out admin users
-      const nonAdminUsers = (usersData || []).filter(user => !user.is_admin);
+      // Filter out admin users AND banned users
+      const filteredUsers = filterHiddenUsers(usersData || []);
+      const nonAdminUsers = filteredUsers.filter(user => !user.is_admin);
       setAllUsers(nonAdminUsers);
     } catch (error: any) {
       console.error('Error loading all users:', error);
       
-      // Fallback: try the original RPC method and filter admins by common admin usernames
+      // Fallback: try the original RPC method and filter admins + banned users
       try {
         const { data: fallbackData, error: fallbackError } = await supabase. rpc('get_all_participants');
         if (fallbackError) throw fallbackError;
         
-        // Filter out common admin usernames (customize this list based on your setup)
+        // Filter out common admin usernames AND banned users
         const adminUsernames = ['admin', 'administrator', 'root', 'superuser', 'moderator'];
-        const filteredUsers = (fallbackData || []). filter((user: RegisteredUser) => 
-          !adminUsernames.includes(user.username. toLowerCase())
+        const filteredUsers = filterHiddenUsers(fallbackData || []);
+        const finalFilteredUsers = filteredUsers.filter((user: RegisteredUser) => 
+          !adminUsernames.includes(user.username.toLowerCase())
         );
-        setAllUsers(filteredUsers);
+        setAllUsers(finalFilteredUsers);
       } catch (fallbackError: any) {
         console.error('Fallback error loading users:', fallbackError);
       }
@@ -315,7 +329,7 @@ export default function Scoreboard() {
   }
 
   const topThree = scores.slice(0, 3);
-  // Filter out admin users from displayed participants
+  // Filter out admin users from displayed participants (already filtered by loadAllUsers)
   const nonAdminUsers = allUsers.filter(user => !user.is_admin);
 
   return (
@@ -454,7 +468,7 @@ export default function Scoreboard() {
               </div>
             )}
 
-            {progressionData. length > 0 ?  (
+            {progressionData.length > 0 ?  (
               <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-8">
                 <CardHeader className="border-b border-border/50">
                   <CardTitle className="flex items-center gap-3 text-xl">
@@ -495,7 +509,7 @@ export default function Scoreboard() {
                           backdropFilter: 'blur(8px)'
                         }}
                         itemStyle={{
-                          color: 'rgba(226, 232, 240, 0.95)'
+                          color: 'rgba(226, 232, 240, 0. 95)'
                         }}
                       />
                       <Legend 
@@ -550,7 +564,7 @@ export default function Scoreboard() {
           </>
         )}
 
-        {/* Christmas-themed decorative participant list - ADMINS FILTERED OUT */}
+        {/* Christmas-themed decorative participant list - ADMINS AND BANNED USERS FILTERED OUT */}
         <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl relative overflow-hidden">
           {/* Christmas decorations background */}
           <div className="absolute inset-0 pointer-events-none opacity-10">
@@ -579,7 +593,7 @@ export default function Scoreboard() {
             {nonAdminUsers.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">🎅</div>
-                <p className="text-muted-foreground">Santa's workshop is empty! No participants registered yet.</p>
+                <p className="text-muted-foreground">Santa's workshop is empty! No participants registered yet. </p>
               </div>
             ) : (
               <div className="mt-6 space-y-3">
@@ -593,7 +607,7 @@ export default function Scoreboard() {
 
                   return (
                     <div
-                      key={user.user_id}
+                      key={user. user_id}
                       className={`group relative overflow-hidden rounded-xl border bg-gradient-to-r ${colorGradient} backdrop-blur-sm hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20`}
                     >
                       {/* Animated Christmas lights border */}
@@ -639,7 +653,7 @@ export default function Scoreboard() {
                               <div className="flex items-center gap-2 mt-1">
                                 <span className="text-sm text-gray-300/90">Current Rank:</span>
                                 <span className="text-sm font-mono font-bold text-yellow-300">
-                                  {rank > 0 ? `#${rank}` : 'Unranked'}
+                                  {rank > 0 ?  `#${rank}` : 'Unranked'}
                                 </span>
                               </div>
                             )}
@@ -729,7 +743,7 @@ export default function Scoreboard() {
           mix-blend-mode: screen;
         }
 
-        .crystal-layer.medium {
+        . crystal-layer.medium {
           background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.92) 1.2px, rgba(255,255,255,0) 1.2px);
           background-size: 14px 14px;
           opacity: 0.10;
@@ -790,7 +804,7 @@ export default function Scoreboard() {
           transform: translate3d(0, 0, 0);
         }
 
-        . santa-container.rtl {
+        .santa-container.rtl {
           left: auto;
           right: -220px;
         }
@@ -891,7 +905,7 @@ export default function Scoreboard() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, . crystal-layer.sparkle {
+          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, .crystal-layer. sparkle {
             animation: none !important;
           }
         }
