@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Ban, Unlock, Trash2, Users, ChevronDown, ChevronUp, Copy, Shield } from "lucide-react";
+import { Ban, Unlock, Trash2, Users, ChevronDown, ChevronUp, Copy, Shield, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -23,6 +23,27 @@ export function AdminUsers() {
 
   useEffect(() => {
     loadUsers();
+
+    // Set up realtime subscription for new users
+    const channel = supabase
+      .channel('admin-users-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'profiles'
+        },
+        (payload) => {
+          console.log('Profile change detected:', payload);
+          loadUsers();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const loadUsers = async () => {
@@ -101,6 +122,15 @@ export function AdminUsers() {
         <CardTitle className="flex items-center gap-2 font-mono">
           <Users className="h-5 w-5 text-primary" />
           PERSONNEL MANAGEMENT
+          <span className="ml-2 text-sm text-muted-foreground">({users.length} total)</span>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={loadUsers}
+            className="ml-auto"
+          >
+            <RefreshCw className="h-4 w-4" />
+          </Button>
         </CardTitle>
         <div className="classification-bar mt-3"></div>
       </CardHeader>
@@ -129,7 +159,7 @@ export function AdminUsers() {
                         </Badge>
                       )}
                     </div>
-                    <p className="text-sm text-muted-foreground font-mono">{user.email}</p>
+                    <p className="text-sm text-muted-foreground font-mono">{user.email || 'No email'}</p>
                     <p className="text-xs text-muted-foreground mt-1 font-mono">
                       ENROLLED: {new Date(user.created_at).toLocaleDateString()}
                     </p>

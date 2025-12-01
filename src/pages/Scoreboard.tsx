@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trophy, Medal, Award, Flag, TrendingUp } from "lucide-react";
+import { Trophy, Medal, Award, Flag, TrendingUp, Users } from "lucide-react";
 import { toast } from "sonner";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
@@ -14,6 +14,12 @@ interface ScoreEntry {
   last_submission: string;
 }
 
+interface RegisteredUser {
+  user_id: string;
+  username: string;
+  created_at: string;
+}
+
 interface ScoreProgression {
   timestamp: string;
   [key: string]: number | string;
@@ -21,6 +27,7 @@ interface ScoreProgression {
 
 export default function Scoreboard() {
   const [scores, setScores] = useState<ScoreEntry[]>([]);
+  const [allUsers, setAllUsers] = useState<RegisteredUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [progressionData, setProgressionData] = useState<ScoreProgression[]>([]);
   const [topUsers, setTopUsers] = useState<string[]>([]);
@@ -58,6 +65,7 @@ export default function Scoreboard() {
     checkCtfStatus();
     loadScoreboard();
     loadScoreProgression();
+    loadAllUsers();
 
     const generated = Array.from({ length: 30 }).map((_, i) => ({
       id: i,
@@ -80,6 +88,17 @@ export default function Scoreboard() {
         () => {
           loadScoreboard();
           loadScoreProgression();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'profiles'
+        },
+        () => {
+          loadAllUsers();
         }
       )
       .subscribe();
@@ -218,6 +237,17 @@ export default function Scoreboard() {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const loadAllUsers = async () => {
+    try {
+      const { data, error } = await supabase.rpc('get_all_participants');
+
+      if (error) throw error;
+      setAllUsers(data || []);
+    } catch (error: any) {
+      console.error('Error loading all users:', error);
     }
   };
 
@@ -547,9 +577,65 @@ export default function Scoreboard() {
               </CardContent>
             </Card>
 
-            {/* ========================================================= */}
-            {/* === END OF NEW SECTION ================================= */}
-            {/* ========================================================= */}
+            {/* All Registered Users Section */}
+            <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-10">
+              <CardHeader className="border-b border-border/50">
+                <CardTitle className="flex items-center gap-3 text-xl">
+                  <div className="p-2 rounded-lg bg-primary/10">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  All Registered Participants
+                  <span className="ml-auto text-sm text-muted-foreground font-normal">
+                    {allUsers.length} total
+                  </span>
+                </CardTitle>
+              </CardHeader>
+
+              <CardContent>
+                {allUsers.length === 0 ? (
+                  <div className="text-center py-12">
+                    <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                    <p className="text-muted-foreground">No participants registered yet.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
+                    {allUsers.map((user) => {
+                      const scoreEntry = scores.find(s => s.user_id === user.user_id);
+                      const points = scoreEntry?.total_points || 0;
+                      const solves = scoreEntry?.solved_count || 0;
+                      const rank = scores.findIndex(s => s.user_id === user.user_id) + 1;
+                      
+                      return (
+                        <div
+                          key={user.user_id}
+                          className="flex items-center justify-between p-4 rounded-lg border bg-secondary/30 border-border hover:border-primary/30 transition-all duration-200"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                              {rank > 0 ? (
+                                <span className="text-xs font-mono font-bold text-primary">#{rank}</span>
+                              ) : (
+                                <Users className="h-4 w-4 text-muted-foreground" />
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-mono font-bold text-sm">{user.username}</p>
+                              <p className="text-xs text-muted-foreground">
+                                Joined {new Date(user.created_at).toLocaleDateString()}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-mono font-bold text-primary">{points}</p>
+                            <p className="text-xs text-muted-foreground">{solves} solves</p>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </>
         )}
       </main>

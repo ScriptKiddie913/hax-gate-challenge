@@ -7,25 +7,66 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Navbar } from "@/components/Navbar";
-import { Lock, ArrowRight } from "lucide-react";
+import { Lock, ArrowRight, Loader2 } from "lucide-react";
 
 export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [isValidSession, setIsValidSession] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if we have a valid recovery session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setIsValidSession(true);
-      } else {
-        toast.error("Invalid or expired reset link");
+    // Handle the recovery token from URL hash
+    const handleRecoveryToken = async () => {
+      try {
+        // Check if we have a hash fragment with access_token (recovery link)
+        const hashParams = new URLSearchParams(window.location.hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        const refreshToken = hashParams.get('refresh_token');
+        const type = hashParams.get('type');
+
+        if (type === 'recovery' && accessToken && refreshToken) {
+          // Set the session from the recovery tokens
+          const { data, error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+
+          if (error) {
+            console.error('Session error:', error);
+            toast.error("Invalid or expired reset link. Please request a new one.");
+            navigate("/auth");
+            return;
+          }
+
+          if (data.session) {
+            setIsValidSession(true);
+            // Clear the hash from URL for security
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+        } else {
+          // Check for existing recovery session
+          const { data: { session } } = await supabase.auth.getSession();
+          
+          if (session) {
+            setIsValidSession(true);
+          } else {
+            toast.error("Invalid or expired reset link. Please request a new one.");
+            navigate("/auth");
+          }
+        }
+      } catch (error) {
+        console.error('Recovery error:', error);
+        toast.error("Error processing reset link");
         navigate("/auth");
+      } finally {
+        setCheckingSession(false);
       }
-    });
+    };
+
+    handleRecoveryToken();
   }, [navigate]);
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -55,7 +96,10 @@ export default function ResetPassword() {
 
       if (error) throw error;
 
-      toast.success("Password reset successfully! You can now sign in.");
+      // Sign out after password reset for security
+      await supabase.auth.signOut();
+      
+      toast.success("Password reset successfully! Please sign in with your new password.");
       navigate("/auth");
     } catch (error: any) {
       toast.error(error.message || "Error resetting password");
@@ -64,13 +108,37 @@ export default function ResetPassword() {
     }
   };
 
+  if (checkingSession) {
+    return (
+      <div
+        className="min-h-screen flex flex-col relative text-foreground"
+        style={{
+          backgroundImage: "url('/images/s.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/40 to-background/60 backdrop-blur-[2px]"></div>
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center p-4 relative z-10">
+          <div className="flex flex-col items-center gap-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <p className="text-muted-foreground font-mono">Verifying reset link...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!isValidSession) {
     return null;
   }
 
   return (
     <div
-      className="min-h-screen flex flex-col relative text-[#eaf0ff]"
+      className="min-h-screen flex flex-col relative text-foreground"
       style={{
         backgroundImage: "url('/images/s.png')",
         backgroundSize: "cover",
@@ -79,37 +147,37 @@ export default function ResetPassword() {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0a0e1a]/50 via-[#0a0e1a]/40 to-[#0a0e1a]/60 backdrop-blur-[2px]"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-background/40 to-background/60 backdrop-blur-[2px]"></div>
 
       <Navbar />
 
       <div className="flex-1 flex items-center justify-center p-4 relative z-10">
         <div className="w-full max-w-md">
           <div className="text-center mb-8 animate-fade-in-soft">
-            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 border border-[#8abaff]/40 shadow-[0_0_25px_rgba(138,186,255,0.3)] mb-4 backdrop-blur-lg">
-              <Lock className="h-10 w-10 text-[#a8c8ff] animate-pulse-slow" />
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 border border-primary/40 shadow-[0_0_25px_hsl(var(--primary)/0.3)] mb-4 backdrop-blur-lg">
+              <Lock className="h-10 w-10 text-primary animate-pulse-slow" />
             </div>
-            <h1 className="text-3xl font-bold mb-2 text-[#bcd0ff]">
+            <h1 className="text-3xl font-bold mb-2 text-foreground">
               Reset Your Password
             </h1>
-            <p className="text-[#c9d8ff]/90 font-mono text-sm">
+            <p className="text-muted-foreground font-mono text-sm">
               Enter your new password below
             </p>
           </div>
 
-          <Card className="border border-white/10 bg-white/5 backdrop-blur-2xl shadow-[0_0_30px_rgba(255,255,255,0.05)] rounded-xl text-[#eaf0ff]">
+          <Card className="border border-border bg-card/80 backdrop-blur-2xl shadow-xl rounded-xl">
             <CardHeader>
-              <CardTitle className="text-[#bcd0ff]">New Password</CardTitle>
-              <CardDescription className="text-[#d4e0ff]/80">
+              <CardTitle>New Password</CardTitle>
+              <CardDescription>
                 Choose a strong password for your account
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleResetPassword} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="password" className="text-[#c6d8ff]">New Password</Label>
+                  <Label htmlFor="password">New Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-[#bcd0ff]/70" />
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="password"
                       type="password"
@@ -118,14 +186,14 @@ export default function ResetPassword() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       minLength={6}
-                      className="pl-10 bg-white/5 border border-white/10 text-[#f0f5ff] placeholder:text-[#cbd8ff]/40"
+                      className="pl-10"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="confirm-password" className="text-[#c6d8ff]">Confirm Password</Label>
+                  <Label htmlFor="confirm-password">Confirm Password</Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-[#bcd0ff]/70" />
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="confirm-password"
                       type="password"
@@ -134,17 +202,26 @@ export default function ResetPassword() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                       minLength={6}
-                      className="pl-10 bg-white/5 border border-white/10 text-[#f0f5ff] placeholder:text-[#cbd8ff]/40"
+                      className="pl-10"
                     />
                   </div>
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-[#2a62cc]/70 hover:bg-[#3c74dd]/80 text-white shadow-[0_0_20px_rgba(80,130,255,0.4)] hover:shadow-[0_0_35px_rgba(100,150,255,0.5)] transition-all duration-300 rounded-lg font-mono"
+                  className="w-full"
                   disabled={loading}
                 >
-                  {loading ? "Resetting..." : "Reset Password"}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Resetting...
+                    </>
+                  ) : (
+                    <>
+                      Reset Password
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </>
+                  )}
                 </Button>
               </form>
             </CardContent>
