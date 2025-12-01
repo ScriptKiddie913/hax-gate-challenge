@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Navbar } from "@/components/Navbar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trophy, Medal, Award, Flag, TrendingUp, Users } from "lucide-react";
+import { Trophy, Medal, Award, Flag, TrendingUp, Users, Star, Snowflake } from "lucide-react";
 import { toast } from "sonner";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 
@@ -152,7 +152,7 @@ export default function Scoreboard() {
     try {
       const { data: topScores } = await supabase. rpc('get_scoreboard');
       const topUserIds = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.user_id);
-      const topUsernames = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.username);
+      const topUsernames = (topScores || []).slice(0, 8). map((s: ScoreEntry) => s.username);
       setTopUsers(topUsernames);
 
       if (topUserIds.length === 0) {
@@ -177,7 +177,7 @@ export default function Scoreboard() {
       });
 
       const startTime = submissions && submissions.length > 0 
-        ? new Date(submissions[0].created_at). getTime() 
+        ? new Date(submissions[0].created_at).getTime() 
         : Date.now();
       
       const initialPoint: any = { timestamp: new Date(startTime).toLocaleTimeString() };
@@ -186,7 +186,7 @@ export default function Scoreboard() {
       });
       timePoints[startTime] = initialPoint;
 
-      submissions?.forEach((sub: any) => {
+      submissions?. forEach((sub: any) => {
         const userId = sub.user_id;
         const userIndex = topUserIds.indexOf(userId);
         if (userIndex === -1) return;
@@ -264,6 +264,22 @@ export default function Scoreboard() {
     }
   };
 
+  const getRandomChristmasEmoji = () => {
+    const emojis = ['🎄', '❄️', '🎅', '🦌', '⭐', '🎁', '🔔', '🕊️', '🎀', '🍪'];
+    return emojis[Math.floor(Math.random() * emojis.length)];
+  };
+
+  const getChristmasColor = (index: number) => {
+    const colors = [
+      'from-red-500/20 to-green-500/20 border-red-400/40',
+      'from-green-500/20 to-red-500/20 border-green-400/40',
+      'from-gold-500/20 to-yellow-500/20 border-yellow-400/40',
+      'from-blue-500/20 to-cyan-500/20 border-blue-400/40',
+      'from-purple-500/20 to-pink-500/20 border-purple-400/40',
+    ];
+    return colors[index % colors.length];
+  };
+
   if (loading || ctfLoading) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -276,7 +292,6 @@ export default function Scoreboard() {
   }
 
   const topThree = scores.slice(0, 3);
-  const restOfScores = scores.slice(3);
 
   return (
     <div 
@@ -369,7 +384,7 @@ export default function Scoreboard() {
           <p className="text-muted-foreground text-lg">Real-time rankings • Updates automatically</p>
         </div>
 
-        {! ctfActive ?  (
+        {! ctfActive ? (
           <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-8">
             <CardContent className="py-16 text-center">
               <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
@@ -398,7 +413,7 @@ export default function Scoreboard() {
                         <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
                           {rank === 1 ? '1st' : rank === 2 ? '2nd' : '3rd'} Place
                         </p>
-                        <h3 className="font-mono font-bold text-2xl mb-2">{entry.username}</h3>
+                        <h3 className="font-mono font-bold text-2xl mb-2">{entry. username}</h3>
                         <div className="flex items-center justify-center gap-2 text-muted-foreground mb-3">
                           <Flag className="h-4 w-4" />
                           <span className="text-sm">{entry.solved_count} solved</span>
@@ -442,8 +457,8 @@ export default function Scoreboard() {
                         tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
                       />
                       <YAxis 
-                        stroke="rgba(148, 163, 184, 0. 6)"
-                        tick={{ fill: 'rgba(148, 163, 184, 0. 8)', fontSize: 11 }}
+                        stroke="rgba(148, 163, 184, 0.6)"
+                        tick={{ fill: 'rgba(148, 163, 184, 0.8)', fontSize: 11 }}
                         tickLine={{ stroke: 'rgba(100, 116, 139, 0.3)' }}
                       />
                       <Tooltip 
@@ -455,7 +470,7 @@ export default function Scoreboard() {
                           backdropFilter: 'blur(8px)'
                         }}
                         itemStyle={{
-                          color: 'rgba(226, 232, 240, 0.95)'
+                          color: 'rgba(226, 232, 240, 0. 95)'
                         }}
                       />
                       <Legend 
@@ -510,43 +525,128 @@ export default function Scoreboard() {
           </>
         )}
 
-        {/* All Registered Participants - Vertical list format */}
-        <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
-          <CardHeader className="border-b border-border/50">
+        {/* Christmas-themed decorative participant list */}
+        <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+          {/* Christmas decorations background */}
+          <div className="absolute inset-0 pointer-events-none opacity-10">
+            <div className="absolute top-4 left-4 text-2xl animate-pulse">🎄</div>
+            <div className="absolute top-8 right-8 text-xl animate-bounce">⭐</div>
+            <div className="absolute bottom-4 left-8 text-xl animate-pulse">🎅</div>
+            <div className="absolute bottom-8 right-4 text-2xl animate-bounce">❄️</div>
+            <div className="absolute top-1/2 left-1/2 text-lg animate-pulse">🎁</div>
+          </div>
+
+          <CardHeader className="border-b border-border/50 relative z-10">
             <CardTitle className="flex items-center gap-3 text-xl">
-              <div className="p-2 rounded-lg bg-primary/10">
+              <div className="p-2 rounded-lg bg-gradient-to-r from-red-500/20 to-green-500/20">
                 <Users className="h-6 w-6 text-primary" />
               </div>
-              All Registered Participants
-              <span className="ml-auto text-sm text-muted-foreground font-normal">
-                {allUsers.length} total
+              <span className="bg-gradient-to-r from-red-400 to-green-400 bg-clip-text text-transparent font-bold">
+                🎄 Christmas CTF Participants 🎄
+              </span>
+              <span className="ml-auto text-sm text-muted-foreground font-normal bg-gradient-to-r from-yellow-400/20 to-red-400/20 px-3 py-1 rounded-full border border-yellow-400/30">
+                ✨ {allUsers.length} Hackers ✨
               </span>
             </CardTitle>
           </CardHeader>
 
-          <CardContent>
+          <CardContent className="relative z-10">
             {allUsers.length === 0 ? (
               <div className="text-center py-12">
-                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No participants registered yet. </p>
+                <div className="text-6xl mb-4">🎅</div>
+                <p className="text-muted-foreground">Santa's workshop is empty! No participants registered yet.</p>
               </div>
             ) : (
-              <div className="mt-4 space-y-2">
-                {allUsers.map((user, index) => (
-                  <div
-                    key={user. user_id}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30 border border-border hover:border-primary/30 transition-all duration-200"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                      <span className="text-xs font-mono font-bold text-primary">
-                        {index + 1}
-                      </span>
+              <div className="mt-6 space-y-3">
+                {allUsers.map((user, index) => {
+                  const scoreEntry = scores.find(s => s.user_id === user.user_id);
+                  const points = scoreEntry?. total_points || 0;
+                  const solves = scoreEntry?.solved_count || 0;
+                  const rank = scores.findIndex(s => s. user_id === user.user_id) + 1;
+                  const emoji = getRandomChristmasEmoji();
+                  const colorGradient = getChristmasColor(index);
+
+                  return (
+                    <div
+                      key={user.user_id}
+                      className={`group relative overflow-hidden rounded-xl border bg-gradient-to-r ${colorGradient} backdrop-blur-sm hover:scale-[1.02] transition-all duration-300 hover:shadow-lg hover:shadow-red-500/20`}
+                    >
+                      {/* Animated Christmas lights border */}
+                      <div className="absolute inset-0 rounded-xl">
+                        <div className="christmas-lights"></div>
+                      </div>
+                      
+                      {/* Snowflakes animation */}
+                      <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-xl">
+                        <Snowflake className="absolute top-1 right-2 h-3 w-3 text-blue-200/40 animate-spin-slow" />
+                        <Star className="absolute top-3 right-8 h-2 w-2 text-yellow-300/50 animate-pulse" />
+                      </div>
+
+                      <div className="relative z-10 flex items-center justify-between p-4">
+                        <div className="flex items-center gap-4">
+                          {/* Christmas avatar */}
+                          <div className="relative">
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-red-500/30 to-green-500/30 border-2 border-yellow-400/50 flex items-center justify-center text-xl font-bold shadow-lg">
+                              {emoji}
+                            </div>
+                            {rank <= 3 && rank > 0 && (
+                              <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-xs font-bold text-white shadow-md animate-pulse">
+                                {rank}
+                              </div>
+                            )}
+                          </div>
+
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <h3 className="font-mono font-bold text-lg bg-gradient-to-r from-white to-gray-200 bg-clip-text text-transparent drop-shadow-sm">
+                                {user.username}
+                              </h3>
+                              {ctfActive && solves > 0 && (
+                                <div className="flex items-center gap-1">
+                                  <Trophy className="h-3 w-3 text-yellow-400" />
+                                  <span className="text-xs text-yellow-300 font-medium">{solves} solves</span>
+                                </div>
+                              )}
+                            </div>
+                            {! ctfActive ?  (
+                              <p className="text-sm text-gray-300/80 font-medium">🎁 Ready for Christmas CTF</p>
+                            ) : (
+                              <div className="flex items-center gap-2 mt-1">
+                                <span className="text-sm text-gray-300/90">Current Rank:</span>
+                                <span className="text-sm font-mono font-bold text-yellow-300">
+                                  {rank > 0 ? `#${rank}` : 'Unranked'}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Points display (only when CTF is active) */}
+                        {ctfActive && (
+                          <div className="text-right">
+                            <div className="flex items-center gap-2">
+                              <Star className="h-4 w-4 text-yellow-400" />
+                              <span className="text-2xl font-mono font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
+                                {points}
+                              </span>
+                            </div>
+                            <p className="text-xs text-gray-300/80 font-medium uppercase tracking-wider">Points</p>
+                          </div>
+                        )}
+
+                        {! ctfActive && (
+                          <div className="text-right">
+                            <div className="text-2xl font-mono font-bold text-gray-400/60">🎅</div>
+                            <p className="text-xs text-gray-400/80 font-medium">Waiting... </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Hover glow effect */}
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-red-400/10 to-green-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     </div>
-                    <p className="font-mono font-medium text-sm">
-                      {user.username}
-                    </p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </CardContent>
@@ -562,17 +662,44 @@ export default function Scoreboard() {
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
         }
 
+        @keyframes spin-slow {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+
+        . animate-spin-slow {
+          animation: spin-slow 4s linear infinite;
+        }
+
+        .christmas-lights {
+          background: linear-gradient(90deg, 
+            #ff0000 0%, #00ff00 25%, #ffff00 50%, #0000ff 75%, #ff0000 100%);
+          height: 2px;
+          width: 100%;
+          position: absolute;
+          top: 0;
+          left: 0;
+          border-radius: 1px;
+          animation: christmas-glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes christmas-glow {
+          0% { opacity: 0.5; box-shadow: 0 0 5px rgba(255,0,0,0.5); }
+          50% { opacity: 1; box-shadow: 0 0 10px rgba(0,255,0,0.7); }
+          100% { opacity: 0.5; box-shadow: 0 0 5px rgba(255,255,0,0.5); }
+        }
+
         .crystal-layer {
           position: absolute;
           inset: 0;
           pointer-events: none;
         }
 
-        .crystal-layer.large {
+        .crystal-layer. large {
           background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.96) 1. 6px, rgba(255,255,255,0) 1.6px);
           background-size: 22px 22px;
           opacity: 0.14;
-          filter: blur(0. 5px) saturate(1.15);
+          filter: blur(0.5px) saturate(1.15);
           animation: crystal-large 36s linear infinite;
           mix-blend-mode: screen;
         }
@@ -638,7 +765,7 @@ export default function Scoreboard() {
           transform: translate3d(0, 0, 0);
         }
 
-        . santa-container.rtl {
+        .santa-container.rtl {
           left: auto;
           right: -220px;
         }
@@ -739,7 +866,7 @@ export default function Scoreboard() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, . crystal-layer.sparkle {
+          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, .crystal-layer. sparkle {
             animation: none !important;
           }
         }
