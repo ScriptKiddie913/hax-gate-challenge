@@ -18,6 +18,7 @@ interface RegisteredUser {
   user_id: string;
   username: string;
   created_at: string;
+  is_admin?: boolean;
 }
 
 interface ScoreProgression {
@@ -47,7 +48,7 @@ export default function Scoreboard() {
     return Math.floor(Math. random() * (28 - 6 + 1)) + 6;
   });
   const [sleighDirection, setSleighDirection] = useState<"ltr" | "rtl">(() => {
-    return Math. random() > 0.5 ? "ltr" : "rtl";
+    return Math.random() > 0.5 ?  "ltr" : "rtl";
   });
 
   const CHART_COLORS = [
@@ -105,7 +106,7 @@ export default function Scoreboard() {
 
     let sleighTimeout: NodeJS.Timeout;
     const scheduleNextSleigh = () => {
-      const nextDuration = Math.floor(Math. random() * (46 - 18 + 1)) + 18;
+      const nextDuration = Math.floor(Math.random() * (46 - 18 + 1)) + 18;
       const nextDelay = Math.floor(Math.random() * 10);
       const nextTop = Math.floor(Math.random() * (28 - 6 + 1)) + 6;
       const nextDir = Math.random() > 0.5 ? "ltr" : "rtl";
@@ -176,7 +177,7 @@ export default function Scoreboard() {
         userScores[uid] = 0;
       });
 
-      const startTime = submissions && submissions.length > 0 
+      const startTime = submissions && submissions. length > 0 
         ? new Date(submissions[0].created_at).getTime() 
         : Date.now();
       
@@ -186,7 +187,7 @@ export default function Scoreboard() {
       });
       timePoints[startTime] = initialPoint;
 
-      submissions?. forEach((sub: any) => {
+      submissions?.forEach((sub: any) => {
         const userId = sub.user_id;
         const userIndex = topUserIds.indexOf(userId);
         if (userIndex === -1) return;
@@ -234,7 +235,7 @@ export default function Scoreboard() {
       setScores(data || []);
     } catch (error: any) {
       toast.error("Error loading scoreboard");
-      console. error(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -242,12 +243,34 @@ export default function Scoreboard() {
 
   const loadAllUsers = async () => {
     try {
-      const { data, error } = await supabase. rpc('get_all_participants');
+      // Load users and check for admin status
+      const { data: usersData, error: usersError } = await supabase
+        .from('profiles')
+        . select('user_id, username, created_at, is_admin')
+        .order('created_at', { ascending: true });
 
-      if (error) throw error;
-      setAllUsers(data || []);
+      if (usersError) throw usersError;
+
+      // Filter out admin users
+      const nonAdminUsers = (usersData || []).filter(user => !user.is_admin);
+      setAllUsers(nonAdminUsers);
     } catch (error: any) {
       console.error('Error loading all users:', error);
+      
+      // Fallback: try the original RPC method and filter admins by common admin usernames
+      try {
+        const { data: fallbackData, error: fallbackError } = await supabase. rpc('get_all_participants');
+        if (fallbackError) throw fallbackError;
+        
+        // Filter out common admin usernames (customize this list based on your setup)
+        const adminUsernames = ['admin', 'administrator', 'root', 'superuser', 'moderator'];
+        const filteredUsers = (fallbackData || []). filter((user: RegisteredUser) => 
+          !adminUsernames.includes(user.username. toLowerCase())
+        );
+        setAllUsers(filteredUsers);
+      } catch (fallbackError: any) {
+        console.error('Fallback error loading users:', fallbackError);
+      }
     }
   };
 
@@ -292,6 +315,8 @@ export default function Scoreboard() {
   }
 
   const topThree = scores.slice(0, 3);
+  // Filter out admin users from displayed participants
+  const nonAdminUsers = allUsers.filter(user => !user.is_admin);
 
   return (
     <div 
@@ -413,7 +438,7 @@ export default function Scoreboard() {
                         <p className="text-sm text-muted-foreground uppercase tracking-wider mb-1">
                           {rank === 1 ? '1st' : rank === 2 ? '2nd' : '3rd'} Place
                         </p>
-                        <h3 className="font-mono font-bold text-2xl mb-2">{entry. username}</h3>
+                        <h3 className="font-mono font-bold text-2xl mb-2">{entry.username}</h3>
                         <div className="flex items-center justify-center gap-2 text-muted-foreground mb-3">
                           <Flag className="h-4 w-4" />
                           <span className="text-sm">{entry.solved_count} solved</span>
@@ -429,7 +454,7 @@ export default function Scoreboard() {
               </div>
             )}
 
-            {progressionData.length > 0 ?  (
+            {progressionData. length > 0 ?  (
               <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-8">
                 <CardHeader className="border-b border-border/50">
                   <CardTitle className="flex items-center gap-3 text-xl">
@@ -470,7 +495,7 @@ export default function Scoreboard() {
                           backdropFilter: 'blur(8px)'
                         }}
                         itemStyle={{
-                          color: 'rgba(226, 232, 240, 0. 95)'
+                          color: 'rgba(226, 232, 240, 0.95)'
                         }}
                       />
                       <Legend 
@@ -490,7 +515,7 @@ export default function Scoreboard() {
                           strokeWidth={3}
                           dot={{ 
                             r: 4, 
-                            fill: CHART_COLORS[index % CHART_COLORS.length],
+                            fill: CHART_COLORS[index % CHART_COLORS. length],
                             strokeWidth: 2,
                             stroke: '#0f1729'
                           }}
@@ -525,7 +550,7 @@ export default function Scoreboard() {
           </>
         )}
 
-        {/* Christmas-themed decorative participant list */}
+        {/* Christmas-themed decorative participant list - ADMINS FILTERED OUT */}
         <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl relative overflow-hidden">
           {/* Christmas decorations background */}
           <div className="absolute inset-0 pointer-events-none opacity-10">
@@ -542,23 +567,23 @@ export default function Scoreboard() {
                 <Users className="h-6 w-6 text-primary" />
               </div>
               <span className="bg-gradient-to-r from-red-400 to-green-400 bg-clip-text text-transparent font-bold">
-                🎄 SCP CTF Participants 🎄
+                🎄 Christmas CTF Participants 🎄
               </span>
               <span className="ml-auto text-sm text-muted-foreground font-normal bg-gradient-to-r from-yellow-400/20 to-red-400/20 px-3 py-1 rounded-full border border-yellow-400/30">
-                ✨ {allUsers.length} Hackers ✨
+                ✨ {nonAdminUsers.length} Hackers ✨
               </span>
             </CardTitle>
           </CardHeader>
 
           <CardContent className="relative z-10">
-            {allUsers.length === 0 ? (
+            {nonAdminUsers.length === 0 ? (
               <div className="text-center py-12">
                 <div className="text-6xl mb-4">🎅</div>
                 <p className="text-muted-foreground">Santa's workshop is empty! No participants registered yet.</p>
               </div>
             ) : (
               <div className="mt-6 space-y-3">
-                {allUsers.map((user, index) => {
+                {nonAdminUsers.map((user, index) => {
                   const scoreEntry = scores.find(s => s.user_id === user.user_id);
                   const points = scoreEntry?. total_points || 0;
                   const solves = scoreEntry?.solved_count || 0;
@@ -765,7 +790,7 @@ export default function Scoreboard() {
           transform: translate3d(0, 0, 0);
         }
 
-        .santa-container.rtl {
+        . santa-container.rtl {
           left: auto;
           right: -220px;
         }
@@ -866,7 +891,7 @@ export default function Scoreboard() {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, .crystal-layer. sparkle {
+          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, . crystal-layer.sparkle {
             animation: none !important;
           }
         }
