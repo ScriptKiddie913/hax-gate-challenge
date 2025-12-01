@@ -44,10 +44,10 @@ export default function Scoreboard() {
     return Math.floor(Math.random() * 10);
   });
   const [sleighTopOffset, setSleighTopOffset] = useState<number>(() => {
-    return Math.floor(Math.random() * (28 - 6 + 1)) + 6;
+    return Math.floor(Math. random() * (28 - 6 + 1)) + 6;
   });
   const [sleighDirection, setSleighDirection] = useState<"ltr" | "rtl">(() => {
-    return Math.random() > 0.5 ? "ltr" : "rtl";
+    return Math. random() > 0.5 ? "ltr" : "rtl";
   });
 
   const CHART_COLORS = [
@@ -67,7 +67,7 @@ export default function Scoreboard() {
     loadScoreProgression();
     loadAllUsers();
 
-    const generated = Array.from({ length: 30 }).map((_, i) => ({
+    const generated = Array.from({ length: 30 }). map((_, i) => ({
       id: i,
       top: `${Math.random() * 100}%`,
       left: `${Math.random() * 100}%`,
@@ -101,11 +101,11 @@ export default function Scoreboard() {
           loadAllUsers();
         }
       )
-      .subscribe();
+      . subscribe();
 
     let sleighTimeout: NodeJS.Timeout;
     const scheduleNextSleigh = () => {
-      const nextDuration = Math.floor(Math.random() * (46 - 18 + 1)) + 18;
+      const nextDuration = Math.floor(Math. random() * (46 - 18 + 1)) + 18;
       const nextDelay = Math.floor(Math.random() * 10);
       const nextTop = Math.floor(Math.random() * (28 - 6 + 1)) + 6;
       const nextDir = Math.random() > 0.5 ? "ltr" : "rtl";
@@ -150,9 +150,9 @@ export default function Scoreboard() {
 
   const loadScoreProgression = async () => {
     try {
-      const { data: topScores } = await supabase.rpc('get_scoreboard');
+      const { data: topScores } = await supabase. rpc('get_scoreboard');
       const topUserIds = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.user_id);
-      const topUsernames = (topScores || []).slice(0, 8).map((s: ScoreEntry) => s.username);
+      const topUsernames = (topScores || []).slice(0, 8). map((s: ScoreEntry) => s.username);
       setTopUsers(topUsernames);
 
       if (topUserIds.length === 0) {
@@ -192,7 +192,7 @@ export default function Scoreboard() {
         if (userIndex === -1) return;
 
         const username = topUsernames[userIndex];
-        const points = sub.challenges?.points || 0;
+        const points = sub.challenges?. points || 0;
         userScores[userId] += points;
 
         const time = new Date(sub.created_at).getTime();
@@ -209,8 +209,8 @@ export default function Scoreboard() {
 
         topUsernames.forEach(u => {
           if (timePoints[time][u] === undefined) {
-            const prevTime = Math.max(...Object.keys(timePoints).map(Number).filter(t => t < time));
-            timePoints[time][u] = prevTime ? timePoints[prevTime][u] : 0;
+            const prevTime = Math.max(...Object.keys(timePoints). map(Number). filter(t => t < time));
+            timePoints[time][u] = prevTime ?  timePoints[prevTime][u] : 0;
           }
         });
       });
@@ -221,7 +221,7 @@ export default function Scoreboard() {
 
       setProgressionData(progression);
     } catch (error: any) {
-      console.error('Error loading progression:', error);
+      console. error('Error loading progression:', error);
     }
   };
 
@@ -234,7 +234,7 @@ export default function Scoreboard() {
       setScores(data || []);
     } catch (error: any) {
       toast.error("Error loading scoreboard");
-      console.error(error);
+      console. error(error);
     } finally {
       setLoading(false);
     }
@@ -242,7 +242,7 @@ export default function Scoreboard() {
 
   const loadAllUsers = async () => {
     try {
-      const { data, error } = await supabase.rpc('get_all_participants');
+      const { data, error } = await supabase. rpc('get_all_participants');
 
       if (error) throw error;
       setAllUsers(data || []);
@@ -282,7 +282,7 @@ export default function Scoreboard() {
     <div 
       className="min-h-screen flex flex-col relative overflow-hidden"
       style={{
-        backgroundImage: "url('/images/s.png')",
+        backgroundImage: "url('/images/s. png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
@@ -313,7 +313,7 @@ export default function Scoreboard() {
           <div className="sleigh-trail" />
           <svg
             viewBox="0 0 640 256"
-            xmlns="http://www.w3.org/2000/svg"
+            xmlns="http://www.w3. org/2000/svg"
             className="santa-svg"
             aria-hidden
             width="180"
@@ -369,72 +369,12 @@ export default function Scoreboard() {
           <p className="text-muted-foreground text-lg">Real-time rankings • Updates automatically</p>
         </div>
 
-        {/* Always show registered participants, regardless of CTF status */}
-        <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-8">
-          <CardHeader className="border-b border-border/50">
-            <CardTitle className="flex items-center gap-3 text-xl">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Users className="h-6 w-6 text-primary" />
-              </div>
-              All Registered Participants
-              <span className="ml-auto text-sm text-muted-foreground font-normal">
-                {allUsers.length} total
-              </span>
-            </CardTitle>
-          </CardHeader>
-
-          <CardContent>
-            {allUsers.length === 0 ? (
-              <div className="text-center py-12">
-                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <p className="text-muted-foreground">No participants registered yet.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
-                {allUsers.map((user) => {
-                  const scoreEntry = scores.find(s => s.user_id === user.user_id);
-                  const points = scoreEntry?.total_points || 0;
-                  const solves = scoreEntry?.solved_count || 0;
-                  const rank = scores.findIndex(s => s.user_id === user.user_id) + 1;
-                  
-                  return (
-                    <div
-                      key={user.user_id}
-                      className="flex items-center justify-between p-4 rounded-lg border bg-secondary/30 border-border hover:border-primary/30 transition-all duration-200"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                          {rank > 0 ? (
-                            <span className="text-xs font-mono font-bold text-primary">#{rank}</span>
-                          ) : (
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                          )}
-                        </div>
-                        <div>
-                          <p className="font-mono font-bold text-sm">{user.username}</p>
-                          <p className="text-xs text-muted-foreground">
-                            Joined {new Date(user.created_at).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-mono font-bold text-primary">{points}</p>
-                        <p className="text-xs text-muted-foreground">{solves} solves</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {!ctfActive ? (
-          <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
+        {! ctfActive ?  (
+          <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-8">
             <CardContent className="py-16 text-center">
               <Trophy className="h-16 w-16 text-muted-foreground mx-auto mb-4 opacity-50" />
               <h2 className="text-3xl font-bold mb-2">CTF Not Started</h2>
-              <p className="text-muted-foreground text-lg">The scoreboard and progression graph will appear when the competition begins!</p>
+              <p className="text-muted-foreground text-lg">The scoreboard and progression graph will appear when the competition begins! </p>
             </CardContent>
           </Card>
         ) : (
@@ -474,8 +414,8 @@ export default function Scoreboard() {
               </div>
             )}
 
-            {progressionData.length > 0 ? (
-              <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
+            {progressionData.length > 0 ?  (
+              <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-8">
                 <CardHeader className="border-b border-border/50">
                   <CardTitle className="flex items-center gap-3 text-xl">
                     <div className="p-2 rounded-lg bg-primary/10">
@@ -552,7 +492,7 @@ export default function Scoreboard() {
                 </CardContent>
               </Card>
             ) : (
-              <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-6">
+              <Card className="border-border bg-[#0f1729]/95 backdrop-blur-xl shadow-2xl mb-8">
                 <CardHeader className="border-b border-border/50">
                   <CardTitle className="flex items-center gap-3 text-xl">
                     <div className="p-2 rounded-lg bg-primary/10">
@@ -567,77 +507,68 @@ export default function Scoreboard() {
                 </CardContent>
               </Card>
             )}
-
-            {/* ========================================================= */}
-            {/* === NEW SECTION: FULL LIST OF ALL PLAYERS UNDER GRAPH === */}
-            {/* ========================================================= */}
-
-            <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl mb-10">
-              <CardHeader className="border-b border-border/50">
-                <CardTitle className="flex items-center gap-3 text-xl">
-                  <div className="p-2 rounded-lg bg-primary/10">
-                    <Trophy className="h-6 w-6 text-primary" />
-                  </div>
-                  All Players
-                  <div className="ml-auto flex items-center gap-2 text-sm text-muted-foreground font-normal">
-                    <div className="w-2 h-2 rounded-full bg-success animate-pulse"></div>
-                    Live
-                  </div>
-                </CardTitle>
-              </CardHeader>
-
-              <CardContent>
-                {scores.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Flag className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">No players yet.</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    {scores.map((entry, index) => {
-                      const actualRank = index + 1;
-                      return (
-                        <div
-                          key={entry.user_id}
-                          className="flex items-center justify-between p-5 rounded-xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-lg bg-secondary/40 border-border hover:border-primary/30"
-                        >
-                          <div className="flex items-center gap-4 flex-1">
-                            <div className="w-14 flex items-center justify-center">
-                              {getRankIcon(actualRank)}
-                            </div>
-                            <div className="flex-1">
-                              <p className="font-mono font-bold text-lg">{entry.username}</p>
-                              <div className="flex items-center gap-2 mt-1">
-                                <Flag className="h-3 w-3 text-muted-foreground" />
-                                <p className="text-sm text-muted-foreground">
-                                  {entry.solved_count} challenge{entry.solved_count !== 1 ? 's' : ''} solved
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="text-right">
-                            <p className="font-mono font-bold text-2xl text-primary">
-                              {entry.total_points}
-                            </p>
-                            <p className="text-xs text-muted-foreground font-medium">
-                              POINTS
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {entry.last_submission 
-                                ? new Date(entry.last_submission).toLocaleString()
-                                : 'No submissions'}
-                            </p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
           </>
         )}
+
+        {/* All Registered Participants - Now positioned below the scoreboard */}
+        <Card className="border-border bg-card/80 backdrop-blur-xl shadow-2xl">
+          <CardHeader className="border-b border-border/50">
+            <CardTitle className="flex items-center gap-3 text-xl">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Users className="h-6 w-6 text-primary" />
+              </div>
+              All Registered Participants
+              <span className="ml-auto text-sm text-muted-foreground font-normal">
+                {allUsers.length} total
+              </span>
+            </CardTitle>
+          </CardHeader>
+
+          <CardContent>
+            {allUsers.length === 0 ? (
+              <div className="text-center py-12">
+                <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                <p className="text-muted-foreground">No participants registered yet. </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-4">
+                {allUsers.map((user) => {
+                  const scoreEntry = scores.find(s => s.user_id === user.user_id);
+                  const points = scoreEntry?.total_points || 0;
+                  const solves = scoreEntry?.solved_count || 0;
+                  const rank = scores.findIndex(s => s. user_id === user.user_id) + 1;
+                  
+                  return (
+                    <div
+                      key={user.user_id}
+                      className="flex items-center justify-between p-4 rounded-lg border bg-secondary/30 border-border hover:border-primary/30 transition-all duration-200"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                          {rank > 0 ?  (
+                            <span className="text-xs font-mono font-bold text-primary">#{rank}</span>
+                          ) : (
+                            <Users className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </div>
+                        <div>
+                          <p className="font-mono font-bold text-sm">{user.username}</p>
+                          <p className="text-xs text-muted-foreground">
+                            Joined {new Date(user.created_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-mono font-bold text-primary">{points}</p>
+                        <p className="text-xs text-muted-foreground">{solves} solves</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </main>
 
       <style>{`
@@ -645,7 +576,7 @@ export default function Scoreboard() {
           0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
           25% { transform: translateY(-15px) translateX(6px) scale(1.1); opacity: 0.9; }
           50% { transform: translateY(-8px) translateX(-4px) scale(0.95); opacity: 0.4; }
-          75% { transform: translateY(8px) translateX(5px) scale(1.05); opacity: 0.8; }
+          75% { transform: translateY(8px) translateX(5px) scale(1.05); opacity: 0. 8; }
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.5; }
         }
 
@@ -655,8 +586,8 @@ export default function Scoreboard() {
           pointer-events: none;
         }
 
-        .crystal-layer.large {
-          background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.96) 1.6px, rgba(255,255,255,0) 1.6px);
+        .crystal-layer. large {
+          background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,0.96) 1. 6px, rgba(255,255,255,0) 1.6px);
           background-size: 22px 22px;
           opacity: 0.14;
           filter: blur(0.5px) saturate(1.15);
@@ -682,7 +613,7 @@ export default function Scoreboard() {
           mix-blend-mode: screen;
         }
 
-        .crystal-layer.sparkle {
+        . crystal-layer.sparkle {
           background-image: radial-gradient(circle at 30% 20%, rgba(255,255,255,1) 0.6px, rgba(255,255,255,0) 0.6px);
           background-size: 4px 4px;
           opacity: 0.045;
@@ -725,7 +656,7 @@ export default function Scoreboard() {
           transform: translate3d(0, 0, 0);
         }
 
-        .santa-container.rtl {
+        . santa-container.rtl {
           left: auto;
           right: -220px;
         }
@@ -753,7 +684,7 @@ export default function Scoreboard() {
         @keyframes sleigh-fly-ltr {
           0% { transform: translateX(-8vw) translateY(0) rotate(0deg); opacity: 0; }
           5% { opacity: 1; }
-          50% { transform: translateX(110vw) translateY(6vh) rotate(0.5deg); opacity: 1; }
+          50% { transform: translateX(110vw) translateY(6vh) rotate(0. 5deg); opacity: 1; }
           95% { opacity: 1; }
           100% { transform: translateX(125vw) translateY(12vh) rotate(1deg); opacity: 0; }
         }
@@ -790,7 +721,7 @@ export default function Scoreboard() {
           pointer-events: none;
           mix-blend-mode: screen;
           background-size: 200% 100%;
-          animation: trail-shimmer 3.6s linear infinite;
+          animation: trail-shimmer 3. 6s linear infinite;
         }
         @keyframes trail-shimmer {
           0% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
@@ -798,7 +729,7 @@ export default function Scoreboard() {
           100% { background-position: 0% 50%; opacity: 0.9; transform: scaleX(0.95) translateY(0px) }
         }
 
-        .sleigh-trail::before,
+        . sleigh-trail::before,
         .sleigh-trail::after {
           content: '';
           position: absolute;
@@ -821,12 +752,12 @@ export default function Scoreboard() {
         }
 
         @media (max-width: 640px) {
-          .santa-sleigh { width: 120px !important; }
+          .santa-sleigh { width: 120px ! important; }
           .sleigh-trail { display: none; }
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, .crystal-layer.sparkle {
+          .crystal-layer, .santa-container, .sleigh-trail, .santa-sleigh, .crystal-layer.large, .crystal-layer.medium, .crystal-layer.small, . crystal-layer.sparkle {
             animation: none !important;
           }
         }
