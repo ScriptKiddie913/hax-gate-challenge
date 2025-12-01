@@ -634,7 +634,7 @@ export default function Scoreboard() {
                               )}
                             </div>
                             {! ctfActive ?  (
-                              <p className="text-sm text-gray-300/80 font-medium">🎁 Ready for Christmas CTF</p>
+                              <p className="text-sm text-gray-300/80 font-medium">Mobile Task Force Operative</p>
                             ) : (
                               <div className="flex items-center gap-2 mt-1">
                                 <span className="text-sm text-gray-300/90">Current Rank:</span>
