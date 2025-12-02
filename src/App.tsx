@@ -26,7 +26,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         {/* Christmas theme effects - appear on all pages */}
-        <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 9999 }}>
+        <div className="fixed inset-0 pointer-events-none z-[9999]">
           <Snowfall />
         </div>
         <SantaSleigh />

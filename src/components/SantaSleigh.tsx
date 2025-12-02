@@ -10,17 +10,22 @@ import { useState, useEffect } from "react";
  * - Repeats every 30-45 seconds with randomized parameters
  * - Respects reduced motion preferences
  */
+
+// Configuration constants
+const MIN_DURATION = 30; // Minimum duration in seconds for sleigh to cross screen
+const MAX_DURATION = 45; // Maximum duration in seconds
+const MIN_TOP_OFFSET = 6; // Minimum vertical position as percentage of viewport
+const MAX_TOP_OFFSET = 28; // Maximum vertical position as percentage of viewport
+
 export function SantaSleigh() {
   const [sleighDuration, setSleighDuration] = useState<number>(() => {
-    // Random duration between 30-45 seconds
-    return Math.floor(Math.random() * (45 - 30 + 1)) + 30;
+    return Math.floor(Math.random() * (MAX_DURATION - MIN_DURATION + 1)) + MIN_DURATION;
   });
   const [sleighDelay, setSleighDelay] = useState<number>(() => {
     return Math.floor(Math.random() * 10);
   });
   const [sleighTopOffset, setSleighTopOffset] = useState<number>(() => {
-    // Random vertical position between 6% and 28% of viewport
-    return Math.floor(Math.random() * (28 - 6 + 1)) + 6;
+    return Math.floor(Math.random() * (MAX_TOP_OFFSET - MIN_TOP_OFFSET + 1)) + MIN_TOP_OFFSET;
   });
   const [sleighDirection, setSleighDirection] = useState<"ltr" | "rtl">(() => {
     return Math.random() > 0.5 ? "ltr" : "rtl";
@@ -29,9 +34,9 @@ export function SantaSleigh() {
   useEffect(() => {
     let sleighTimeout: NodeJS.Timeout;
     const scheduleNextSleigh = () => {
-      const nextDuration = Math.floor(Math.random() * (45 - 30 + 1)) + 30;
+      const nextDuration = Math.floor(Math.random() * (MAX_DURATION - MIN_DURATION + 1)) + MIN_DURATION;
       const nextDelay = Math.floor(Math.random() * 10);
-      const nextTop = Math.floor(Math.random() * (28 - 6 + 1)) + 6;
+      const nextTop = Math.floor(Math.random() * (MAX_TOP_OFFSET - MIN_TOP_OFFSET + 1)) + MIN_TOP_OFFSET;
       const nextDir = Math.random() > 0.5 ? "ltr" : "rtl";
       
       sleighTimeout = setTimeout(() => {
