@@ -13,10 +13,6 @@ export default function About() {
     { id: number; top: string; left: string; delay: string; size: string }[]
   >([]);
 
-  const [snowflakes, setSnowflakes] = useState<
-    { id: number; left: string; delay: string; size: string; duration: string }[]
-  >([]);
-
   useEffect(() => {
     // Generate more visible calm fireflies
     const generated = Array.from({ length: 25 }).map((_, i) => ({
@@ -27,16 +23,6 @@ export default function About() {
       size: `${3 + Math.random() * 4}px`,
     }));
     setFireflies(generated);
-
-    // Generate snowfall flakes
-    const snowGen = Array.from({ length: 45 }).map((_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 8}s`,
-      size: `${8 + Math.random() * 10}px`,
-      duration: `${6 + Math.random() * 6}s`,
-    }));
-    setSnowflakes(snowGen);
   }, []);
 
   return (
@@ -59,23 +45,6 @@ export default function About() {
 
       {/* Christmas soft golden glow */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(255,230,150,0.22),transparent_70%)] pointer-events-none"></div>
-
-      {/* Christmas falling snowflakes */}
-      {snowflakes.map((s) => (
-        <div
-          key={s.id}
-          className="snowflake absolute text-white opacity-90 pointer-events-none select-none"
-          style={{
-            left: s.left,
-            fontSize: s.size,
-            animation: `snowfall ${s.duration} linear infinite`,
-            animationDelay: s.delay,
-            textShadow: "0 0 8px rgba(255,255,255,0.8)",
-          }}
-        >
-          ❄
-        </div>
-      ))}
 
       {/* Christmas hanging ornaments */}
       <div className="absolute top-0 left-0 w-full flex justify-center gap-6 pointer-events-none z-20 mt-4">
