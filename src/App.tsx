@@ -3,6 +3,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Snowfall } from "@/components/Snowfall";
+import { SantaSleigh } from "@/components/SantaSleigh";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
@@ -23,6 +25,11 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        {/* Christmas theme effects - appear on all pages */}
+        <div className="fixed inset-0 pointer-events-none z-[9999]">
+          <Snowfall />
+        </div>
+        <SantaSleigh />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/auth" element={<Auth />} />

@@ -19,10 +19,6 @@ export default function Rules() {
     { id: number; top: string; left: string; size: string; delay: string }[]
   >([]);
 
-  const [snowflakes, setSnowflakes] = useState<
-    { id: number; left: string; delay: string; size: string; char: string; duration: string }[]
-  >([]);
-
   useEffect(() => {
     const generatedBlobs = Array.from({ length: 8 }).map((_, i) => ({
       id: i,
@@ -32,23 +28,6 @@ export default function Rules() {
       delay: `${Math.random() * 5}s`,
     }));
     setBlobs(generatedBlobs);
-  }, []);
-
-  // ASCII Snowfall B2 (❄ ❅ ❆) — Navbar matching
-  useEffect(() => {
-    const chars = ["❄", "❅", "❆"];
-    const flakeCount = 45;
-
-    const flakes = Array.from({ length: flakeCount }).map((_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 8}s`,
-      duration: `${10 + Math.random() * 10}s`,
-      size: `${14 + Math.random() * 16}px`,
-      char: chars[Math.floor(Math.random() * chars.length)],
-    }));
-
-    setSnowflakes(flakes);
   }, []);
 
   return (
@@ -64,24 +43,6 @@ export default function Rules() {
     >
       {/* Flickering blue ambient overlay */}
       <div className="absolute inset-0 bg-[#010b1a]/80 backdrop-blur-sm animate-[ambient_6s_infinite]"></div>
-
-      {/* ASCII Snowfall Layer (❄ ❅ ❆) */}
-      {snowflakes.map((flake) => (
-        <div
-          key={flake.id}
-          className="absolute select-none pointer-events-none text-[#d6e8ff] opacity-90 animate-snowfall"
-          style={{
-            left: flake.left,
-            top: "-5%",
-            fontSize: flake.size,
-            animationDelay: flake.delay,
-            animationDuration: flake.duration,
-            filter: "drop-shadow(0 0 6px rgba(180,220,255,0.8))",
-          }}
-        >
-          {flake.char}
-        </div>
-      ))}
 
       {/* Glowing random light blobs */}
       {blobs.map((blob) => (
