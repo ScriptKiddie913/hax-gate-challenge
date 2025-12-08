@@ -255,36 +255,11 @@ export default function Scoreboard() {
 
   const loadAllUsers = async () => {
     try {
-      // Load users and check for admin status
-      const { data: usersData, error: usersError } = await supabase
-        .from('profiles')
-        . select('user_id, username, created_at, is_admin')
-        .order('created_at', { ascending: true });
-
-      if (usersError) throw usersError;
-
-      // Filter out admin users AND banned users
-      const filteredUsers = filterHiddenUsers(usersData || []);
-      const nonAdminUsers = filteredUsers.filter(user => !user.is_admin);
-      setAllUsers(nonAdminUsers);
+      const { data, error } = await supabase.rpc('get_all_participants');
+      if (error) throw error;
+      setAllUsers(data || []);
     } catch (error: any) {
       console.error('Error loading all users:', error);
-      
-      // Fallback: try the original RPC method and filter admins + banned users
-      try {
-        const { data: fallbackData, error: fallbackError } = await supabase. rpc('get_all_participants');
-        if (fallbackError) throw fallbackError;
-        
-        // Filter out common admin usernames AND banned users
-        const adminUsernames = ['admin', 'administrator', 'root', 'superuser', 'moderator'];
-        const filteredUsers = filterHiddenUsers(fallbackData || []);
-        const finalFilteredUsers = filteredUsers.filter((user: RegisteredUser) => 
-          !adminUsernames.includes(user.username.toLowerCase())
-        );
-        setAllUsers(finalFilteredUsers);
-      } catch (fallbackError: any) {
-        console.error('Fallback error loading users:', fallbackError);
-      }
     }
   };
 
