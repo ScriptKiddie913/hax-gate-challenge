@@ -19,10 +19,7 @@ This CTF platform is built with production-grade security:
 
 1. Visit your deployed CTF platform
 2. Click "Sign Up"
-3. Register with:
-   - **Email**: `sagnik.saha.araptor@gmail.com`
-   - **Password**: `Hotmeha21@21@`
-   - **Username**: Choose any username (e.g., "admin")
+3. Register with your admin email and a strong password
 4. Check your email and click the verification link
 
 ### Step 2: Grant Admin Privileges
@@ -31,10 +28,11 @@ After signing up and verifying your email, run this SQL command in Supabase SQL 
 
 ```sql
 -- Insert admin role for the admin user
+-- Replace 'your-admin-email@example.com' with your actual admin email
 INSERT INTO public.user_roles (user_id, role)
 SELECT id, 'admin'::app_role
 FROM public.profiles
-WHERE email = 'sagnik.saha.araptor@gmail.com'
+WHERE email = 'your-admin-email@example.com'
 ON CONFLICT DO NOTHING;
 ```
 
@@ -42,7 +40,7 @@ ON CONFLICT DO NOTHING;
 
 ### Step 3: Verify Admin Access
 
-1. Log in with the admin credentials
+1. Log in with your admin credentials
 2. You should now see an "Admin" button in the navigation bar
 3. Click it to access the admin dashboard
 
@@ -135,7 +133,7 @@ Every user automatically receives:
 ❌ Forge blockchain identities (server-generated only)
 
 ### What You Should Do
-- Keep admin credentials secure
+- Keep admin credentials secure and never share them
 - Monitor audit logs regularly
 - Review submissions for suspicious patterns
 - Update challenge difficulties based on solve rates
@@ -169,8 +167,8 @@ The platform uses Supabase Realtime for:
 ## 🆘 Troubleshooting
 
 ### Admin Can't Access Dashboard
-- Verify the SQL command was run: `SELECT role FROM user_roles WHERE user_id = (SELECT id FROM profiles WHERE email = 'sagnik.saha.araptor@gmail.com');`
-- Should return `admin`
+- Verify the SQL command was run with your correct email
+- Check the user_roles table has the admin role
 - Try logging out and back in
 
 ### Users Can't Submit Flags
@@ -186,7 +184,6 @@ The platform uses Supabase Realtime for:
 ## 📞 Support
 
 For issues or questions:
-- Email: sagnik.saha.araptor@gmail.com
 - Check Supabase logs for detailed error messages
 - Review Edge Function logs for submission issues
 
