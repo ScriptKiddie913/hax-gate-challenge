@@ -321,14 +321,9 @@ export default function About(): JSX.Element {
                     className="flex items-start gap-4 p-3 rounded-lg bg-[#0b1a2b]/50 border border-[#2e5fff]/10"
                     aria-labelledby="dev1-name"
                   >
-                    <div className="relative w-20 h-20 rounded-full overflow-hidden ring-1 ring-[#4f7eff]/25 flex-shrink-0">
-                      <Image
-                        src={dev1Pic}
-                        alt="Developer 1"
-                        className="object-cover"
-                        sizes="80px"
-                        priority
-                      />
+                    <div className="w-20 h-20 flex items-center justify-center rounded-full bg-[#0f1e33] border border-[#4f7eff]/25">
+                      <Users className="w-10 h-10 text-[#b0d1ff]" />
+                    </div>
                     </div>
                     <div>
                       <h4 id="dev1-name" className="text-lg font-semibold text-[#cfe6ff]">
@@ -358,14 +353,9 @@ export default function About(): JSX.Element {
                     className="flex items-start gap-4 p-3 rounded-lg bg-[#0b1a2b]/50 border border-[#2e5fff]/10"
                     aria-labelledby="dev2-name"
                   >
-                    <div className="relative w-20 h-20 rounded-full overflow-hidden ring-1 ring-[#ffd27f]/18 flex-shrink-0">
-                      <Image
-                        src={organiser1Pic}
-                        alt="Organiser 1"
-                        className="object-cover"
-                        sizes="80px"
-                        priority
-                      />
+                    <div className="w-20 h-20 flex items-center justify-center rounded-full bg-[#1a2233] border border-[#ffd27f]/25">
+                      <Shield className="w-10 h-10 text-[#ffd27f]" />
+                    </div>
                     </div>
                     <div>
                       <h4 id="dev2-name" className="text-lg font-semibold text-[#cfe6ff]">
