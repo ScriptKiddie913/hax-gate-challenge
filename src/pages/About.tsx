@@ -226,11 +226,11 @@ export default function About() {
     {/* MEMBER 1 */}
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-[#c7d8ff]">Sagnik</h3>
+        <h3 className="text-xl font-semibold text-[#c7d8ff]">disavowed913</h3>
 
         <div className="flex gap-4">
           <a
-            href="https://instagram.com/YOUR_INSTAGRAM"
+            href="https://instagram.com/disavowed913"
             target="_blank"
             rel="noopener noreferrer"
             className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
@@ -239,7 +239,7 @@ export default function About() {
           </a>
 
           <a
-            href="https://linkedin.com/in/YOUR_LINKEDIN"
+            href="https://www.linkedin.com/in/sagnik-saha-7ba227237/"
             target="_blank"
             rel="noopener noreferrer"
             className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(120,200,255,0.6)]"
@@ -250,7 +250,7 @@ export default function About() {
       </div>
 
       <p className="text-[#a8bfff]/90">
-        Sagnik leads the development and construction of the SecureContainProtect CTF platform, 
+        disavowed913 leads the development and construction of the SecureContainProtect CTF platform, 
         creating challenges and shaping the entire event ecosystem from structure to execution.
       </p>
     </div>
@@ -258,11 +258,11 @@ export default function About() {
     {/* MEMBER 2 */}
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-[#c7d8ff]">Alpha</h3>
+        <h3 className="text-xl font-semibold text-[#c7d8ff]">si_panja</h3>
 
         <div className="flex gap-4">
           <a
-            href="https://instagram.com/YOUR_INSTAGRAM"
+            href="https://www.instagram.com/si._panja_/"
             target="_blank"
             rel="noopener noreferrer"
             className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
@@ -271,7 +271,7 @@ export default function About() {
           </a>
 
           <a
-            href="https://linkedin.com/in/YOUR_LINKEDIN"
+            href="https://www.linkedin.com/in/souvik-panja-5764a1321/"
             target="_blank"
             rel="noopener noreferrer"
             className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(120,200,255,0.6)]"
@@ -282,7 +282,7 @@ export default function About() {
       </div>
 
       <p className="text-[#a8bfff]/90">
-        Alpha manages infrastructure, backend systems, and deployment operations, ensuring 
+        si_panja manages infrastructure, backend systems, and deployment operations, ensuring 
         the CTF platform remains stable, reliable, and optimized at all times.
       </p>
     </div>
