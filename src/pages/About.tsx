@@ -212,46 +212,84 @@ export default function About() {
             </CardContent>
           </Card>
 
-          {/* TEAM SECTION */}
-          <Card className="border border-[#335eff]/25 bg-[#0b1833]/55 backdrop-blur-2xl shadow-[0_0_32px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(90,150,255,0.32)] transition-all duration-500">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
-                <Users className="h-5 w-5 text-[#b5d4ff]" />
-                Team
-              </CardTitle>
-            </CardHeader>
+        {/* TEAM SECTION */}
+<Card className="border border-[#335eff]/25 bg-[#0b1833]/55 backdrop-blur-2xl shadow-[0_0_32px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(90,150,255,0.32)] transition-all duration-500">
+  <CardHeader>
+    <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
+      <Users className="h-5 w-5 text-[#b5d4ff]" />
+      Team
+    </CardTitle>
+  </CardHeader>
 
-            <CardContent className="space-y-8 text-[#d9e3ff]/90 leading-relaxed">
+  <CardContent className="space-y-10 text-[#d9e3ff]/90 leading-relaxed">
 
-              <div className="flex items-start gap-5">
-                <div className="text-5xl select-none pointer-events-none drop-shadow-[0_0_14px_rgba(90,200,255,0.75)]">
-                  🕶️
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-lg text-[#c7d8ff]">
-                    Sagnik
-                  </h3>
-                  <p className="text-[#a8bfff]/90">
-                    Sagnik is responsible for designing, developing, and maintaining the core structure of the SecureContainProtect CTF. He actively contributes to the creation of challenges, implementation of platform systems, and maintenance of the full event layout. His work ensures that the technical operation and user experience remain consistent, functional, and polished across the entire event.
-                  </p>
-                </div>
-              </div>
+    {/* Member 1 */}
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-xl font-semibold text-[#c7d8ff]">
+          Sagnik
+        </h3>
+        <div className="flex gap-4 text-2xl">
+          <a
+            href="https://www.instagram.com/YOUR_INSTA_LINK"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:scale-110 transition transform drop-shadow-[0_0_12px_rgba(255,120,180,0.6)]"
+          >
+            📸
+          </a>
+          <a
+            href="https://www.linkedin.com/in/YOUR_LINKEDIN_LINK"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:scale-110 transition transform drop-shadow-[0_0_12px_rgba(120,200,255,0.6)]"
+          >
+            💼
+          </a>
+        </div>
+      </div>
 
-              <div className="flex items-start gap-5">
-                <div className="text-5xl select-none pointer-events-none drop-shadow-[0_0_14px_rgba(120,255,180,0.75)]">
-                  👾
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-lg text-[#c7d8ff]">
-                    Alpha
-                  </h3>
-                  <p className="text-[#a8bfff]/90">
-                    Alpha manages the system infrastructure, ensures platform stability, and supports integration of new features. His responsibilities include server-side operations, challenge deployment, and maintaining reliability throughout the competition. His continued work supports the smooth functioning of the SecureContainProtect CTF environment.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+      <p className="text-[#a8bfff]/90">
+        Sagnik leads the development and structure of the SecureContainProtect CTF platform, creating challenges and 
+        ensuring the overall design, functionality, and experience remain consistent and engaging for participants.
+      </p>
+    </div>
+
+    {/* Member 2 */}
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <h3 className="text-xl font-semibold text-[#c7d8ff]">
+          Alpha
+        </h3>
+        <div className="flex gap-4 text-2xl">
+          <a
+            href="https://www.instagram.com/YOUR_INSTA_LINK"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:scale-110 transition transform drop-shadow-[0_0_12px_rgba(255,120,180,0.6)]"
+          >
+            📸
+          </a>
+          <a
+            href="https://www.linkedin.com/in/YOUR_LINKEDIN_LINK"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:scale-110 transition transform drop-shadow-[0_0_12px_rgba(120,200,255,0.6)]"
+          >
+            💼
+          </a>
+        </div>
+      </div>
+
+      <p className="text-[#a8bfff]/90">
+        Alpha manages backend systems, deployment infrastructure, and continuous stability of the platform, ensuring 
+        every challenge runs smoothly and efficiently for all competitors.
+      </p>
+    </div>
+
+  </CardContent>
+</Card>
+
 
           {/* Legal & Ethics */}
           <Card className="border border-[#2d4fff]/25 bg-[#0b1530]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(0,90,255,0.3)] transition-all duration-500">
