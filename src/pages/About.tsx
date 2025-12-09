@@ -8,46 +8,72 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Flag, Target, Users, Shield } from "lucide-react";
+import dev1Pic from "/public/dev1.png";
+import organiser1Pic from "/public/organiser1.png";
 
 /**
- * About page for SecureContainProtect CTF — corrected version
+ * About page for SecureContainProtect CTF (rewritten, fixed, optimized)
  *
- * Fixes applied:
- * - Removed invalid static imports from /public (Next.js doesn't support importing from /public).
- *   Instead, images are referenced via string src (e.g. "/dev1.png") and given explicit width/height props.
- * - Ensured Image has numeric width/height to satisfy Next/Image requirements when using string src.
- * - Kept all content and layout from the previous version and preserved the theme.
- *
- * If you still see errors, please paste the exact error messages and your Next.js version so I can iterate.
+ * - Keeps all original copy and content exactly as provided.
+ * - Fixes React/Next hydration issues by only generating randomized
+ *   decorations (fireflies/snowflakes) on the client after mount.
+ * - Ensures stable keys, no random values in JSX during SSR.
+ * - Moves all animation-duration/delay values into state so they are
+ *   deterministic on the client for the lifetime of the component.
+ * - Adds accessible attributes and minor performance improvements.
  */
 
-export default function About() {
-  const [fireflies, setFireflies] = useState<
-    { id: number; top: string; left: string; delay: string; size: string }[]
-  >([]);
+type Firefly = {
+  id: number;
+  top: string;
+  left: string;
+  delay: string;
+  size: string;
+  duration: string;
+};
 
-  const [snowflakes, setSnowflakes] = useState<
-    { id: number; left: string; delay: string; size: string; duration: string }[]
-  >([]);
+type Snowflake = {
+  id: number;
+  left: string;
+  delay: string;
+  size: string;
+  duration: string;
+};
+
+export default function About(): JSX.Element {
+  const [fireflies, setFireflies] = useState<Firefly[]>([]);
+  const [snowflakes, setSnowflakes] = useState<Snowflake[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const generated = Array.from({ length: 25 }).map((_, i) => ({
-      id: i,
-      top: `${5 + Math.random() * 90}%`,
-      left: `${2 + Math.random() * 96}%`,
-      delay: `${Math.random() * 6}s`,
-      size: `${3 + Math.random() * 4}px`,
-    }));
-    setFireflies(generated);
+    // Only generate randomized decorations on the client to avoid
+    // SSR/client hydration mismatch. The component will render the
+    // decorative elements only after this runs.
+    setMounted(true);
 
-    const snowGen = Array.from({ length: 45 }).map((_, i) => ({
-      id: i,
-      left: `${Math.random() * 100}%`,
-      delay: `${Math.random() * 8}s`,
-      size: `${8 + Math.random() * 10}px`,
-      duration: `${6 + Math.random() * 8 + Math.random() * 4}s`,
-    }));
-    setSnowflakes(snowGen);
+    const genFireflies: Firefly[] = Array.from({ length: 25 }).map((_, i) => {
+      // Keep values deterministic for the life of the page by computing once
+      const top = `${5 + Math.floor(Math.random() * 90)}%`;
+      const left = `${Math.floor(Math.random() * 96) + 2}%`;
+      const delay = `${(Math.random() * 6).toFixed(2)}s`;
+      const size = `${3 + Math.floor(Math.random() * 4)}px`;
+      const duration = `${8 + Math.floor(Math.random() * 6)}s`;
+      return { id: i, top, left, delay, size, duration };
+    });
+
+    const genSnow: Snowflake[] = Array.from({ length: 45 }).map((_, i) => {
+      const left = `${Math.floor(Math.random() * 100)}%`;
+      const delay = `${(Math.random() * 8).toFixed(2)}s`;
+      const size = `${8 + Math.floor(Math.random() * 10)}px`;
+      // Slightly broader distribution for duration
+      const duration = `${(6 + Math.random() * 12).toFixed(2)}s`;
+      return { id: i, left, delay, size, duration };
+    });
+
+    setFireflies(genFireflies);
+    setSnowflakes(genSnow);
+
+    // No cleanup necessary as decorations are purely visual and persist.
   }, []);
 
   return (
@@ -62,11 +88,13 @@ export default function About() {
         filter: "brightness(1.05) contrast(1.1) saturate(1.15)",
       }}
     >
+      {/* Deepened ambient overlay */}
       <div
         className="absolute inset-0 bg-[#030b1d]/80 backdrop-blur-[3px]"
         aria-hidden="true"
       />
 
+      {/* Subtle holographic radial shimmer (SCP inspired) */}
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden="true"
@@ -77,6 +105,7 @@ export default function About() {
         }}
       />
 
+      {/* Warm golden highlight */}
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden="true"
@@ -87,70 +116,76 @@ export default function About() {
         }}
       />
 
-      {snowflakes.map((s) => (
-        <div
-          key={s.id}
-          className="snowflake fixed text-white opacity-90 pointer-events-none select-none"
-          style={{
-            left: s.left,
-            fontSize: s.size,
-            animation: `scp_snowfall ${s.duration} linear infinite`,
-            animationDelay: s.delay,
-            textShadow: "0 0 8px rgba(255,255,255,0.7)",
-            top: "-5vh",
-          }}
-          aria-hidden="true"
-        >
-          ❄
-        </div>
-      ))}
+      {/* Render decorative elements only after mount to avoid SSR hydration issues */}
+      {mounted && (
+        <>
+          {/* Falling snowflakes */}
+          {snowflakes.map((s) => (
+            <div
+              key={`snow-${s.id}`}
+              className="snowflake fixed text-white opacity-90 pointer-events-none select-none"
+              style={{
+                left: s.left,
+                fontSize: s.size,
+                animation: `scp_snowfall ${s.duration} linear infinite`,
+                animationDelay: s.delay,
+                textShadow: "0 0 8px rgba(255,255,255,0.7)",
+                top: "-5vh",
+              }}
+              aria-hidden="true"
+            >
+              ❄
+            </div>
+          ))}
 
-      <div
-        className="absolute top-0 left-0 w-full flex justify-center gap-6 pointer-events-none z-20 mt-4"
-        aria-hidden="true"
-      >
-        <div className="text-[#ffdf7f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,200,120,0.6)]">
-          🔔
-        </div>
-        <div className="text-[#ff9f9f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,150,150,0.6)]">
-          🎄
-        </div>
-        <div className="text-[#a0d8ff] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(150,200,255,0.6)]">
-          ⭐
-        </div>
-        <div className="text-[#ffd27f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,225,150,0.6)]">
-          🔔
-        </div>
-      </div>
+          {/* Decorative hanging ornaments (top center) */}
+          <div
+            className="absolute top-0 left-0 w-full flex justify-center gap-6 pointer-events-none z-20 mt-4"
+            aria-hidden="true"
+          >
+            <div className="text-[#ffdf7f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,200,120,0.6)]">
+              🔔
+            </div>
+            <div className="text-[#ff9f9f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,150,150,0.6)]">
+              🎄
+            </div>
+            <div className="text-[#a0d8ff] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(150,200,255,0.6)]">
+              ⭐
+            </div>
+            <div className="text-[#ffd27f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,225,150,0.6)]">
+              🔔
+            </div>
+          </div>
 
-      {fireflies.map((f) => (
-        <div
-          key={f.id}
-          className="absolute bg-[#b8d6ff] rounded-full blur-[3px] opacity-80 animate-scp-float"
-          style={{
-            top: f.top,
-            left: f.left,
-            width: f.size,
-            height: f.size,
-            boxShadow:
-              "0 0 10px rgba(160,200,255,0.6), 0 0 20px rgba(120,160,255,0.4)",
-            animationDuration: `${8 + Math.random() * 6}s`,
-            animationDelay: f.delay,
-          }}
-          aria-hidden="true"
-        />
-      ))}
+          {/* Floating fireflies */}
+          {fireflies.map((f) => (
+            <div
+              key={`fly-${f.id}`}
+              className="absolute bg-[#b8d6ff] rounded-full blur-[3px] opacity-80 animate-scp-float"
+              style={{
+                top: f.top,
+                left: f.left,
+                width: f.size,
+                height: f.size,
+                boxShadow:
+                  "0 0 10px rgba(160,200,255,0.6), 0 0 20px rgba(120,160,255,0.4)",
+                animationDuration: f.duration,
+                animationDelay: f.delay,
+              }}
+              aria-hidden="true"
+            />
+          ))}
+        </>
+      )}
 
       <Navbar />
 
-      <main
-        className="flex-1 container mx-auto px-4 py-10 relative z-10"
-        role="main"
-      >
+      <main className="flex-1 container mx-auto px-4 py-10 relative z-10" role="main">
         <div className="max-w-5xl mx-auto space-y-10">
+          {/* Title Section */}
           <header className="text-center mb-2">
             <h1 className="text-4xl sm:text-5xl font-extrabold mb-3 text-[#c7dbff] drop-shadow-[0_0_18px_rgba(90,150,255,0.45)]">
-              About{" "}
+              About {" "}
               <span className="text-[#8ebfff] drop-shadow-[0_0_14px_#5a9aff]">
                 SecureContainProtect CTF
               </span>
@@ -161,7 +196,9 @@ export default function About() {
             </p>
           </header>
 
+          {/* Cards grid */}
           <section className="grid grid-cols-1 gap-6">
+            {/* Our Mission */}
             <Card className="border border-[#3d6cff]/30 bg-[#081226]/60 backdrop-blur-2xl shadow-[0_0_35px_rgba(70,120,255,0.2)] hover:shadow-[0_0_45px_rgba(100,160,255,0.28)] transition-all duration-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
@@ -186,6 +223,7 @@ export default function About() {
               </CardContent>
             </Card>
 
+            {/* How It Works */}
             <Card className="border border-[#3b6eff]/25 bg-[#0a1530]/60 backdrop-blur-2xl shadow-[0_0_30px_rgba(60,100,255,0.2)] hover:shadow-[0_0_40px_rgba(90,140,255,0.28)] transition-all duration-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-[#a2caff]">
@@ -236,6 +274,7 @@ export default function About() {
               </CardContent>
             </Card>
 
+            {/* Community & Support */}
             <Card className="border border-[#3c4fff]/25 bg-[#08162d]/60 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.15)] hover:shadow-[0_0_40px_rgba(80,130,255,0.26)] transition-all duration-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-[#8abaff]">
@@ -262,6 +301,7 @@ export default function About() {
               </CardContent>
             </Card>
 
+            {/* Team Section (new) */}
             <Card className="border border-[#3d7bff]/30 bg-[#071426]/65 backdrop-blur-2xl shadow-[0_0_28px_rgba(70,120,255,0.18)] transition-all duration-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-[#9dd0ff]">
@@ -276,18 +316,17 @@ export default function About() {
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Developer 1 */}
                   <article
                     className="flex items-start gap-4 p-3 rounded-lg bg-[#0b1a2b]/50 border border-[#2e5fff]/10"
                     aria-labelledby="dev1-name"
                   >
                     <div className="relative w-20 h-20 rounded-full overflow-hidden ring-1 ring-[#4f7eff]/25 flex-shrink-0">
-                      {/* Use string src for /public assets and provide width/height */}
                       <Image
-                        src="/dev1.png"
+                        src={dev1Pic}
                         alt="Developer 1"
-                        width={80}
-                        height={80}
                         className="object-cover"
+                        sizes="80px"
                         priority
                       />
                     </div>
@@ -314,17 +353,17 @@ export default function About() {
                     </div>
                   </article>
 
+                  {/* Organiser / Dev 2 */}
                   <article
                     className="flex items-start gap-4 p-3 rounded-lg bg-[#0b1a2b]/50 border border-[#2e5fff]/10"
                     aria-labelledby="dev2-name"
                   >
                     <div className="relative w-20 h-20 rounded-full overflow-hidden ring-1 ring-[#ffd27f]/18 flex-shrink-0">
                       <Image
-                        src="/organiser1.png"
+                        src={organiser1Pic}
                         alt="Organiser 1"
-                        width={80}
-                        height={80}
                         className="object-cover"
+                        sizes="80px"
                         priority
                       />
                     </div>
@@ -354,6 +393,7 @@ export default function About() {
               </CardContent>
             </Card>
 
+            {/* Legal & Ethics */}
             <Card className="border border-[#2d4fff]/25 bg-[#0b1530]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(0,90,255,0.3)] transition-all duration-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
@@ -377,13 +417,16 @@ export default function About() {
         </div>
       </main>
 
+      {/* Animations & utility keyframes */}
       <style>{`
+        /* Soft shimmer */
         @keyframes scp_softblink {
           0%, 100% { opacity: 0.5; filter: brightness(0.95); }
           50% { opacity: 0.95; filter: brightness(1.12); }
         }
 
-        @keyframes scp-float {
+        /* Floating fireflies */
+        @keyframes scp_float {
           0% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.65; }
           25% { transform: translateY(-14px) translateX(6px) scale(1.06); opacity: 0.9; }
           50% { transform: translateY(-6px) translateX(-5px) scale(0.98); opacity: 0.5; }
@@ -391,28 +434,39 @@ export default function About() {
           100% { transform: translateY(0px) translateX(0px) scale(1); opacity: 0.65; }
         }
 
+        /* Snowfall animation */
         @keyframes scp_snowfall {
           0% { transform: translateY(-8vh) rotate(0deg); opacity: 1; }
           60% { opacity: 0.9; }
           100% { transform: translateY(110vh) rotate(360deg); opacity: 0.35; }
         }
 
-        @keyframes ornament-rotate {
+        /* Ornament rotation */
+        @keyframes ornament_rotate {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
         }
 
-        .ornament-spin { animation: ornament-rotate 12s linear infinite; }
-        .animate-scp-float { animation-name: scp-float; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+        .ornament-spin { animation: ornament_rotate 12s linear infinite; }
 
+        /* Utility class applied to generated fireflies */
+        .animate-scp-float { animation-name: scp_float; animation-timing-function: ease-in-out; animation-iteration-count: infinite; }
+
+        /* Slight focus ring for interactive items */
         a:focus { outline: 2px solid rgba(160,200,255,0.18); outline-offset: 3px; border-radius: 4px; }
 
+        /* Reduce motion respects prefers-reduced-motion */
         @media (prefers-reduced-motion: reduce) {
           .animate-scp-float,
           .ornament-spin,
           .snowflake {
             animation: none !important;
           }
+        }
+
+        /* Small accessibility helper for high-contrast mode */
+        @media (forced-colors: active) {
+          .snowflake { opacity: 1; }
         }
       `}</style>
     </div>
