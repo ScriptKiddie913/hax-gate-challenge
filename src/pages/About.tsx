@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Flag, Target, Users, Shield } from "lucide-react";
+import { Flag, Target, Users, Shield, Instagram, Linkedin } from "lucide-react";
 
 export default function About() {
   const [fireflies, setFireflies] = useState<

@@ -12,7 +12,7 @@ interface User {
   username: string;
   email: string | null;
   is_banned: boolean;
-  is_admin: boolean;
+  is_admin: boolean; // Computed from user_roles table
   created_at: string;
 }
 
@@ -48,13 +48,32 @@ export function AdminUsers() {
 
   const loadUsers = async () => {
     try {
-      const { data, error } = await supabase
+      // Fetch profiles
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('id, username, email, is_banned, is_admin, created_at')
+        .select('id, username, email, is_banned, created_at')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setUsers(data || []);
+      if (profilesError) throw profilesError;
+
+      // Fetch admin roles from user_roles table
+      const { data: adminRoles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id')
+        .eq('role', 'admin');
+
+      if (rolesError) throw rolesError;
+
+      // Create a set of admin user IDs for quick lookup
+      const adminUserIds = new Set(adminRoles?.map(r => r.user_id) || []);
+
+      // Map profiles with computed is_admin from user_roles
+      const usersWithRoles: User[] = (profiles || []).map(profile => ({
+        ...profile,
+        is_admin: adminUserIds.has(profile.id)
+      }));
+
+      setUsers(usersWithRoles);
     } catch (error: any) {
       toast.error("Error loading users");
       console.error(error);
