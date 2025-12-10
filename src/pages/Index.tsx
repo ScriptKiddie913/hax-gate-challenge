@@ -310,6 +310,33 @@ Now, the Foundation has initiated CTF-81: Containment Task Force, calling all pe
                     VIEW DOCUMENTATION
                   </Button>
                 </div>
+
+                {/* Sponsors Section */}
+                <div className="mt-10 pt-8 border-t border-[#3d6cff]/20">
+                  <h3 className="text-2xl font-bold text-center mb-6 text-[#b5ceff] tracking-widest font-mono">
+                    SPONSORS
+                  </h3>
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="p-4 bg-white/95 rounded-lg shadow-[0_0_20px_rgba(100,180,255,0.2)] hover:shadow-[0_0_30px_rgba(100,180,255,0.35)] transition-all">
+                      <img 
+                        src="/assets/internshala-logo.png" 
+                        alt="Internshala Logo" 
+                        className="h-12 w-auto"
+                      />
+                    </div>
+                    <a 
+                      href="https://internshala.com/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-[#00bfff] hover:text-[#5dd8ff] font-bold text-lg tracking-wide transition-colors underline underline-offset-4"
+                    >
+                      Internshala
+                    </a>
+                    <p className="text-[#d6e2ff] text-center font-mono text-sm mt-2">
+                      🎯 "Internshala fuels the challenge. You bring the skill."
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* Features Grid */}
