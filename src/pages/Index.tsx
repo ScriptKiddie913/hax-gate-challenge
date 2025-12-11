@@ -13,6 +13,7 @@ import {
 import scpFacility from "@/assets/scp-facility.png";
 import scpCorridor from "@/assets/scp-corridor.png";
 import scpCreature from "@/assets/scp-creature.png";
+import { supabase } from "@/integrations/supabase/client";
 
 /**
  * Index.jsx — SCP Foundation CTF landing page
@@ -34,6 +35,7 @@ const Index = () => {
   const [fireflies, setFireflies] = useState<
     { id: number; top: string; left: string; delay: string; size: string }[]
   >([]);
+  const [user, setUser] = useState<any>(null);
 
   // small state for decorative bell hint (not user-affecting)
   const [showBellHint, setShowBellHint] = useState(true);
@@ -53,6 +55,18 @@ const Index = () => {
     // Hide the bell hint after some seconds to avoid distraction
     const t = setTimeout(() => setShowBellHint(false), 12000);
     return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+    return () => subscription.unsubscribe();
   }, []);
 
   return (
@@ -300,7 +314,16 @@ Now, the Foundation has initiated CTF-81: Containment Task Force, calling all pe
                 </div>
 
                 <div className="flex gap-4 justify-center animate-fade-in-delay">
-                  {/* REQUEST CLEARANCE button removed as per user request */}
+                  {!user && (
+                    <Button
+                      size="lg"
+                      className="gap-2 bg-[#3d6cff] hover:bg-[#5580ff] text-white transition-all rounded-lg"
+                      onClick={() => navigate("/auth")}
+                    >
+                      JOIN CTF
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  )}
                   <Button
                     size="lg"
                     variant="outline"
