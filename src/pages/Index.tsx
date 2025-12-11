@@ -266,13 +266,7 @@ const Index = () => {
                     Deep down the facility at Site-81, a massive explosion shattered the reinforced containment wing, sending shockwaves through the ice-coated sublevels. Emergency red-and-green holiday lockdown lights flickered wildly, casting festive but unsettling colors across the frost-cracked walls.Moments before the blast, researchers were studying SCP-XMAS-239, a crystalline anomaly resembling a floating ornament that emitted harmonic frequencies capable of rewriting electronic systems. When containment failed, the anomaly fractured into thousands of shimmering fragments.
 Now, the Foundation has initiated CTF-81: Containment Task Force, calling all personnel to track the anomalies, decode corrupted logs, and restore order before the “festive breach event” evolves into a full-scale reality distortion.
                   </p>
-                  <p>
-                    Unauthorized access to this portal constitutes a direct
-                    violation of{" "}
-                    <span className="text-[#a8c8ff]">Containment Directive 88-GAMMA</span>
-                    . All activities are logged and monitored by the Foundation
-                    Cybersecurity Command (FCC).
-                  </p>
+              
                   <p>
                     Participants will engage with anomalous containment
                     simulations requiring expertise in:
@@ -289,9 +283,6 @@ Now, the Foundation has initiated CTF-81: Containment Task Force, calling all pe
                     </li>
                     <li className="hover:text-[#9fc3ff] transition-colors">
                       • Reverse Engineering of Anomalous Code
-                    </li>
-                    <li className="hover:text-[#9fc3ff] transition-colors">
-                      • Binary Exploitation and Memory Corruption
                     </li>
                     <li className="hover:text-[#9fc3ff] transition-colors">
                       • Threat Hunting within SCP-classified Digital Entities
