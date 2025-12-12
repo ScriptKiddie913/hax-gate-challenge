@@ -216,7 +216,7 @@ export default function About() {
                 </div>
               </div>
 
-              <div className="group relative p-6 md:p-8 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-2xl border-2 border-[#00bfff]/30 hover:border-[#00bfff]/60 shadow-[0_0_40px_rgba(0,180,255,0.15)] hover:shadow-[0_0_60px_rgba(0,180,255,0.35)] transition-all duration-500 overflow-hidden">
+              <div className="group relative p-6 md:p-8 bg-gradient-to-br from[#12203d]/90 via[#0d1a33]/80 to[#081226]/70 rounded-2xl border-2 border-[#00bfff]/30 hover:border-[#00bfff]/60 shadow-[0_0_40px_rgba(0,180,255,0.15)] hover:shadow-[0_0_60px_rgba(0,180,255,0.35)] transition-all duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#00bfff]/5 via-transparent to-[#00bfff]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-10">
                   <div className="p-5 bg-white rounded-xl shadow-[0_0_30px_rgba(0,180,255,0.1)] group-hover:shadow-[0_0_50px_rgba(0,180,255,0.25)] transition-all duration-500 group-hover:scale-105">
@@ -280,12 +280,41 @@ export default function About() {
             </CardHeader>
             <CardContent className="space-y-10 text-[#d9e3ff]/90 leading-relaxed">
 
+              {/* tat_agarwal FIRST */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold text-[#c7d8ff]">tat_agarwal</h3>
+                  <div className="flex gap-4">
+                    <a
+                      href="https://www.instagram.com/tathastu_agarwala/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
+                    >
+                      <Instagram className="w-6 h-6 text-[#ff8fb7]" />
+                    </a>
+                    <a
+                      href="https://www.linkedin.com/in/tathastu-agarwala-a1486730a/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(120,200,255,0.6)]"
+                    >
+                      <Linkedin className="w-6 h-6 text-[#8ecaff]" />
+                    </a>
+                  </div>
+                </div>
+                <p className="text-[#a8bfff]/90">
+                  tat_agarwal contributes to the SCPCTF ecosystem by strengthening operational workflows, supporting platform improvements, and assisting in coordinated event execution.
+                </p>
+              </div>
+
+              {/* disavowed913 SECOND */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold text-[#c7d8ff]">disavowed913</h3>
                   <div className="flex gap-4">
                     <a
-                      href="https://instagram.com/disavowed913"
+                      href="https://www.instagram.com/disavowed913/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
@@ -307,6 +336,7 @@ export default function About() {
                 </p>
               </div>
 
+              {/* si_panja THIRD */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold text-[#c7d8ff]">si_panja</h3>
@@ -331,34 +361,6 @@ export default function About() {
                 </div>
                 <p className="text-[#a8bfff]/90">
                   si_panja manages infrastructure, backend systems, and deployment operations, ensuring the CTF platform remains stable, reliable, and optimized at all times.
-                </p>
-              </div>
-
-              {/* NEW MEMBER: tat_agarwal */}
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-xl font-semibold text-[#c7d8ff]">tat_agarwal</h3>
-                  <div className="flex gap-4">
-                    <a
-                      href=""
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
-                    >
-                      <Instagram className="w-6 h-6 text-[#ff8fb7]" />
-                    </a>
-                    <a
-                      href=""
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(120,200,255,0.6)]"
-                    >
-                      <Linkedin className="w-6 h-6 text-[#8ecaff]" />
-                    </a>
-                  </div>
-                </div>
-                <p className="text-[#a8bfff]/90">
-                  tat_agarwal contributes to the SCPCTF ecosystem by strengthening operational workflows, supporting platform improvements, and assisting in coordinated event execution.
                 </p>
               </div>
 
