@@ -13,6 +13,8 @@ import {
 import scpFacility from "@/assets/scp-facility.png";
 import scpCorridor from "@/assets/scp-corridor.png";
 import scpCreature from "@/assets/scp-creature.png";
+import caidoLogo from "@/assets/caido-logo.png";
+import apisecLogo from "@/assets/apisec-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 
 
@@ -313,32 +315,89 @@ Now, the Foundation has initiated CTF-81: Containment Task Force, calling all pe
 
                 {/* Sponsors Section */}
                 <div className="mt-14 pt-10 border-t border-[#3d6cff]/30">
-                  <h3 className="text-4xl font-bold text-center mb-10 text-[#b5ceff] tracking-widest font-mono">
+                  <h3 className="text-4xl font-bold text-center mb-12 text-[#b5ceff] tracking-widest font-mono">
                     SPONSORS
                   </h3>
-                  <div className="flex flex-col items-center gap-6">
-                    <div className="p-8 bg-white rounded-2xl shadow-[0_0_40px_rgba(100,180,255,0.3)] hover:shadow-[0_0_60px_rgba(100,180,255,0.5)] transition-all hover:scale-105 duration-300">
-                      <img 
-                        src="/assets/internshala-logo.png" 
-                        alt="Internshala Logo" 
-                        className="h-24 w-auto"
-                      />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {/* Caido */}
+                    <div className="flex flex-col items-center gap-4 p-6 bg-gradient-to-b from-[#0d1a33]/80 to-[#081226]/60 rounded-2xl border border-[#ff9a4a]/20 hover:border-[#ff9a4a]/50 shadow-[0_0_30px_rgba(255,150,70,0.15)] hover:shadow-[0_0_50px_rgba(255,150,70,0.3)] transition-all hover:scale-105 duration-300">
+                      <div className="p-4 bg-[#0a1628] rounded-xl">
+                        <img 
+                          src={caidoLogo}
+                          alt="Caido Logo" 
+                          className="h-20 w-auto"
+                        />
+                      </div>
+                      <a 
+                        href="https://caido.io/" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[#ffa54f] hover:text-[#ffbd7a] font-bold text-2xl tracking-wide transition-colors underline underline-offset-4"
+                      >
+                        Caido
+                      </a>
+                      <div className="text-center space-y-2">
+                        <p className="text-[#d6e2ff] font-mono text-sm">
+                          ❄️ Because even in a containment breach, security shouldn't melt. ❄️
+                        </p>
+                        <p className="text-[#ffa54f]/90 text-base font-semibold">
+                          Caido: Reinventing the Hacker's Toolkit
+                        </p>
+                      </div>
                     </div>
-                    <a 
-                      href="https://internshala.com/" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-[#00bfff] hover:text-[#5dd8ff] font-bold text-3xl tracking-wide transition-colors underline underline-offset-8"
-                    >
-                      Internshala
-                    </a>
-                    <div className="text-center mt-4 space-y-3">
-                      <p className="text-[#d6e2ff] font-mono text-lg">
-                        🎯 "Internshala fuels the challenge. You bring the skill."
-                      </p>
-                      <p className="text-[#a8c8ff] text-xl font-semibold">
-                        Level up your cyber journey with Internshala — official sponsor of SCPCTF.
-                      </p>
+
+                    {/* APISEC University */}
+                    <div className="flex flex-col items-center gap-4 p-6 bg-gradient-to-b from-[#0d1a33]/80 to-[#081226]/60 rounded-2xl border border-[#3d9dc9]/20 hover:border-[#3d9dc9]/50 shadow-[0_0_30px_rgba(60,160,200,0.15)] hover:shadow-[0_0_50px_rgba(60,160,200,0.3)] transition-all hover:scale-105 duration-300">
+                      <div className="p-4 bg-white rounded-xl">
+                        <img 
+                          src={apisecLogo}
+                          alt="APISEC University Logo" 
+                          className="h-20 w-auto"
+                        />
+                      </div>
+                      <a 
+                        href="https://www.apisecuniversity.com/" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[#5dbde6] hover:text-[#8bd1f0] font-bold text-2xl tracking-wide transition-colors underline underline-offset-4"
+                      >
+                        APISEC University
+                      </a>
+                      <div className="text-center space-y-2">
+                        <p className="text-[#d6e2ff] font-mono text-sm">
+                          🛰️ Forging defenders who decode anomalies buried deep in the API grid. 🔐
+                        </p>
+                        <p className="text-[#5dbde6]/90 text-base font-semibold">
+                          APISEC University: Secure every API, every day
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Internshala */}
+                    <div className="flex flex-col items-center gap-4 p-6 bg-gradient-to-b from-[#0d1a33]/80 to-[#081226]/60 rounded-2xl border border-[#00bfff]/20 hover:border-[#00bfff]/50 shadow-[0_0_30px_rgba(0,180,255,0.15)] hover:shadow-[0_0_50px_rgba(0,180,255,0.3)] transition-all hover:scale-105 duration-300">
+                      <div className="p-4 bg-white rounded-xl">
+                        <img 
+                          src="/assets/internshala-logo.png" 
+                          alt="Internshala Logo" 
+                          className="h-20 w-auto"
+                        />
+                      </div>
+                      <a 
+                        href="https://internshala.com/" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-[#00bfff] hover:text-[#5dd8ff] font-bold text-2xl tracking-wide transition-colors underline underline-offset-4"
+                      >
+                        Internshala
+                      </a>
+                      <div className="text-center space-y-2">
+                        <p className="text-[#d6e2ff] font-mono text-sm">
+                          🎯 Internshala fuels the challenge. You bring the skill.
+                        </p>
+                        <p className="text-[#00bfff]/90 text-base font-semibold">
+                          Level up your cyber journey with Internshala
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
