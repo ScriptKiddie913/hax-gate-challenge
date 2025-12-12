@@ -59,14 +59,12 @@ export default function About() {
         filter: "brightness(1.05) contrast(1.1) saturate(1.15)",
       }}
     >
-      {/* Background Layers */}
       <div className="absolute inset-0 bg-[#030b1d]/70 backdrop-blur-[3px]"></div>
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_60%,rgba(90,150,255,0.2),transparent_70%)] animate-[softblink_5s_infinite_ease-in-out]"></div>
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(255,230,150,0.22),transparent_70%)] pointer-events-none"></div>
 
-      {/* Snowflakes */}
       {snowflakes.map((s) => (
         <div
           key={s.id}
@@ -83,7 +81,6 @@ export default function About() {
         </div>
       ))}
 
-      {/* Ornaments */}
       <div className="absolute top-0 left-0 w-full flex justify-center gap-6 pointer-events-none z-20 mt-4">
         <div className="text-[#ffdf7f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,200,120,0.6)]">🔔</div>
         <div className="text-[#ff9f9f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,150,150,0.6)]">🎄</div>
@@ -91,7 +88,6 @@ export default function About() {
         <div className="text-[#ffd27f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,225,150,0.6)]">🔔</div>
       </div>
 
-      {/* Fireflies */}
       {fireflies.map((f) => (
         <div
           key={f.id}
@@ -110,10 +106,8 @@ export default function About() {
 
       <Navbar />
 
-      {/* Main Content */}
       <main className="flex-1 container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-4xl mx-auto space-y-8">
-          {/* Title */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4 text-[#c7dbff] drop-shadow-[0_0_15px_rgba(90,150,255,0.5)]">
               About{" "}
@@ -126,7 +120,6 @@ export default function About() {
             </p>
           </div>
 
-          {/* Mission */}
           <Card className="border border-[#3d6cff]/30 bg-[#081226]/50 backdrop-blur-2xl shadow-[0_0_35px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(100,160,255,0.3)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
@@ -154,7 +147,6 @@ export default function About() {
             </CardContent>
           </Card>
 
-          {/* Sponsors */}
           <div className="py-6">
             <div className="text-center mb-10">
               <h2 className="text-4xl font-bold text-[#b5ceff] tracking-[0.15em] font-mono drop-shadow-[0_0_25px_rgba(120,180,255,0.4)] mb-3">
@@ -168,7 +160,6 @@ export default function About() {
             </div>
 
             <div className="space-y-8">
-              {/* Caido */}
               <div className="group relative p-6 md:p-8 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-2xl border-2 border-[#ff9a4a]/30 hover:border-[#ff9a4a]/60 shadow-[0_0_40px_rgba(255,150,70,0.15)] hover:shadow-[0_0_60px_rgba(255,150,70,0.35)] transition-all duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#ff9a4a]/5 via-transparent to-[#ff9a4a]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-10">
@@ -197,7 +188,6 @@ export default function About() {
                 </div>
               </div>
 
-              {/* APISEC University */}
               <div className="group relative p-6 md:p-8 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-2xl border-2 border-[#3d9dc9]/30 hover:border-[#3d9dc9]/60 shadow-[0_0_40px_rgba(60,160,200,0.15)] hover:shadow-[0_0_60px_rgba(60,160,200,0.35)] transition-all duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#3d9dc9]/5 via-transparent to-[#3d9dc9]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-10">
@@ -226,7 +216,6 @@ export default function About() {
                 </div>
               </div>
 
-              {/* Internshala */}
               <div className="group relative p-6 md:p-8 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-2xl border-2 border-[#00bfff]/30 hover:border-[#00bfff]/60 shadow-[0_0_40px_rgba(0,180,255,0.15)] hover:shadow-[0_0_60px_rgba(0,180,255,0.35)] transition-all duration-500 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-[#00bfff]/5 via-transparent to-[#00bfff]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-10">
@@ -257,7 +246,6 @@ export default function About() {
             </div>
           </div>
 
-          {/* Community */}
           <Card className="border border-[#3c4fff]/25 bg-[#08162d]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(80,130,255,0.3)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#8abaff]">
@@ -283,7 +271,6 @@ export default function About() {
             </CardContent>
           </Card>
 
-          {/* Team */}
           <Card className="border border-[#335eff]/25 bg-[#0b1833]/55 backdrop-blur-2xl shadow-[0_0_32px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(90,150,255,0.32)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
@@ -292,7 +279,7 @@ export default function About() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-10 text-[#d9e3ff]/90 leading-relaxed">
-              {/* Member 1 */}
+
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold text-[#c7d8ff]">disavowed913</h3>
@@ -320,7 +307,6 @@ export default function About() {
                 </p>
               </div>
 
-              {/* Member 2 */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold text-[#c7d8ff]">si_panja</h3>
@@ -347,10 +333,38 @@ export default function About() {
                   si_panja manages infrastructure, backend systems, and deployment operations, ensuring the CTF platform remains stable, reliable, and optimized at all times.
                 </p>
               </div>
+
+              {/* NEW MEMBER: tat_agarwal */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold text-[#c7d8ff]">tat_agarwal</h3>
+                  <div className="flex gap-4">
+                    <a
+                      href=""
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
+                    >
+                      <Instagram className="w-6 h-6 text-[#ff8fb7]" />
+                    </a>
+                    <a
+                      href=""
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(120,200,255,0.6)]"
+                    >
+                      <Linkedin className="w-6 h-6 text-[#8ecaff]" />
+                    </a>
+                  </div>
+                </div>
+                <p className="text-[#a8bfff]/90">
+                  tat_agarwal contributes to the SCPCTF ecosystem by strengthening operational workflows, supporting platform improvements, and assisting in coordinated event execution.
+                </p>
+              </div>
+
             </CardContent>
           </Card>
 
-          {/* Legal */}
           <Card className="border border-[#2d4fff]/25 bg-[#0b1530]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(0,90,255,0.3)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
@@ -370,7 +384,6 @@ export default function About() {
         </div>
       </main>
 
-      {/* Animations */}
       <style>{`
         @keyframes softblink {
           0%, 100% { opacity: 0.4; filter: brightness(0.9); }
