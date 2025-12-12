@@ -119,19 +119,17 @@ export default function About() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
                 <Target className="h-5 w-5 text-[#b0d1ff]" />
-                Our Mission
+                The Mission
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-[#d9e3ff]/90 leading-relaxed">
               <p>
-                SecureContainProtect CTF is a cybersecurity challenge platform designed to provide hands-on experience
-                with real-world hacking scenarios in a safe and legally compliant environment. Our objective is to
-                support the development of cybersecurity skills through structured and engaging challenges.
+A sudden explosion at Site-81 shatters the containment wing, spreading SCP-XMAS-239’s crystalline fragments across the frozen sublevels.
+Its reality-bending harmonic frequencies corrupt systems, triggering a festive but dangerous breach.
+The Foundation launches CTF-81, tasking personnel to recover fragments, decode corrupted logs, and restore containment.
               </p>
               <p>
-                Whether you are beginning your journey in cybersecurity or already experienced, SecureContainProtect CTF
-                offers a broad variety of challenges such as cryptography, reverse engineering, forensics, web exploitation,
-                and numerous other categories.
+               
               </p>
             </CardContent>
           </Card>
