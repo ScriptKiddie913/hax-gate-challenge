@@ -124,9 +124,14 @@ export default function About() {
             </CardHeader>
             <CardContent className="space-y-4 text-[#d9e3ff]/90 leading-relaxed">
               <p>
-A catastrophic breach at Site-81 scatters ❄️ SCP-XMAS-239’s crystalline shards through collapsing corridors as alarms echo 📢 and sectors ██-███ go offline [REDACTED].
-Its harmonic distortions 🎵 corrupt systems, turning holiday lights into chaotic flashes 🎄⚠️ while surveillance feeds loop anomalous ██ frames 🤖 [DATA EXPUNGED].
-CTF-81 deploys 🛡️ to recover drifting fragments ✨, decrypt corrupted ██ logs 📜, and halt the escalating “festive breach event” before reality fractures further [REDACTED].
+A massive detonation ruptures Site-81’s containment wing, scattering ❄️ SCP-XMAS-239 fragments through frost-choked hallways as sectors ██-█ collapse [REDACTED].
+Holiday lockdown lights glitch between red, green, and icy blue 🎄🔴🟢🔵, casting distorted reflections across freshly formed ice sheets.
+Its harmonic emissions 🎵 rewrite systems, freezing terminals into looping winter UI patterns ☃️ and spawning corrupted ██ surveillance frames 🤖 [DATA EXPUNGED].
+Researchers report drifting crystalline shards ✨ moving against airflow patterns, leaving trails of subzero particulate ❄️ behind them.
+Temperature drops across Sublevel-5 trigger geometric frost fractures 🧊, spreading in near-perfect symmetry along ██ structural pillars.
+CTF-81 deploys in insulated breach suits 🛡️🧥 to locate shards, stabilize affected corridors, and decrypt corrupted ██ logs 📜.
+Personnel exposed to the anomaly report faint melodic distortions 🔔 and brief festive hallucinations ███⚠️.
+Uncontained expansion may escalate into a full winter-class distortion event 🌨️🌪️, destabilizing local reality [REDACTED].
               </p>
               <p>
                
