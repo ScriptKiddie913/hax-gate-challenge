@@ -304,7 +304,7 @@ export default function About() {
                   </div>
                 </div>
                 <p className="text-[#a8bfff]/90">
-                  tat_agarwal contributes to the SCPCTF ecosystem by strengthening operational workflows, supporting platform improvements, and assisting in coordinated event execution.
+                  tat_agarwal leads development the SCPCTF ecosystem by strengthening operational workflows, supporting platform improvements, and designing social media content.
                 </p>
               </div>
 
@@ -332,7 +332,7 @@ export default function About() {
                   </div>
                 </div>
                 <p className="text-[#a8bfff]/90">
-                  disavowed913 leads the development and construction of the SecureContainProtect CTF platform, creating challenges and shaping the entire event ecosystem from structure to execution.
+                  disavowed913 manages the development and construction of the SecureContainProtect CTF challenges and smooth automation of the event from regitration to push notifications .
                 </p>
               </div>
 
@@ -360,7 +360,7 @@ export default function About() {
                   </div>
                 </div>
                 <p className="text-[#a8bfff]/90">
-                  si_panja manages infrastructure, backend systems, and deployment operations, ensuring the CTF platform remains stable, reliable, and optimized at all times.
+                  si_panja oversees the infrastructure, backend systems, and deployment operations, ensuring the CTF platform remains stable, reliable, and optimized at all times.
                 </p>
               </div>
 
