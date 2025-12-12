@@ -124,9 +124,9 @@ export default function About() {
             </CardHeader>
             <CardContent className="space-y-4 text-[#d9e3ff]/90 leading-relaxed">
               <p>
-A sudden explosion at Site-81 shatters the containment wing, spreading SCP-XMAS-239’s crystalline fragments across the frozen sublevels.
-Its reality-bending harmonic frequencies corrupt systems, triggering a festive but dangerous breach.
-The Foundation launches CTF-81, tasking personnel to recover fragments, decode corrupted logs, and restore containment.
+A catastrophic breach at Site-81 scatters ❄️ SCP-XMAS-239’s crystalline shards through collapsing corridors as alarms echo 📢 and sectors ██-███ go offline [REDACTED].
+Its harmonic distortions 🎵 corrupt systems, turning holiday lights into chaotic flashes 🎄⚠️ while surveillance feeds loop anomalous ██ frames 🤖 [DATA EXPUNGED].
+CTF-81 deploys 🛡️ to recover drifting fragments ✨, decrypt corrupted ██ logs 📜, and halt the escalating “festive breach event” before reality fractures further [REDACTED].
               </p>
               <p>
                
