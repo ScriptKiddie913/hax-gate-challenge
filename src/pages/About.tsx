@@ -136,56 +136,109 @@ export default function About() {
             </CardContent>
           </Card>
 
-          {/* How It Works */}
-          <Card className="border border-[#3b6eff]/25 bg-[#0a1530]/55 backdrop-blur-2xl shadow-[0_0_30px_rgba(60,100,255,0.25)] hover:shadow-[0_0_40px_rgba(90,140,255,0.3)] transition-all duration-500">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-[#a2caff]">
-                <Flag className="h-5 w-5 text-[#b5d4ff]" />
-                How It Works
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-[#d0dbff]/95">
-              <div className="space-y-3">
-                {[
-                  {
-                    step: "1",
-                    title: "Create an Account",
-                    desc: "Register with your email and create a unique username that identifies you on the scoreboard.",
-                  },
-                  {
-                    step: "2",
-                    title: "Verify Your Email",
-                    desc: "Confirm your email address to gain access to the entire collection of available challenges.",
-                  },
-                  {
-                    step: "3",
-                    title: "Solve Challenges",
-                    desc: "Read the challenge descriptions, download any necessary files, and investigate to uncover the hidden flags.",
-                  },
-                  {
-                    step: "4",
-                    title: "Submit Flags & Earn Points",
-                    desc: "Submitting a valid flag rewards points, and the first solver secures the fastest completion record.",
-                  },
-                  {
-                    step: "5",
-                    title: "Compete on the Scoreboard",
-                    desc: "Track your real-time progress and compare your performance with other competitors.",
-                  },
-                ].map(({ step, title, desc }) => (
-                  <div key={step} className="flex gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[#8abaff]/15 border border-[#a2caff]/40 flex items-center justify-center flex-shrink-0 mt-0.5 shadow-[0_0_12px_rgba(130,180,255,0.4)]">
-                      <span className="text-[#c8dcff] font-bold">{step}</span>
-                    </div>
-                    <div>
-                      <h3 className="font-semibold mb-1 text-[#c0d4ff]">{title}</h3>
-                      <p className="text-[#a8bfff]/90">{desc}</p>
-                    </div>
+          {/* Sponsors Section - Prominent */}
+          <div className="py-6">
+            <div className="text-center mb-10">
+              <h2 className="text-4xl font-bold text-[#b5ceff] tracking-[0.15em] font-mono drop-shadow-[0_0_25px_rgba(120,180,255,0.4)] mb-3">
+                <Heart className="inline-block h-8 w-8 text-[#ff8fb7] mr-3 animate-pulse" />
+                OUR SPONSORS
+              </h2>
+              <p className="text-[#8abaff]/80 text-base font-mono">The organizations powering SCPCTF</p>
+              <div className="w-32 h-1 mx-auto mt-4 bg-gradient-to-r from-transparent via-[#5580ff] to-transparent rounded-full"></div>
+            </div>
+            
+            <div className="space-y-8">
+              {/* Caido */}
+              <div className="group relative p-6 md:p-8 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-2xl border-2 border-[#ff9a4a]/30 hover:border-[#ff9a4a]/60 shadow-[0_0_40px_rgba(255,150,70,0.15)] hover:shadow-[0_0_60px_rgba(255,150,70,0.35)] transition-all duration-500 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#ff9a4a]/5 via-transparent to-[#ff9a4a]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                  <div className="p-5 bg-[#0a1628] rounded-xl shadow-[0_0_30px_rgba(255,150,70,0.1)] group-hover:shadow-[0_0_50px_rgba(255,150,70,0.25)] transition-all duration-500 group-hover:scale-105">
+                    <img src={caidoLogo} alt="Caido Logo" className="h-28 md:h-32 w-auto" />
                   </div>
-                ))}
+                  <div className="flex-1 text-center md:text-left">
+                    <a 
+                      href="https://caido.io/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block text-[#ffa54f] hover:text-[#ffbd7a] font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300 hover:drop-shadow-[0_0_15px_rgba(255,165,79,0.6)]"
+                    >
+                      Caido
+                    </a>
+                    <p className="text-[#d6e2ff] font-mono text-base md:text-lg mt-3 leading-relaxed">
+                      ❄️ Because even in a containment breach, security shouldn't melt. ❄️
+                    </p>
+                    <p className="text-[#ffa54f] text-lg md:text-xl font-bold mt-2 tracking-wide">
+                      Reinventing the Hacker's Toolkit
+                    </p>
+                    <p className="text-[#a8bfff]/80 text-sm mt-3">
+                      Caido is a lightweight web security auditing toolkit designed to help security professionals 
+                      test and debug web applications with modern, intuitive tools.
+                    </p>
+                  </div>
+                </div>
               </div>
-            </CardContent>
-          </Card>
+
+              {/* APISEC University */}
+              <div className="group relative p-6 md:p-8 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-2xl border-2 border-[#3d9dc9]/30 hover:border-[#3d9dc9]/60 shadow-[0_0_40px_rgba(60,160,200,0.15)] hover:shadow-[0_0_60px_rgba(60,160,200,0.35)] transition-all duration-500 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#3d9dc9]/5 via-transparent to-[#3d9dc9]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                  <div className="p-5 bg-white rounded-xl shadow-[0_0_30px_rgba(60,160,200,0.1)] group-hover:shadow-[0_0_50px_rgba(60,160,200,0.25)] transition-all duration-500 group-hover:scale-105">
+                    <img src={apisecLogo} alt="APISEC University Logo" className="h-28 md:h-32 w-auto" />
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <a 
+                      href="https://www.apisecuniversity.com/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block text-[#5dbde6] hover:text-[#8bd1f0] font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300 hover:drop-shadow-[0_0_15px_rgba(93,189,230,0.6)]"
+                    >
+                      APISEC University
+                    </a>
+                    <p className="text-[#d6e2ff] font-mono text-base md:text-lg mt-3 leading-relaxed">
+                      🛰️ Forging defenders who decode anomalies buried deep in the API grid. 🔐
+                    </p>
+                    <p className="text-[#5dbde6] text-lg md:text-xl font-bold mt-2 tracking-wide">
+                      Secure every API, every day
+                    </p>
+                    <p className="text-[#a8bfff]/80 text-sm mt-3">
+                      APISEC University provides free, hands-on API security training with courses designed 
+                      to help developers and security professionals master the art of securing APIs.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Internshala */}
+              <div className="group relative p-6 md:p-8 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-2xl border-2 border-[#00bfff]/30 hover:border-[#00bfff]/60 shadow-[0_0_40px_rgba(0,180,255,0.15)] hover:shadow-[0_0_60px_rgba(0,180,255,0.35)] transition-all duration-500 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-[#00bfff]/5 via-transparent to-[#00bfff]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                  <div className="p-5 bg-white rounded-xl shadow-[0_0_30px_rgba(0,180,255,0.1)] group-hover:shadow-[0_0_50px_rgba(0,180,255,0.25)] transition-all duration-500 group-hover:scale-105">
+                    <img src="/assets/internshala-logo.png" alt="Internshala Logo" className="h-28 md:h-32 w-auto" />
+                  </div>
+                  <div className="flex-1 text-center md:text-left">
+                    <a 
+                      href="https://internshala.com/" 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="inline-block text-[#00bfff] hover:text-[#5dd8ff] font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300 hover:drop-shadow-[0_0_15px_rgba(0,191,255,0.6)]"
+                    >
+                      Internshala
+                    </a>
+                    <p className="text-[#d6e2ff] font-mono text-base md:text-lg mt-3 leading-relaxed">
+                      🎯 Internshala fuels the challenge. You bring the skill.
+                    </p>
+                    <p className="text-[#00bfff] text-lg md:text-xl font-bold mt-2 tracking-wide">
+                      Level up your cyber journey
+                    </p>
+                    <p className="text-[#a8bfff]/80 text-sm mt-3">
+                      Internshala is India's leading platform for internships and online training, 
+                      empowering students and professionals to build real-world skills.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* Community & Support */}
           <Card className="border border-[#3c4fff]/25 bg-[#08162d]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(80,130,255,0.3)] transition-all duration-500">
@@ -214,160 +267,71 @@ export default function About() {
             </CardContent>
           </Card>
 
-      {/* TEAM SECTION */}
-<Card className="border border-[#335eff]/25 bg-[#0b1833]/55 backdrop-blur-2xl shadow-[0_0_32px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(90,150,255,0.32)] transition-all duration-500">
-  <CardHeader>
-    <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
-      <Users className="h-5 w-5 text-[#b5d4ff]" />
-      Team
-    </CardTitle>
-  </CardHeader>
-
-  <CardContent className="space-y-10 text-[#d9e3ff]/90 leading-relaxed">
-
-    {/* MEMBER 1 */}
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-[#c7d8ff]">disavowed913</h3>
-
-        <div className="flex gap-4">
-          <a
-            href="https://instagram.com/disavowed913"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
-          >
-            <Instagram className="w-6 h-6 text-[#ff8fb7]" />
-          </a>
-
-          <a
-            href="https://www.linkedin.com/in/sagnik-saha-7ba227237/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(120,200,255,0.6)]"
-          >
-            <Linkedin className="w-6 h-6 text-[#8ecaff]" />
-          </a>
-        </div>
-      </div>
-
-      <p className="text-[#a8bfff]/90">
-        disavowed913 leads the development and construction of the SecureContainProtect CTF platform, 
-        creating challenges and shaping the entire event ecosystem from structure to execution.
-      </p>
-    </div>
-
-    {/* MEMBER 2 */}
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold text-[#c7d8ff]">si_panja</h3>
-
-        <div className="flex gap-4">
-          <a
-            href="https://www.instagram.com/si._panja_/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
-          >
-            <Instagram className="w-6 h-6 text-[#ff8fb7]" />
-          </a>
-
-          <a
-            href="https://www.linkedin.com/in/souvik-panja-5764a1321/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(120,200,255,0.6)]"
-          >
-            <Linkedin className="w-6 h-6 text-[#8ecaff]" />
-          </a>
-        </div>
-      </div>
-
-      <p className="text-[#a8bfff]/90">
-        si_panja manages infrastructure, backend systems, and deployment operations, ensuring 
-        the CTF platform remains stable, reliable, and optimized at all times.
-      </p>
-    </div>
-
-  </CardContent>
-</Card>
-
-          {/* Sponsors Section */}
-          <Card className="border border-[#3d6cff]/25 bg-[#081226]/55 backdrop-blur-2xl shadow-[0_0_35px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(100,160,255,0.3)] transition-all duration-500">
+          {/* TEAM SECTION */}
+          <Card className="border border-[#335eff]/25 bg-[#0b1833]/55 backdrop-blur-2xl shadow-[0_0_32px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(90,150,255,0.32)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
-                <Heart className="h-5 w-5 text-[#ff8fb7]" />
-                Our Sponsors
+                <Users className="h-5 w-5 text-[#b5d4ff]" />
+                Team
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-8">
-              {/* Caido */}
-              <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-gradient-to-r from-[#0d1a33]/60 to-[#081226]/40 rounded-xl border border-[#ff9a4a]/20 hover:border-[#ff9a4a]/40 transition-all">
-                <div className="p-3 bg-[#0a1628] rounded-lg shrink-0">
-                  <img src={caidoLogo} alt="Caido Logo" className="h-16 w-auto" />
+            <CardContent className="space-y-10 text-[#d9e3ff]/90 leading-relaxed">
+              {/* MEMBER 1 */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold text-[#c7d8ff]">disavowed913</h3>
+                  <div className="flex gap-4">
+                    <a
+                      href="https://instagram.com/disavowed913"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
+                    >
+                      <Instagram className="w-6 h-6 text-[#ff8fb7]" />
+                    </a>
+                    <a
+                      href="https://www.linkedin.com/in/sagnik-saha-7ba227237/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(120,200,255,0.6)]"
+                    >
+                      <Linkedin className="w-6 h-6 text-[#8ecaff]" />
+                    </a>
+                  </div>
                 </div>
-                <div className="text-center sm:text-left">
-                  <a 
-                    href="https://caido.io/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[#ffa54f] hover:text-[#ffbd7a] font-bold text-xl transition-colors underline underline-offset-4"
-                  >
-                    Caido
-                  </a>
-                  <p className="text-[#d6e2ff] font-mono text-sm mt-2">
-                    ❄️ Because even in a containment breach, security shouldn't melt. ❄️
-                  </p>
-                  <p className="text-[#ffa54f]/90 text-sm font-semibold mt-1">
-                    Caido: Reinventing the Hacker's Toolkit
-                  </p>
-                </div>
+                <p className="text-[#a8bfff]/90">
+                  disavowed913 leads the development and construction of the SecureContainProtect CTF platform, 
+                  creating challenges and shaping the entire event ecosystem from structure to execution.
+                </p>
               </div>
 
-              {/* APISEC University */}
-              <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-gradient-to-r from-[#0d1a33]/60 to-[#081226]/40 rounded-xl border border-[#3d9dc9]/20 hover:border-[#3d9dc9]/40 transition-all">
-                <div className="p-3 bg-white rounded-lg shrink-0">
-                  <img src={apisecLogo} alt="APISEC University Logo" className="h-16 w-auto" />
+              {/* MEMBER 2 */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-semibold text-[#c7d8ff]">si_panja</h3>
+                  <div className="flex gap-4">
+                    <a
+                      href="https://www.instagram.com/si._panja_/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(255,120,180,0.6)]"
+                    >
+                      <Instagram className="w-6 h-6 text-[#ff8fb7]" />
+                    </a>
+                    <a
+                      href="https://www.linkedin.com/in/souvik-panja-5764a1321/"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="transition hover:scale-110 drop-shadow-[0_0_10px_rgba(120,200,255,0.6)]"
+                    >
+                      <Linkedin className="w-6 h-6 text-[#8ecaff]" />
+                    </a>
+                  </div>
                 </div>
-                <div className="text-center sm:text-left">
-                  <a 
-                    href="https://www.apisecuniversity.com/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[#5dbde6] hover:text-[#8bd1f0] font-bold text-xl transition-colors underline underline-offset-4"
-                  >
-                    APISEC University
-                  </a>
-                  <p className="text-[#d6e2ff] font-mono text-sm mt-2">
-                    🛰️ Forging defenders who decode anomalies buried deep in the API grid. 🔐
-                  </p>
-                  <p className="text-[#5dbde6]/90 text-sm font-semibold mt-1">
-                    APISEC University: Secure every API, every day
-                  </p>
-                </div>
-              </div>
-
-              {/* Internshala */}
-              <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-gradient-to-r from-[#0d1a33]/60 to-[#081226]/40 rounded-xl border border-[#00bfff]/20 hover:border-[#00bfff]/40 transition-all">
-                <div className="p-3 bg-white rounded-lg shrink-0">
-                  <img src="/assets/internshala-logo.png" alt="Internshala Logo" className="h-16 w-auto" />
-                </div>
-                <div className="text-center sm:text-left">
-                  <a 
-                    href="https://internshala.com/" 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="text-[#00bfff] hover:text-[#5dd8ff] font-bold text-xl transition-colors underline underline-offset-4"
-                  >
-                    Internshala
-                  </a>
-                  <p className="text-[#d6e2ff] font-mono text-sm mt-2">
-                    🎯 Internshala fuels the challenge. You bring the skill.
-                  </p>
-                  <p className="text-[#00bfff]/90 text-sm font-semibold mt-1">
-                    Level up your cyber journey with Internshala
-                  </p>
-                </div>
+                <p className="text-[#a8bfff]/90">
+                  si_panja manages infrastructure, backend systems, and deployment operations, ensuring 
+                  the CTF platform remains stable, reliable, and optimized at all times.
+                </p>
               </div>
             </CardContent>
           </Card>
