@@ -6,7 +6,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Flag, Target, Users, Shield, Instagram, Linkedin, Heart } from "lucide-react";
+import {
+  Flag,
+  Target,
+  Users,
+  Shield,
+  Instagram,
+  Linkedin,
+  Heart,
+} from "lucide-react";
 import caidoLogo from "@/assets/caido-logo.png";
 import apisecLogo from "@/assets/apisec-logo.png";
 
@@ -51,12 +59,14 @@ export default function About() {
         filter: "brightness(1.05) contrast(1.1) saturate(1.15)",
       }}
     >
+      {/* Background Layers */}
       <div className="absolute inset-0 bg-[#030b1d]/70 backdrop-blur-[3px]"></div>
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_60%,rgba(90,150,255,0.2),transparent_70%)] animate-[softblink_5s_infinite_ease-in-out]"></div>
 
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_10%,rgba(255,230,150,0.22),transparent_70%)] pointer-events-none"></div>
 
+      {/* Snowflakes */}
       {snowflakes.map((s) => (
         <div
           key={s.id}
@@ -73,6 +83,7 @@ export default function About() {
         </div>
       ))}
 
+      {/* Ornaments */}
       <div className="absolute top-0 left-0 w-full flex justify-center gap-6 pointer-events-none z-20 mt-4">
         <div className="text-[#ffdf7f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,200,120,0.6)]">🔔</div>
         <div className="text-[#ff9f9f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,150,150,0.6)]">🎄</div>
@@ -80,6 +91,7 @@ export default function About() {
         <div className="text-[#ffd27f] ornament-spin text-2xl drop-shadow-[0_0_12px_rgba(255,225,150,0.6)]">🔔</div>
       </div>
 
+      {/* Fireflies */}
       {fireflies.map((f) => (
         <div
           key={f.id}
@@ -98,9 +110,9 @@ export default function About() {
 
       <Navbar />
 
+      {/* Main Content */}
       <main className="flex-1 container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-4xl mx-auto space-y-8">
-
           {/* Title */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4 text-[#c7dbff] drop-shadow-[0_0_15px_rgba(90,150,255,0.5)]">
@@ -114,7 +126,7 @@ export default function About() {
             </p>
           </div>
 
-          {/* Our Mission */}
+          {/* Mission */}
           <Card className="border border-[#3d6cff]/30 bg-[#081226]/50 backdrop-blur-2xl shadow-[0_0_35px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(100,160,255,0.3)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
@@ -123,40 +135,38 @@ export default function About() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-[#d9e3ff]/90 leading-relaxed">
-<p>
-<b>Incident Overview</b><br>
-A detonation ruptured Site-81’s containment wing, scattering ❄️ SCP-XMAS-239 shards as sectors ██-█ collapsed [REDACTED].<br>
-Holiday lights glitched red/green/icy blue 🎄🔴🟢🔵 across rapidly forming ice sheets.<br><br>
-
-<b>Anomalous Activity</b><br>
-Harmonic emissions 🎵 rewriting systems; winter UI freezes ☃️ and corrupted ██ surveillance frames 🤖.<br>
-Shards ✨ drift against airflow, leaving subzero particulate trails ❄️.<br><br>
-
-<b>CTF-81 Objectives</b><br>
-🛡️ Recover shards and secure frost-affected corridors.<br>
-📜 Decrypt corrupted ██ logs and restore system integrity.<br><br>
-
-<b>Risk Level</b><br>
-Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDACTED].
-</p>
-
               <p>
-               
+                <b>Incident Overview</b><br />
+                A detonation ruptured Site-81’s containment wing, scattering ❄️ SCP-XMAS-239 shards as sectors ██-█ collapsed [REDACTED].<br />
+                Holiday lights glitched red/green/icy blue 🎄🔴🟢🔵 across rapidly forming ice sheets.<br /><br />
+
+                <b>Anomalous Activity</b><br />
+                Harmonic emissions 🎵 rewriting systems; winter UI freezes ☃️ and corrupted ██ surveillance frames 🤖.<br />
+                Shards ✨ drift against airflow, leaving subzero particulate trails ❄️.<br /><br />
+
+                <b>CTF-81 Objectives</b><br />
+                🛡️ Recover shards and secure frost-affected corridors.<br />
+                📜 Decrypt corrupted ██ logs and restore system integrity.<br /><br />
+
+                <b>Risk Level</b><br />
+                Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDACTED].
               </p>
             </CardContent>
           </Card>
 
-          {/* Sponsors Section - Prominent */}
+          {/* Sponsors */}
           <div className="py-6">
             <div className="text-center mb-10">
               <h2 className="text-4xl font-bold text-[#b5ceff] tracking-[0.15em] font-mono drop-shadow-[0_0_25px_rgba(120,180,255,0.4)] mb-3">
                 <Heart className="inline-block h-8 w-8 text-[#ff8fb7] mr-3 animate-pulse" />
                 OUR SPONSORS
               </h2>
-              <p className="text-[#8abaff]/80 text-base font-mono">The organizations powering SCPCTF</p>
+              <p className="text-[#8abaff]/80 text-base font-mono">
+                The organizations powering SCPCTF
+              </p>
               <div className="w-32 h-1 mx-auto mt-4 bg-gradient-to-r from-transparent via-[#5580ff] to-transparent rounded-full"></div>
             </div>
-            
+
             <div className="space-y-8">
               {/* Caido */}
               <div className="group relative p-6 md:p-8 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-2xl border-2 border-[#ff9a4a]/30 hover:border-[#ff9a4a]/60 shadow-[0_0_40px_rgba(255,150,70,0.15)] hover:shadow-[0_0_60px_rgba(255,150,70,0.35)] transition-all duration-500 overflow-hidden">
@@ -166,9 +176,9 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
                     <img src={caidoLogo} alt="Caido Logo" className="h-28 md:h-32 w-auto" />
                   </div>
                   <div className="flex-1 text-center md:text-left">
-                    <a 
-                      href="https://caido.io/" 
-                      target="_blank" 
+                    <a
+                      href="https://caido.io/"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="inline-block text-[#ffa54f] hover:text-[#ffbd7a] font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300 hover:drop-shadow-[0_0_15px_rgba(255,165,79,0.6)]"
                     >
@@ -181,8 +191,7 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
                       Reinventing the Hacker's Toolkit
                     </p>
                     <p className="text-[#a8bfff]/80 text-sm mt-3">
-                      Caido is a lightweight web security auditing toolkit designed to help security professionals 
-                      test and debug web applications with modern, intuitive tools.
+                      Caido is a lightweight web security auditing toolkit designed to help security professionals test and debug web applications with modern, intuitive tools.
                     </p>
                   </div>
                 </div>
@@ -196,9 +205,9 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
                     <img src={apisecLogo} alt="APISEC University Logo" className="h-28 md:h-32 w-auto" />
                   </div>
                   <div className="flex-1 text-center md:text-left">
-                    <a 
-                      href="https://www.apisecuniversity.com/" 
-                      target="_blank" 
+                    <a
+                      href="https://www.apisecuniversity.com/"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="inline-block text-[#5dbde6] hover:text-[#8bd1f0] font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300 hover:drop-shadow-[0_0_15px_rgba(93,189,230,0.6)]"
                     >
@@ -211,8 +220,7 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
                       Secure every API, every day
                     </p>
                     <p className="text-[#a8bfff]/80 text-sm mt-3">
-                      APISEC University provides free, hands-on API security training with courses designed 
-                      to help developers and security professionals master the art of securing APIs.
+                      APISEC University provides free, hands-on API security training with courses designed to help developers and security professionals master the art of securing APIs.
                     </p>
                   </div>
                 </div>
@@ -226,9 +234,9 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
                     <img src="/assets/internshala-logo.png" alt="Internshala Logo" className="h-28 md:h-32 w-auto" />
                   </div>
                   <div className="flex-1 text-center md:text-left">
-                    <a 
-                      href="https://internshala.com/" 
-                      target="_blank" 
+                    <a
+                      href="https://internshala.com/"
+                      target="_blank"
                       rel="noopener noreferrer"
                       className="inline-block text-[#00bfff] hover:text-[#5dd8ff] font-bold text-2xl md:text-3xl tracking-wide transition-all duration-300 hover:drop-shadow-[0_0_15px_rgba(0,191,255,0.6)]"
                     >
@@ -241,8 +249,7 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
                       Level up your cyber journey
                     </p>
                     <p className="text-[#a8bfff]/80 text-sm mt-3">
-                      Internshala is India's leading platform for internships and online training, 
-                      empowering students and professionals to build real-world skills.
+                      Internshala is India's leading platform for internships and online training, empowering students and professionals to build real-world skills.
                     </p>
                   </div>
                 </div>
@@ -250,7 +257,7 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
             </div>
           </div>
 
-          {/* Community & Support */}
+          {/* Community */}
           <Card className="border border-[#3c4fff]/25 bg-[#08162d]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(80,130,255,0.3)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#8abaff]">
@@ -260,8 +267,7 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
             </CardHeader>
             <CardContent className="space-y-4 text-[#d9e3ff]/95 leading-relaxed">
               <p>
-                Become part of our active cybersecurity community. Participants frequently collaborate, exchange ideas,
-                and discuss strategies, strengthening their skills through shared knowledge.
+                Become part of our active cybersecurity community. Participants frequently collaborate, exchange ideas, and discuss strategies, strengthening their skills through shared knowledge.
               </p>
               <p>
                 If you require assistance or wish to offer feedback, please join our official server:
@@ -277,7 +283,7 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
             </CardContent>
           </Card>
 
-          {/* TEAM SECTION */}
+          {/* Team */}
           <Card className="border border-[#335eff]/25 bg-[#0b1833]/55 backdrop-blur-2xl shadow-[0_0_32px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(90,150,255,0.32)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
@@ -286,7 +292,7 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-10 text-[#d9e3ff]/90 leading-relaxed">
-              {/* MEMBER 1 */}
+              {/* Member 1 */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold text-[#c7d8ff]">disavowed913</h3>
@@ -310,12 +316,11 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
                   </div>
                 </div>
                 <p className="text-[#a8bfff]/90">
-                  disavowed913 leads the development and construction of the SecureContainProtect CTF platform, 
-                  creating challenges and shaping the entire event ecosystem from structure to execution.
+                  disavowed913 leads the development and construction of the SecureContainProtect CTF platform, creating challenges and shaping the entire event ecosystem from structure to execution.
                 </p>
               </div>
 
-              {/* MEMBER 2 */}
+              {/* Member 2 */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <h3 className="text-xl font-semibold text-[#c7d8ff]">si_panja</h3>
@@ -339,14 +344,13 @@ Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDA
                   </div>
                 </div>
                 <p className="text-[#a8bfff]/90">
-                  si_panja manages infrastructure, backend systems, and deployment operations, ensuring 
-                  the CTF platform remains stable, reliable, and optimized at all times.
+                  si_panja manages infrastructure, backend systems, and deployment operations, ensuring the CTF platform remains stable, reliable, and optimized at all times.
                 </p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Legal & Ethics */}
+          {/* Legal */}
           <Card className="border border-[#2d4fff]/25 bg-[#0b1530]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(0,90,255,0.3)] transition-all duration-500">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
