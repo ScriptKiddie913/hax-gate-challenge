@@ -314,89 +314,103 @@ Now, the Foundation has initiated CTF-81: Containment Task Force, calling all pe
                 </div>
 
                 {/* Sponsors Section */}
-                <div className="mt-14 pt-10 border-t border-[#3d6cff]/30">
-                  <h3 className="text-4xl font-bold text-center mb-12 text-[#b5ceff] tracking-widest font-mono">
-                    SPONSORS
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {/* Caido */}
-                    <div className="flex flex-col items-center gap-4 p-6 bg-gradient-to-b from-[#0d1a33]/80 to-[#081226]/60 rounded-2xl border border-[#ff9a4a]/20 hover:border-[#ff9a4a]/50 shadow-[0_0_30px_rgba(255,150,70,0.15)] hover:shadow-[0_0_50px_rgba(255,150,70,0.3)] transition-all hover:scale-105 duration-300">
-                      <div className="p-4 bg-[#0a1628] rounded-xl">
-                        <img 
-                          src={caidoLogo}
-                          alt="Caido Logo" 
-                          className="h-20 w-auto"
-                        />
-                      </div>
-                      <a 
-                        href="https://caido.io/" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-[#ffa54f] hover:text-[#ffbd7a] font-bold text-2xl tracking-wide transition-colors underline underline-offset-4"
-                      >
-                        Caido
-                      </a>
-                      <div className="text-center space-y-2">
-                        <p className="text-[#d6e2ff] font-mono text-sm">
-                          ❄️ Because even in a containment breach, security shouldn't melt. ❄️
-                        </p>
-                        <p className="text-[#ffa54f]/90 text-base font-semibold">
-                          Caido: Reinventing the Hacker's Toolkit
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* APISEC University */}
-                    <div className="flex flex-col items-center gap-4 p-6 bg-gradient-to-b from-[#0d1a33]/80 to-[#081226]/60 rounded-2xl border border-[#3d9dc9]/20 hover:border-[#3d9dc9]/50 shadow-[0_0_30px_rgba(60,160,200,0.15)] hover:shadow-[0_0_50px_rgba(60,160,200,0.3)] transition-all hover:scale-105 duration-300">
-                      <div className="p-4 bg-white rounded-xl">
-                        <img 
-                          src={apisecLogo}
-                          alt="APISEC University Logo" 
-                          className="h-20 w-auto"
-                        />
-                      </div>
-                      <a 
-                        href="https://www.apisecuniversity.com/" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-[#5dbde6] hover:text-[#8bd1f0] font-bold text-2xl tracking-wide transition-colors underline underline-offset-4"
-                      >
-                        APISEC University
-                      </a>
-                      <div className="text-center space-y-2">
-                        <p className="text-[#d6e2ff] font-mono text-sm">
-                          🛰️ Forging defenders who decode anomalies buried deep in the API grid. 🔐
-                        </p>
-                        <p className="text-[#5dbde6]/90 text-base font-semibold">
-                          APISEC University: Secure every API, every day
-                        </p>
+                <div className="mt-20 pt-14 border-t-2 border-[#3d6cff]/40">
+                  <div className="text-center mb-16">
+                    <h3 className="text-5xl md:text-6xl font-bold text-[#b5ceff] tracking-[0.2em] font-mono drop-shadow-[0_0_30px_rgba(120,180,255,0.4)] mb-4">
+                      SPONSORS
+                    </h3>
+                    <p className="text-[#8abaff]/80 text-lg font-mono">Powering the containment mission</p>
+                    <div className="w-40 h-1 mx-auto mt-6 bg-gradient-to-r from-transparent via-[#5580ff] to-transparent rounded-full"></div>
+                  </div>
+                  
+                  <div className="space-y-10">
+                    {/* Caido - Featured */}
+                    <div className="group relative p-8 md:p-10 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-3xl border-2 border-[#ff9a4a]/30 hover:border-[#ff9a4a]/70 shadow-[0_0_50px_rgba(255,150,70,0.2)] hover:shadow-[0_0_80px_rgba(255,150,70,0.4)] transition-all duration-500 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#ff9a4a]/5 via-transparent to-[#ff9a4a]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      <div className="relative flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                        <div className="p-6 bg-[#0a1628] rounded-2xl shadow-[0_0_40px_rgba(255,150,70,0.15)] group-hover:shadow-[0_0_60px_rgba(255,150,70,0.3)] transition-all duration-500 group-hover:scale-105">
+                          <img 
+                            src={caidoLogo}
+                            alt="Caido Logo" 
+                            className="h-32 md:h-40 w-auto"
+                          />
+                        </div>
+                        <div className="flex-1 text-center md:text-left">
+                          <a 
+                            href="https://caido.io/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-block text-[#ffa54f] hover:text-[#ffbd7a] font-bold text-3xl md:text-4xl tracking-wide transition-all duration-300 hover:drop-shadow-[0_0_20px_rgba(255,165,79,0.6)]"
+                          >
+                            Caido
+                          </a>
+                          <p className="text-[#d6e2ff] font-mono text-lg md:text-xl mt-4 leading-relaxed">
+                            ❄️ Because even in a containment breach, security shouldn't melt. ❄️
+                          </p>
+                          <p className="text-[#ffa54f] text-xl md:text-2xl font-bold mt-3 tracking-wide">
+                            Reinventing the Hacker's Toolkit
+                          </p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Internshala */}
-                    <div className="flex flex-col items-center gap-4 p-6 bg-gradient-to-b from-[#0d1a33]/80 to-[#081226]/60 rounded-2xl border border-[#00bfff]/20 hover:border-[#00bfff]/50 shadow-[0_0_30px_rgba(0,180,255,0.15)] hover:shadow-[0_0_50px_rgba(0,180,255,0.3)] transition-all hover:scale-105 duration-300">
-                      <div className="p-4 bg-white rounded-xl">
-                        <img 
-                          src="/assets/internshala-logo.png" 
-                          alt="Internshala Logo" 
-                          className="h-20 w-auto"
-                        />
+                    {/* APISEC University - Featured */}
+                    <div className="group relative p-8 md:p-10 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-3xl border-2 border-[#3d9dc9]/30 hover:border-[#3d9dc9]/70 shadow-[0_0_50px_rgba(60,160,200,0.2)] hover:shadow-[0_0_80px_rgba(60,160,200,0.4)] transition-all duration-500 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#3d9dc9]/5 via-transparent to-[#3d9dc9]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      <div className="relative flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                        <div className="p-6 bg-white rounded-2xl shadow-[0_0_40px_rgba(60,160,200,0.15)] group-hover:shadow-[0_0_60px_rgba(60,160,200,0.3)] transition-all duration-500 group-hover:scale-105">
+                          <img 
+                            src={apisecLogo}
+                            alt="APISEC University Logo" 
+                            className="h-32 md:h-40 w-auto"
+                          />
+                        </div>
+                        <div className="flex-1 text-center md:text-left">
+                          <a 
+                            href="https://www.apisecuniversity.com/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-block text-[#5dbde6] hover:text-[#8bd1f0] font-bold text-3xl md:text-4xl tracking-wide transition-all duration-300 hover:drop-shadow-[0_0_20px_rgba(93,189,230,0.6)]"
+                          >
+                            APISEC University
+                          </a>
+                          <p className="text-[#d6e2ff] font-mono text-lg md:text-xl mt-4 leading-relaxed">
+                            🛰️ Forging defenders who decode anomalies buried deep in the API grid. 🔐
+                          </p>
+                          <p className="text-[#5dbde6] text-xl md:text-2xl font-bold mt-3 tracking-wide">
+                            Secure every API, every day
+                          </p>
+                        </div>
                       </div>
-                      <a 
-                        href="https://internshala.com/" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-[#00bfff] hover:text-[#5dd8ff] font-bold text-2xl tracking-wide transition-colors underline underline-offset-4"
-                      >
-                        Internshala
-                      </a>
-                      <div className="text-center space-y-2">
-                        <p className="text-[#d6e2ff] font-mono text-sm">
-                          🎯 Internshala fuels the challenge. You bring the skill.
-                        </p>
-                        <p className="text-[#00bfff]/90 text-base font-semibold">
-                          Level up your cyber journey with Internshala
-                        </p>
+                    </div>
+
+                    {/* Internshala - Featured */}
+                    <div className="group relative p-8 md:p-10 bg-gradient-to-br from-[#12203d]/90 via-[#0d1a33]/80 to-[#081226]/70 rounded-3xl border-2 border-[#00bfff]/30 hover:border-[#00bfff]/70 shadow-[0_0_50px_rgba(0,180,255,0.2)] hover:shadow-[0_0_80px_rgba(0,180,255,0.4)] transition-all duration-500 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-[#00bfff]/5 via-transparent to-[#00bfff]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      <div className="relative flex flex-col md:flex-row items-center gap-8 md:gap-12">
+                        <div className="p-6 bg-white rounded-2xl shadow-[0_0_40px_rgba(0,180,255,0.15)] group-hover:shadow-[0_0_60px_rgba(0,180,255,0.3)] transition-all duration-500 group-hover:scale-105">
+                          <img 
+                            src="/assets/internshala-logo.png" 
+                            alt="Internshala Logo" 
+                            className="h-32 md:h-40 w-auto"
+                          />
+                        </div>
+                        <div className="flex-1 text-center md:text-left">
+                          <a 
+                            href="https://internshala.com/" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="inline-block text-[#00bfff] hover:text-[#5dd8ff] font-bold text-3xl md:text-4xl tracking-wide transition-all duration-300 hover:drop-shadow-[0_0_20px_rgba(0,191,255,0.6)]"
+                          >
+                            Internshala
+                          </a>
+                          <p className="text-[#d6e2ff] font-mono text-lg md:text-xl mt-4 leading-relaxed">
+                            🎯 Internshala fuels the challenge. You bring the skill.
+                          </p>
+                          <p className="text-[#00bfff] text-xl md:text-2xl font-bold mt-3 tracking-wide">
+                            Level up your cyber journey
+                          </p>
+                        </div>
                       </div>
                     </div>
                   </div>
