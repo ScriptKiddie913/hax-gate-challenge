@@ -123,29 +123,23 @@ export default function About() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-[#d9e3ff]/90 leading-relaxed">
-              <p>
-Incident Overview
+<p>
+<b>Incident Overview</b><br>
+A detonation ruptured Site-81’s containment wing, scattering ❄️ SCP-XMAS-239 shards as sectors ██-█ collapsed [REDACTED].<br>
+Holiday lights glitched red/green/icy blue 🎄🔴🟢🔵 across rapidly forming ice sheets.<br><br>
 
-A detonation ruptured Site-81’s containment wing, scattering ❄️ SCP-XMAS-239 shards as sectors ██-█ collapsed [REDACTED].
+<b>Anomalous Activity</b><br>
+Harmonic emissions 🎵 rewriting systems; winter UI freezes ☃️ and corrupted ██ surveillance frames 🤖.<br>
+Shards ✨ drift against airflow, leaving subzero particulate trails ❄️.<br><br>
 
-Holiday lights glitched red/green/icy blue 🎄🔴🟢🔵 across rapidly forming ice sheets.
+<b>CTF-81 Objectives</b><br>
+🛡️ Recover shards and secure frost-affected corridors.<br>
+📜 Decrypt corrupted ██ logs and restore system integrity.<br><br>
 
-Anomalous Activity
-
-Harmonic emissions 🎵 rewriting systems; winter UI freezes ☃️ and corrupted ██ surveillance frames 🤖.
-
-Shards ✨ drift against airflow, leaving subzero particulate trails ❄️.
-
-CTF-81 Objectives
-
-🛡️ Recover shards and secure frost-affected corridors.
-
-📜 Decrypt corrupted ██ logs and restore system integrity.
-
-Risk Level
-
+<b>Risk Level</b><br>
 Continued spread may trigger a Winter-Class Distortion Event 🌨️⚠️ [REDACTED].
-              </p>
+</p>
+
               <p>
                
               </p>
