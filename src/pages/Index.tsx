@@ -268,28 +268,6 @@ const Index = () => {
                     Deep down the facility at Site-81, a massive explosion shattered the reinforced containment wing, sending shockwaves through the ice-coated sublevels. Emergency red-and-green holiday lockdown lights flickered wildly, casting festive but unsettling colors across the frost-cracked walls.Moments before the blast, researchers were studying SCP-XMAS-239, a crystalline anomaly resembling a floating ornament that emitted harmonic frequencies capable of rewriting electronic systems. When containment failed, the anomaly fractured into thousands of shimmering fragments.
 Now, the Foundation has initiated CTF-81: Containment Task Force, calling all personnel to track the anomalies, decode corrupted logs, and restore order before the “festive breach event” evolves into a full-scale reality distortion.
                   </p>
-              
-                  <p>
-                    Participants will engage with anomalous containment
-                    simulations requiring expertise in:
-                  </p>
-                  <ul className="list-none space-y-2 ml-6 text-[#d9e5ff]">
-                    <li className="hover:text-[#9fc3ff] transition-colors">
-                      • Web Exploitation and System Analysis
-                    </li>
-                    <li className="hover:text-[#9fc3ff] transition-colors">
-                      • Cryptographic Protocol Investigation
-                    </li>
-                    <li className="hover:text-[#9fc3ff] transition-colors">
-                      • Digital Forensics and <span className="redacted">DATA EXPUNGED</span>
-                    </li>
-                    <li className="hover:text-[#9fc3ff] transition-colors">
-                      • Reverse Engineering of Anomalous Code
-                    </li>
-                    <li className="hover:text-[#9fc3ff] transition-colors">
-                      • Threat Hunting within SCP-classified Digital Entities
-                    </li>
-                  </ul>
                 </div>
 
                 <div className="flex gap-4 justify-center animate-fade-in-delay">
