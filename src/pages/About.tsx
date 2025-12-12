@@ -6,7 +6,9 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Flag, Target, Users, Shield, Instagram, Linkedin } from "lucide-react";
+import { Flag, Target, Users, Shield, Instagram, Linkedin, Heart } from "lucide-react";
+import caidoLogo from "@/assets/caido-logo.png";
+import apisecLogo from "@/assets/apisec-logo.png";
 
 export default function About() {
   const [fireflies, setFireflies] = useState<
@@ -290,6 +292,85 @@ export default function About() {
   </CardContent>
 </Card>
 
+          {/* Sponsors Section */}
+          <Card className="border border-[#3d6cff]/25 bg-[#081226]/55 backdrop-blur-2xl shadow-[0_0_35px_rgba(70,120,255,0.25)] hover:shadow-[0_0_45px_rgba(100,160,255,0.3)] transition-all duration-500">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-[#9ccaff]">
+                <Heart className="h-5 w-5 text-[#ff8fb7]" />
+                Our Sponsors
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-8">
+              {/* Caido */}
+              <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-gradient-to-r from-[#0d1a33]/60 to-[#081226]/40 rounded-xl border border-[#ff9a4a]/20 hover:border-[#ff9a4a]/40 transition-all">
+                <div className="p-3 bg-[#0a1628] rounded-lg shrink-0">
+                  <img src={caidoLogo} alt="Caido Logo" className="h-16 w-auto" />
+                </div>
+                <div className="text-center sm:text-left">
+                  <a 
+                    href="https://caido.io/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[#ffa54f] hover:text-[#ffbd7a] font-bold text-xl transition-colors underline underline-offset-4"
+                  >
+                    Caido
+                  </a>
+                  <p className="text-[#d6e2ff] font-mono text-sm mt-2">
+                    ❄️ Because even in a containment breach, security shouldn't melt. ❄️
+                  </p>
+                  <p className="text-[#ffa54f]/90 text-sm font-semibold mt-1">
+                    Caido: Reinventing the Hacker's Toolkit
+                  </p>
+                </div>
+              </div>
+
+              {/* APISEC University */}
+              <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-gradient-to-r from-[#0d1a33]/60 to-[#081226]/40 rounded-xl border border-[#3d9dc9]/20 hover:border-[#3d9dc9]/40 transition-all">
+                <div className="p-3 bg-white rounded-lg shrink-0">
+                  <img src={apisecLogo} alt="APISEC University Logo" className="h-16 w-auto" />
+                </div>
+                <div className="text-center sm:text-left">
+                  <a 
+                    href="https://www.apisecuniversity.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[#5dbde6] hover:text-[#8bd1f0] font-bold text-xl transition-colors underline underline-offset-4"
+                  >
+                    APISEC University
+                  </a>
+                  <p className="text-[#d6e2ff] font-mono text-sm mt-2">
+                    🛰️ Forging defenders who decode anomalies buried deep in the API grid. 🔐
+                  </p>
+                  <p className="text-[#5dbde6]/90 text-sm font-semibold mt-1">
+                    APISEC University: Secure every API, every day
+                  </p>
+                </div>
+              </div>
+
+              {/* Internshala */}
+              <div className="flex flex-col sm:flex-row items-center gap-6 p-5 bg-gradient-to-r from-[#0d1a33]/60 to-[#081226]/40 rounded-xl border border-[#00bfff]/20 hover:border-[#00bfff]/40 transition-all">
+                <div className="p-3 bg-white rounded-lg shrink-0">
+                  <img src="/assets/internshala-logo.png" alt="Internshala Logo" className="h-16 w-auto" />
+                </div>
+                <div className="text-center sm:text-left">
+                  <a 
+                    href="https://internshala.com/" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-[#00bfff] hover:text-[#5dd8ff] font-bold text-xl transition-colors underline underline-offset-4"
+                  >
+                    Internshala
+                  </a>
+                  <p className="text-[#d6e2ff] font-mono text-sm mt-2">
+                    🎯 Internshala fuels the challenge. You bring the skill.
+                  </p>
+                  <p className="text-[#00bfff]/90 text-sm font-semibold mt-1">
+                    Level up your cyber journey with Internshala
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Legal & Ethics */}
           <Card className="border border-[#2d4fff]/25 bg-[#0b1530]/55 backdrop-blur-2xl shadow-[0_0_25px_rgba(0,60,255,0.2)] hover:shadow-[0_0_40px_rgba(0,90,255,0.3)] transition-all duration-500">
